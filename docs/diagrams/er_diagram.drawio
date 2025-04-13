@@ -1,0 +1,37 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="erd" name="ER Diagram">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="attractions&lt;br&gt;-----------&lt;br&gt;id (PK, int)&lt;br&gt;name (varchar)&lt;br&gt;description (text)&lt;br&gt;open_time (varchar)&lt;br&gt;image_url (varchar)" style="shape=rectangle;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="50" width="150" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="facilities&lt;br&gt;-----------&lt;br&gt;id (PK, int)&lt;br&gt;name (varchar)&lt;br&gt;location (varchar)&lt;br&gt;status (varchar)" style="shape=rectangle;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="250" width="150" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="users&lt;br&gt;-----------&lt;br&gt;id (PK, int)&lt;br&gt;username (varchar)&lt;br&gt;password_hash (varchar)&lt;br&gt;role (varchar)" style="shape=rectangle;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="50" width="150" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="tickets&lt;br&gt;-----------&lt;br&gt;id (PK, int)&lt;br&gt;type (varchar)&lt;br&gt;price (decimal)&lt;br&gt;valid_date (date)" style="shape=rectangle;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="250" width="150" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="orders&lt;br&gt;-----------&lt;br&gt;id (PK, int)&lt;br&gt;user_id (FK, int)&lt;br&gt;ticket_id (FK, int)&lt;br&gt;quantity (int)&lt;br&gt;status (varchar)&lt;br&gt;created_at (datetime)" style="shape=rectangle;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="150" width="150" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="feedback&lt;br&gt;-----------&lt;br&gt;id (PK, int)&lt;br&gt;user_id (FK, int)&lt;br&gt;score (int)&lt;br&gt;comment (text)&lt;br&gt;created_at (datetime)" style="shape=rectangle;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="450" width="150" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="user_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;" edge="1" parent="1" source="6" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="ticket_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;" edge="1" parent="1" source="6" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="user_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;" edge="1" parent="1" source="7" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

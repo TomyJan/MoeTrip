@@ -1,0 +1,31 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="arch" name="Architecture">
+    <mxGraphModel dx="800" dy="600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="用户浏览器" style="shape=rectangle;rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="Vue3 客户端&lt;br&gt;(Vuetify 3, ECharts)" style="shape=rectangle;rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="150" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="Express 服务端&lt;br&gt;(Node.js, Sequelize)" style="shape=rectangle;rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="300" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="SQL 数据库" style="shape=cylinder;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="450" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="Fetch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="SQL 查询" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="访问" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;" edge="1" parent="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
