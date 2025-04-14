@@ -1,16 +1,10 @@
-import fs from 'fs';
 import path from 'path';
-import dotenv from 'dotenv';
+import { validateEnv } from '../utils/env-validator';
 
-// 检查测试环境文件
+// 验证并加载测试环境变量
 const testEnvPath = path.join(__dirname, '../../.env.test');
-if (!fs.existsSync(testEnvPath)) {
-  console.error('错误：缺少 .env.test 文件，请先配置测试环境变量');
-  process.exit(1);
-}
-
-// 加载测试环境变量
-dotenv.config({ path: testEnvPath });
+const examplePath = path.join(__dirname, '../../.env.example');
+validateEnv(testEnvPath, examplePath);
 
 // 导入数据库配置
 import sequelize from '../utils/database';
