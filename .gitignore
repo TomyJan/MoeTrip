@@ -1,2 +1,9 @@
 # Node
 backend/node_modules/
+
+# Build Products
+backend/dist/
+
+# Environment
+backend/.env
+backend/.env.test

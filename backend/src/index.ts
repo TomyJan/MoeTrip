@@ -1,33 +1,19 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+import app from './app';
 import sequelize from './utils/database';
-
-// 加载环境变量
-dotenv.config();
-
-const app = express();
-
-// 中间件
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-  origin: process.env.CORS_ORIGIN,
-  credentials: true,
-}));
-
-// 健康检查
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// API路由
-// TODO: 添加路由
 
 const PORT = process.env.PORT || 5200;
 
 async function startServer() {
   try {
+    // 检查环境文件
+    const envPath = path.join(__dirname, '../.env');
+    if (!fs.existsSync(envPath)) {
+      console.error('错误：缺少 .env 文件，请先配置环境变量');
+      process.exit(1);
+    }
+
     // 测试数据库连接
     await sequelize.authenticate();
     console.log('数据库连接成功');
