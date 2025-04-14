@@ -3,12 +3,6 @@
 -- 日期：2024-03-13
 -- 适用：MySQL 8.0 或以上
 
--- 注意：需先创建数据库
--- CREATE DATABASE moetrip CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- 切换数据库
-USE moetrip;
-
 -- 设置时区
 SET time_zone = '+08:00';
 

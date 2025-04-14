@@ -38,6 +38,8 @@
     
     # 初始化表结构, 请相应修改你的用户名和数据库名称
     psql -U postgres -d moetrip -f scripts/init_db_postgres.sql
+    # 或使用 MySQL
+    mysql -u postgres -p moetrip < scripts/init_db_mysql.sql
     ```
 
 4. 启动开发服务器

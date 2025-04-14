@@ -3,14 +3,8 @@
 -- 日期：2024-03-13
 -- 适用：PostgreSQL 12 或以上
 
--- 注意：需先创建数据库
--- createdb moetrip
-
 -- 设置客户端编码为 UTF-8
 \encoding UTF8
-
--- 切换数据库
-\connect moetrip
 
 -- 景点表
 CREATE TABLE attractions (
