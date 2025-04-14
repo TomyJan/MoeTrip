@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
-import sequelize from '../utils/database';
 
 // 检查测试环境文件
 const testEnvPath = path.join(__dirname, '../../.env.test');
@@ -12,6 +11,9 @@ if (!fs.existsSync(testEnvPath)) {
 
 // 加载测试环境变量
 dotenv.config({ path: testEnvPath });
+
+// 导入数据库配置
+import sequelize from '../utils/database';
 
 // 设置测试超时时间
 jest.setTimeout(30000);

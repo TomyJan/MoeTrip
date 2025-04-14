@@ -320,7 +320,7 @@ POST /user/register
 
 ```json
 {
-  "username": "",
+  "username": "TomyJan",
   "password": "cd6dcca66cf64a1d9b0f842f9c3bbb18c146a629"
 }
 ```
@@ -385,7 +385,7 @@ POST /user/login
 
 ```json
 {
-  "username": "",
+  "username": "TomyJan",
   "password": "cd6dcca66cf64a1d9b0f842f9c3bbb18c146a629"
 }
 ```

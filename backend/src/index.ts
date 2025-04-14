@@ -1,5 +1,18 @@
 import fs from 'fs';
 import path from 'path';
+import dotenv from 'dotenv';
+
+// 检查环境文件
+const envPath = path.join(__dirname, '../.env');
+if (!fs.existsSync(envPath)) {
+  console.error('错误：缺少 .env 文件，请先配置环境变量');
+  process.exit(1);
+}
+
+// 加载环境变量（在导入其他模块之前）
+dotenv.config({ path: envPath });
+
+// 导入其他模块
 import app from './app';
 import sequelize from './utils/database';
 
@@ -7,13 +20,6 @@ const PORT = process.env.PORT || 5200;
 
 async function startServer() {
   try {
-    // 检查环境文件
-    const envPath = path.join(__dirname, '../.env');
-    if (!fs.existsSync(envPath)) {
-      console.error('错误：缺少 .env 文件，请先配置环境变量');
-      process.exit(1);
-    }
-
     // 检查必要目录
     const uploadDir = path.join(__dirname, '..', process.env.UPLOAD_DIR || 'uploads');
     const logsDir = path.join(__dirname, '..', 'logs');

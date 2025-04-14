@@ -1,10 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import userRoutes from './routes/user.routes';
-
-// 加载环境变量
-dotenv.config();
 
 const app = express();
 
