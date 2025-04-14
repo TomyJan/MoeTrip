@@ -1,10 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import userRoutes from './routes/user.routes';
+import { httpLogger } from './middlewares/http-logger.middleware';
+import logger from './utils/logger';
 
 const app = express();
 
 // 中间件
+app.use(httpLogger);  // 添加 HTTP 日志中间件
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
@@ -26,5 +29,17 @@ app.get('/health', (req, res) => {
 
 // API路由
 app.use('/api/v1/user', userRoutes);
+
+// 错误处理中间件
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  logger.error(`未处理的错误: ${err.message}`);
+  logger.error(err.stack);
+  
+  res.status(500).json({
+    code: 500,
+    message: '服务器内部错误',
+    data: null
+  });
+});
 
 export default app;

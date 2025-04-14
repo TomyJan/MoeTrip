@@ -7,3 +7,6 @@ backend/dist/
 # Environment
 backend/.env
 backend/.env.test
+
+# Logs
+backend/logs/
