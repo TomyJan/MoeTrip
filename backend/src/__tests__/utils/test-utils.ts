@@ -18,7 +18,7 @@ export async function createTestUser(role: 'user' | 'admin' = 'user'): Promise<U
 export function generateTestToken(user: User): string {
   return jwt.sign(
     { id: user.id, role: user.role },
-    process.env.JWT_SECRET || 'test_secret',
+    process.env.JWT_SECRET!,
     { expiresIn: '1h' }
   );
 }
