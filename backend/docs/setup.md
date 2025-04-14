@@ -32,8 +32,11 @@
     
     # 测试数据库
     createdb moetrip_test
+
+    # 如果使用 Windows, 还需要先确保终端切换到 UTF8
+    chcp 65001
     
-    # 初始化表结构
+    # 初始化表结构, 请相应修改你的用户名和数据库名称
     psql -U postgres -d moetrip -f scripts/init_db_postgres.sql
     ```
 
