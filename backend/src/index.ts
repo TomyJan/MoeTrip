@@ -14,6 +14,19 @@ async function startServer() {
       process.exit(1);
     }
 
+    // 检查必要目录
+    const uploadDir = path.join(__dirname, '..', process.env.UPLOAD_DIR || 'uploads');
+    const logsDir = path.join(__dirname, '..', 'logs');
+
+    [uploadDir, logsDir].forEach(dir => {
+      if (!fs.existsSync(dir)) {
+        console.log(`创建目录: ${dir}`);
+        fs.mkdirSync(dir, { recursive: true });
+        // 设置目录权限为 755 (rwxr-xr-x)
+        fs.chmodSync(dir, 0o755);
+      }
+    });
+
     // 测试数据库连接
     await sequelize.authenticate();
     console.log('数据库连接成功');
@@ -28,6 +41,7 @@ async function startServer() {
     app.listen(PORT, () => {
       console.log(`服务器运行在 http://localhost:${PORT}`);
       console.log(`环境: ${process.env.NODE_ENV}`);
+      console.log(`数据库类型: ${process.env.DB_TYPE}`);
     });
   } catch (error) {
     console.error('启动失败:', error);

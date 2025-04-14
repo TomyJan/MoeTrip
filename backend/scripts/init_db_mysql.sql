@@ -39,10 +39,11 @@ CREATE TABLE facilities (
 CREATE TABLE users (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
+    password_hash CHAR(40) NOT NULL,
     role ENUM('user', 'admin') NOT NULL DEFAULT 'user',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT valid_password CHECK (password_hash REGEXP '^[a-f0-9]{40}$')
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 门票表
@@ -93,11 +94,11 @@ CREATE INDEX idx_feedback_user_id ON feedback(user_id);
 
 -- 管理员用户 (密码: TomyJan)
 INSERT INTO users (username, password_hash, role) VALUES
-('TomyJan', '$2b$10$i0fE4Xs2F4WDVpPlsWuzCeOF2cHisFCju2uc6MEP5.t20Sl8ej3RC', 'admin');
+('TomyJan', 'cd6dcca66cf64a1d9b0f842f9c3bbb18c146a629', 'admin');
 
 -- 测试用户 (密码: user)
 INSERT INTO users (username, password_hash, role) VALUES
-('user', '$2b$10$o/SrwjpYqGVnkSt36YTG5.ebp7aeiKImzqQsX483JdVYBSJB/fE6K', 'user');
+('user', '12dea96fec20593566ab75692c9949596833adc9', 'user');
 
 -- 景点
 INSERT INTO attractions (name, description, open_time, image_url) VALUES

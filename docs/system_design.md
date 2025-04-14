@@ -97,7 +97,7 @@ MoeTrip 采用三层架构（前端、后端、数据层），通过 Fetch 进�
   - 状态：Pinia 管理用户角色和认证状态
 - **后端**：
   - 路由：`/user/login`, `/user/register`, `/user/record`
-  - 逻辑：JWT 认证，bcrypt 加密密码，Sequelize 存取 `users`
+  - 逻辑：JWT 认证，SHA1 加密密码，Sequelize 存取 `users`
 - **数据流**：
   - 用户登录 -> Fetch `/user/login` -> 返回 JWT -> Pinia 保存
 
@@ -191,11 +191,11 @@ interface TicketCheckResponse {
   - 使用开源工具（Vue3、Express、Sequelize）降低成本
   - 优先核心功能，优化开发效率
 - **工程伦理**：
-  - 加密用户密码（bcrypt）
+  - 加密用户密码（SHA1）
   - 限制管理员访问敏感数据
 
 ## 6. 下一步
 
 - 搭建前端原型（Vue3 + Vuetify 3）
-- 初始化数据库（运行 `backend/scripts/init_db.sql`）
+- 初始化数据库（运行 `backend/scripts/init_db_postgres.sql` 或 `backend/scripts/init_db_mysql.sql`）
 - 实现核心 API（Apifox 测试）

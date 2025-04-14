@@ -17,7 +17,7 @@ app.use(cors({
 
 // 健康检查
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({code: 0, message: null, data: { status: 'ok', timestamp: new Date().toISOString() }});
 });
 
 // API路由

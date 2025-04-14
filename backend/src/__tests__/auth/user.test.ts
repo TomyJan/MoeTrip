@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '@/app';  // 需要从主应用分离express实例
-import { User } from '@/models/user.model';
+import User from '@/models/user.model';
 import { createTestUser, generateTestToken, generateTestData } from '../utils/test-utils';
 
 describe('用户认证模块', () => {
@@ -11,7 +11,7 @@ describe('用户认证模块', () => {
         .post('/api/v1/user/register')
         .send({
           username: testData.username,
-          password: testData.password,
+          password: testData.password, // 已经是SHA1后的值
         });
 
       expect(response.status).toBe(200);
@@ -26,7 +26,7 @@ describe('用户认证模块', () => {
         .post('/api/v1/user/register')
         .send({
           username: testUser.username,
-          password: 'new_password',
+          password: 'da39a3ee5e6b4b0d3255bfef95601890afd80709', // 空字符串的SHA1值
         });
 
       expect(response.status).toBe(200);
@@ -36,14 +36,13 @@ describe('用户认证模块', () => {
 
   describe('POST /api/v1/user/login', () => {
     it('应该成功登录已存在的用户', async () => {
-      const testData = generateTestData();
       const testUser = await createTestUser();
       
       const response = await request(app)
         .post('/api/v1/user/login')
         .send({
           username: testUser.username,
-          password: 'test_password',
+          password: testUser.password_hash, // 使用已存储的SHA1值
         });
 
       expect(response.status).toBe(200);
@@ -59,7 +58,7 @@ describe('用户认证模块', () => {
         .post('/api/v1/user/login')
         .send({
           username: testUser.username,
-          password: 'wrong_password',
+          password: '0000000000000000000000000000000000000000', // 错误的SHA1值
         });
 
       expect(response.status).toBe(200);

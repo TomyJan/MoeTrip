@@ -14,7 +14,7 @@
 
 -- 景点表
 CREATE TABLE attractions (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
     description TEXT NOT NULL,
     open_time VARCHAR(50) NOT NULL,
@@ -25,30 +25,31 @@ CREATE TABLE attractions (
 
 -- 设施表
 CREATE TABLE facilities (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     location VARCHAR(255) NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'normal',
-    attraction_id INTEGER NOT NULL REFERENCES attractions(id) ON DELETE CASCADE,
+    attraction_id BIGINT NOT NULL REFERENCES attractions(id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 用户表
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
+    password_hash CHAR(40) NOT NULL,
     role VARCHAR(10) NOT NULL DEFAULT 'user',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT valid_role CHECK (role IN ('user', 'admin'))
+    CONSTRAINT valid_role CHECK (role IN ('user', 'admin')),
+    CONSTRAINT valid_password CHECK (password_hash ~ '^[a-f0-9]{40}$')
 );
 
 -- 门票表
 CREATE TABLE tickets (
-    id SERIAL PRIMARY KEY,
-    attraction_id INTEGER NOT NULL REFERENCES attractions(id) ON DELETE CASCADE,
+    id BIGSERIAL PRIMARY KEY,
+    attraction_id BIGINT NOT NULL REFERENCES attractions(id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL,
     available INTEGER NOT NULL DEFAULT 0 CHECK (available >= 0),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -57,9 +58,9 @@ CREATE TABLE tickets (
 
 -- 订单表
 CREATE TABLE orders (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
-    ticket_id INTEGER NOT NULL REFERENCES tickets(id) ON DELETE RESTRICT,
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+    ticket_id BIGINT NOT NULL REFERENCES tickets(id) ON DELETE RESTRICT,
     quantity INTEGER NOT NULL CHECK (quantity > 0),
     date DATE NOT NULL CHECK (date >= CURRENT_DATE),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -68,9 +69,9 @@ CREATE TABLE orders (
 
 -- 反馈表
 CREATE TABLE feedback (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    score INTEGER NOT NULL CHECK (score BETWEEN 1 AND 5),
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    score SMALLINT NOT NULL CHECK (score BETWEEN 1 AND 5),
     comment TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -88,11 +89,11 @@ CREATE INDEX idx_feedback_user_id ON feedback(user_id);
 
 -- 管理员用户 (密码: TomyJan)
 INSERT INTO users (username, password_hash, role) VALUES
-('TomyJan', '$2b$10$i0fE4Xs2F4WDVpPlsWuzCeOF2cHisFCju2uc6MEP5.t20Sl8ej3RC', 'admin');
+('TomyJan', 'cd6dcca66cf64a1d9b0f842f9c3bbb18c146a629', 'admin');
 
 -- 测试用户 (密码: user)
 INSERT INTO users (username, password_hash, role) VALUES
-('user', '$2b$10$o/SrwjpYqGVnkSt36YTG5.ebp7aeiKImzqQsX483JdVYBSJB/fE6K', 'user');
+('user', '12dea96fec20593566ab75692c9949596833adc9', 'user');
 
 -- 景点
 INSERT INTO attractions (name, description, open_time, image_url) VALUES

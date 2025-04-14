@@ -1,15 +1,15 @@
 import { Express } from 'express';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
-import { User } from '@/models/user.model';
-import { Attraction } from '@/models/attraction.model';
-import { Ticket } from '@/models/ticket.model';
+import User from '@/models/user.model';
+import Attraction from '@/models/attraction.model';
+import Ticket from '@/models/ticket.model';
 
 // 创建测试用户
 export async function createTestUser(role: 'user' | 'admin' = 'user'): Promise<User> {
   return await User.create({
     username: `test_${Date.now()}`,
-    password_hash: 'test_password',
+    password_hash: '12dea96fec20593566ab75692c9949596833adc9', // 'user' 的SHA1值
     role,
   });
 }
@@ -54,11 +54,12 @@ export function authRequest(app: Express, token: string) {
 
 // 生成随机测试数据
 export function generateTestData() {
+  const timestamp = Date.now();
   return {
-    username: `user_${Date.now()}`,
-    password: 'test_password',
-    attractionName: `景点_${Date.now()}`,
-    ticketName: `票种_${Date.now()}`,
+    username: `user_${timestamp}`,
+    password: '12dea96fec20593566ab75692c9949596833adc9', // 'user' 的SHA1值
+    attractionName: `景点_${timestamp}`,
+    ticketName: `票种_${timestamp}`,
   };
 }
 

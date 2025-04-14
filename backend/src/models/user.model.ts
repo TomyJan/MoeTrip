@@ -1,6 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../utils/database';
-import bcrypt from 'bcrypt';
 
 class User extends Model {
   public id!: number;
@@ -13,8 +12,8 @@ class User extends Model {
   public readonly updated_at!: Date;
 
   // 密码验证方法
-  public async validatePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password_hash);
+  public validatePassword(password: string): boolean {
+    return this.password_hash === password; // 直接比较SHA1值
   }
 }
 
@@ -35,8 +34,11 @@ User.init(
       },
     },
     password_hash: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(40), // SHA1哈希值固定长度为40字符
       allowNull: false,
+      validate: {
+        is: /^[a-f0-9]{40}$/i, // SHA1格式验证
+      },
     },
     role: {
       type: DataTypes.STRING(10),
@@ -52,15 +54,6 @@ User.init(
     tableName: 'users',
     timestamps: true,
     underscored: true,
-    hooks: {
-      // 保存前对密码进行哈希
-      beforeSave: async (user: User) => {
-        if (user.changed('password_hash')) {
-          const salt = await bcrypt.genSalt(10);
-          user.password_hash = await bcrypt.hash(user.password_hash, salt);
-        }
-      },
-    },
   }
 );
 
