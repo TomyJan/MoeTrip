@@ -29,6 +29,8 @@ Base URLs:
 
 # Authentication
 
+- HTTP Authentication, scheme: bearer
+
 # 景区管理
 
 ## POST 查询景点列表
@@ -68,7 +70,7 @@ POST /attraction/query
     "total": 3,
     "attractions": [
       {
-        "id": 1,
+        "id": "1",
         "name": "樱花谷",
         "description": "春季赏樱胜地",
         "open_time": "09:00-18:00",
@@ -92,11 +94,11 @@ POST /attraction/query
 |名称|类型|必选|约束|中文名|说明|
 |---|---|---|---|---|---|
 |» code|number|true|none|状态码|0 表示成功，1001 表示参数无效（如 page < 1），非 0 表示其他错误|
-|» message|string|true|none|信息|成功为空, 错误为错误信息|
+|» message|string¦null|true|none|信息|成功为空, 错误为错误信息|
 |» data|object|true|none|数据|none|
 |»» total|number|true|none|结果数量|none|
 |»» attractions|[object]|true|none|景点信息|none|
-|»»» id|number|true|none|景点ID|ID 编号|
+|»»» id|string|true|none|景点ID|ID 编号|
 |»»» name|string|true|none|景点名称|名称|
 |»»» description|string|true|none|景点描述|none|
 |»»» open_time|string|true|none|开放时间|none|
@@ -163,9 +165,9 @@ POST /attraction/add
 |---|---|---|---|---|---|
 |» code|number|true|none|状态码|0 表示成功，1002 表示名称重复，2001表示无管理员权限，其他非 0 表示错误|
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
-|» data|object|true|none|景点信息|none|
+|» data|object¦null|true|none|景点信息|none|
 |»» attraction|object|true|none|景点信息|none|
-|»»» id|number|true|none|景点ID|ID 编号|
+|»»» id|string|true|none|景点ID|ID 编号|
 |»»» name|string|true|none|景点名称|名称|
 |»»» description|string|true|none|景点描述|none|
 |»»» open_time|string|true|none|开放时间|none|
@@ -201,14 +203,14 @@ POST /facility/query
 ```json
 {
   "code": 0,
-  "message": "string",
+  "message": null,
   "data": {
-    "total": 0,
+    "total": 1,
     "facilities": [
       {
-        "id": 1,
+        "id": "1",
         "name": "休息亭",
-        "attraction_id": 1,
+        "attraction_id": "1",
         "location": "樱花谷入口",
         "status": "正常"
       }
@@ -234,9 +236,9 @@ POST /facility/query
 |» data|object|true|none|数据|none|
 |»» total|number|true|none|设施数量|none|
 |»» facilities|[object]|true|none||none|
-|»»» id|number|true|none|设施ID|ID 编号|
+|»»» id|string|true|none|设施ID|ID 编号|
 |»»» name|string|true|none|设施名称|名称|
-|»»» attraction_id|number|true|none|所在景点ID|none|
+|»»» attraction_id|string|true|none|所在景点ID|none|
 |»»» location|string|true|none|设施位置|none|
 |»»» status|string|true|none|设施状态|none|
 
@@ -250,6 +252,7 @@ POST /facility/add
 
 ```json
 {
+  "attraction_id": 1,
   "name": "休息亭",
   "location": "樱花谷入口",
   "status": "正常"
@@ -300,11 +303,11 @@ POST /facility/add
 |---|---|---|---|---|---|
 |» code|number|true|none|状态码|0 表示成功，1002 表示名称重复，2001表示无管理员权限，其他非 0 表示错误|
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
-|» data|object|true|none|数据|none|
+|» data|object¦null|true|none|数据|none|
 |»» facility|object|true|none|设施信息|none|
-|»»» id|number|true|none|设施ID|ID 编号|
+|»»» id|string|true|none|设施ID|ID 编号|
 |»»» name|string|true|none|设施名称|名称|
-|»»» attraction_id|number|true|none|所在景点ID|none|
+|»»» attraction_id|string|true|none|所在景点ID|none|
 |»»» location|string|true|none|设施位置|none|
 |»»» status|string|true|none|设施状态|none|
 
@@ -345,7 +348,6 @@ POST /user/register
     "user": {
       "id": 1,
       "username": "TomyJan",
-      "password": "cd6dcca66cf64a1d9b0f842f9c3bbb18c146a629",
       "role": "user"
     },
     "token": "non"
@@ -367,11 +369,10 @@ POST /user/register
 |---|---|---|---|---|---|
 |» code|number|true|none|状态码|0 表示成功，1003 表示用户名已存在，非 0 表示错误|
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
-|» data|object|true|none|数据|none|
+|» data|object¦null|true|none|数据|none|
 |»» user|object|true|none|用户信息|none|
-|»»» id|number|true|none|用户ID|ID 编号|
+|»»» id|string|true|none|用户ID|ID 编号|
 |»»» username|string|true|none|用户名|none|
-|»»» password|string|true|none|SHA1的密码|none|
 |»»» role|string|true|none|用户组|none|
 |»» token|string|true|none|JWT|none|
 
@@ -410,7 +411,6 @@ POST /user/login
     "user": {
       "id": 1,
       "username": "TomyJan",
-      "password": "cd6dcca66cf64a1d9b0f842f9c3bbb18c146a629",
       "role": "user"
     },
     "token": "cillum"
@@ -434,9 +434,8 @@ POST /user/login
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
 |» data|object|true|none|数据|none|
 |»» user|object|true|none|用户信息|none|
-|»»» id|number|true|none|用户ID|ID 编号|
+|»»» id|string|true|none|用户ID|ID 编号|
 |»»» username|string|true|none|用户名|none|
-|»»» password|string|true|none|SHA1的密码|none|
 |»»» role|string|true|none|用户组|none|
 |»» token|string|true|none|JWT|none|
 
@@ -725,7 +724,7 @@ POST /ticket/add
 
 ```json
 {
-  "id": 1,
+  "id": "1",
   "name": "樱花谷",
   "description": "春季赏樱胜地",
   "open_time": "open_time",
@@ -738,7 +737,7 @@ POST /ticket/add
 
 |名称|类型|必选|约束|中文名|说明|
 |---|---|---|---|---|---|
-|id|number|true|none|景点ID|ID 编号|
+|id|string|true|none|景点ID|ID 编号|
 |name|string|true|none|景点名称|名称|
 |description|string|true|none|景点描述|none|
 |open_time|string|true|none|开放时间|none|
@@ -753,9 +752,9 @@ POST /ticket/add
 
 ```json
 {
-  "id": 1,
+  "id": "1",
   "name": "休息亭",
-  "attraction_id": 1,
+  "attraction_id": "1",
   "location": "樱花谷入口",
   "status": "正常"
 }
@@ -766,9 +765,9 @@ POST /ticket/add
 
 |名称|类型|必选|约束|中文名|说明|
 |---|---|---|---|---|---|
-|id|number|true|none|设施ID|ID 编号|
+|id|string|true|none|设施ID|ID 编号|
 |name|string|true|none|设施名称|名称|
-|attraction_id|number|true|none|所在景点ID|none|
+|attraction_id|string|true|none|所在景点ID|none|
 |location|string|true|none|设施位置|none|
 |status|string|true|none|设施状态|none|
 
@@ -781,9 +780,8 @@ POST /ticket/add
 
 ```json
 {
-  "id": 1,
+  "id": "1",
   "username": "TomyJan",
-  "password": "cd6dcca66cf64a1d9b0f842f9c3bbb18c146a629",
   "role": "user"
 }
 
@@ -793,9 +791,8 @@ POST /ticket/add
 
 |名称|类型|必选|约束|中文名|说明|
 |---|---|---|---|---|---|
-|id|number|true|none|用户ID|ID 编号|
+|id|string|true|none|用户ID|ID 编号|
 |username|string|true|none|用户名|none|
-|password|string|true|none|SHA1的密码|none|
 |role|string|true|none|用户组|none|
 
 <h2 id="tocS_单条门票记录">单条门票记录</h2>

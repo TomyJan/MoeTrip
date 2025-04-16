@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import userRoutes from './routes/user.routes';
+import attractionRoutes from './routes/attraction.routes';
+import facilityRoutes from './routes/facility.routes';
 import { httpLogger } from './middlewares/http-logger.middleware';
 import logger from './utils/logger';
 
@@ -29,6 +31,8 @@ app.get('/health', (req, res) => {
 
 // API路由
 app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/attraction', attractionRoutes);
+app.use('/api/v1/facility', facilityRoutes);
 
 // 错误处理中间件
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
