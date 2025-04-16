@@ -1,7 +1,7 @@
-import { Model, DataTypes } from "sequelize";
-import sequelize from "../utils/database";
-import User from "./user.model";
-import Ticket from "./ticket.model";
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../utils/database';
+import User from './user.model';
+import Ticket from './ticket.model';
 
 class Order extends Model {
   public id!: number;
@@ -27,7 +27,7 @@ Order.init(
       allowNull: false,
       references: {
         model: User,
-        key: "id",
+        key: 'id',
       },
     },
     ticket_id: {
@@ -35,7 +35,7 @@ Order.init(
       allowNull: false,
       references: {
         model: Ticket,
-        key: "id",
+        key: 'id',
       },
     },
     quantity: {
@@ -50,27 +50,27 @@ Order.init(
       allowNull: false,
       validate: {
         isDate: true,
-        isAfter: new Date().toISOString().split("T")[0], // 只能预订今天之后的票
+        isAfter: new Date().toISOString().split('T')[0], // 只能预订今天之后的票
       },
     },
   },
   {
     sequelize,
-    tableName: "orders",
+    tableName: 'orders',
     timestamps: true,
     underscored: true,
-  },
+  }
 );
 
 // 设置外键关联
 Order.belongsTo(User, {
-  foreignKey: "user_id",
-  as: "user",
+  foreignKey: 'user_id',
+  as: 'user',
 });
 
 Order.belongsTo(Ticket, {
-  foreignKey: "ticket_id",
-  as: "ticket",
+  foreignKey: 'ticket_id',
+  as: 'ticket',
 });
 
 export default Order;

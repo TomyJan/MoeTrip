@@ -1,5 +1,5 @@
-import { Model, DataTypes } from "sequelize";
-import sequelize from "../utils/database";
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../utils/database';
 
 class Attraction extends Model {
   public id!: number;
@@ -43,10 +43,10 @@ Attraction.init(
   },
   {
     sequelize,
-    tableName: "attractions",
+    tableName: 'attractions',
     timestamps: true,
     underscored: true,
-  },
+  }
 );
 
 export default Attraction;

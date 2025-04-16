@@ -1,11 +1,11 @@
-import { Model, DataTypes } from "sequelize";
-import sequelize from "../utils/database";
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../utils/database';
 
 class User extends Model {
   public id!: number;
   public username!: string;
   public password_hash!: string;
-  public role!: "user" | "admin";
+  public role!: 'user' | 'admin';
 
   // 时间戳
   public readonly created_at!: Date;
@@ -43,18 +43,18 @@ User.init(
     role: {
       type: DataTypes.STRING(10),
       allowNull: false,
-      defaultValue: "user",
+      defaultValue: 'user',
       validate: {
-        isIn: [["user", "admin"]],
+        isIn: [['user', 'admin']],
       },
     },
   },
   {
     sequelize,
-    tableName: "users",
+    tableName: 'users',
     timestamps: true,
     underscored: true,
-  },
+  }
 );
 
 export default User;
