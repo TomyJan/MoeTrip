@@ -19,24 +19,24 @@ export const queryFacilities = async (req: Request, res: Response) => {
       return res.json({
         code: 1001,
         message: '无效的分页参数',
-        data: null
+        data: null,
       });
     }
 
     // 构建查询条件
     let where: any = {};
-    
+
     if (attraction_id) {
       where.attraction_id = attraction_id;
     }
-    
+
     if (keyword) {
       where = {
         ...where,
         [Op.or]: [
           { name: { [Op.iLike]: `%${keyword}%` } },
-          { location: { [Op.iLike]: `%${keyword}%` } }
-        ]
+          { location: { [Op.iLike]: `%${keyword}%` } },
+        ],
       };
     }
 
@@ -48,7 +48,7 @@ export const queryFacilities = async (req: Request, res: Response) => {
       where,
       order: [['created_at', 'DESC']],
       offset: (page - 1) * pageSize,
-      limit: pageSize
+      limit: pageSize,
     });
 
     return res.json({
@@ -58,15 +58,15 @@ export const queryFacilities = async (req: Request, res: Response) => {
         total,
         facilities,
         page,
-        pageSize
-      }
+        pageSize,
+      },
     });
   } catch (error) {
     logger.error('查询设施列表失败:', error);
     return res.json({
       code: 500,
       message: '服务器内部错误',
-      data: null
+      data: null,
     });
   }
 };
@@ -87,7 +87,7 @@ export const addFacility = async (req: Request, res: Response) => {
       return res.json({
         code: 1001,
         message: '缺少必需的字段',
-        data: null
+        data: null,
       });
     }
 
@@ -96,7 +96,7 @@ export const addFacility = async (req: Request, res: Response) => {
       return res.json({
         code: 1001,
         message: '设施名称不能超过100个字符',
-        data: null
+        data: null,
       });
     }
 
@@ -104,7 +104,7 @@ export const addFacility = async (req: Request, res: Response) => {
       return res.json({
         code: 1001,
         message: '设施位置不能超过255个字符',
-        data: null
+        data: null,
       });
     }
 
@@ -113,7 +113,7 @@ export const addFacility = async (req: Request, res: Response) => {
       return res.json({
         code: 1001,
         message: '设施状态必须为"正常"或"维护"',
-        data: null
+        data: null,
       });
     }
 
@@ -122,7 +122,7 @@ export const addFacility = async (req: Request, res: Response) => {
       name,
       location,
       status,
-      attraction_id
+      attraction_id,
     });
 
     logger.info(`新设施已添加: ${name}`);
@@ -130,14 +130,14 @@ export const addFacility = async (req: Request, res: Response) => {
     return res.json({
       code: 0,
       message: null,
-      data: { facility }
+      data: { facility },
     });
   } catch (error) {
     logger.error('添加设施失败:', error);
     return res.json({
       code: 500,
       message: '服务器内部错误',
-      data: null
+      data: null,
     });
   }
 };

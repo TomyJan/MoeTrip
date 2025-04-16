@@ -17,10 +17,14 @@ const PORT = process.env.PORT as string;
 async function startServer() {
   try {
     // 检查必要目录
-    const uploadDir = path.join(__dirname, '..', process.env.UPLOAD_DIR as string);
+    const uploadDir = path.join(
+      __dirname,
+      '..',
+      process.env.UPLOAD_DIR as string,
+    );
     const logsDir = path.join(__dirname, '..', 'logs');
 
-    [uploadDir, logsDir].forEach(dir => {
+    [uploadDir, logsDir].forEach((dir) => {
       if (!fs.existsSync(dir)) {
         logger.info(`创建目录: ${dir}`);
         fs.mkdirSync(dir, { recursive: true });

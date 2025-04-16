@@ -42,10 +42,11 @@ const format = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   // 自定义格式
   winston.format.printf(
-    (info) => `${info.timestamp} [${info.level.toUpperCase().padEnd(5)}]: ${info.message}`
+    (info) =>
+      `${info.timestamp} [${info.level.toUpperCase().padEnd(5)}]: ${info.message}`,
   ),
   // 添加颜色
-  winston.format.colorize({ all: true })
+  winston.format.colorize({ all: true }),
 );
 
 // 定义日志传输目标

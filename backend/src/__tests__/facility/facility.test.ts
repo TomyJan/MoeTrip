@@ -1,6 +1,10 @@
 import request from 'supertest';
 import app from '@/app';
-import { createTestUser, generateTestToken, createTestAttraction } from '../utils/test-utils';
+import {
+  createTestUser,
+  generateTestToken,
+  createTestAttraction,
+} from '../utils/test-utils';
 import Facility from '@/models/facility.model';
 
 describe('设施模块', () => {
@@ -18,20 +22,20 @@ describe('设施模块', () => {
           name: '休息亭',
           location: '景点入口',
           status: '正常',
-          attraction_id: attractionId
+          attraction_id: attractionId,
         },
         {
           name: '停车场',
           location: '景点西侧',
           status: '正常',
-          attraction_id: attractionId
+          attraction_id: attractionId,
         },
         {
           name: '观景台',
           location: '景点东侧',
           status: '维护',
-          attraction_id: attractionId
-        }
+          attraction_id: attractionId,
+        },
       ]);
     });
 
@@ -116,7 +120,7 @@ describe('设施模块', () => {
         name: '测试设施',
         location: '测试位置',
         status: '正常',
-        attraction_id: attractionId
+        attraction_id: attractionId,
       };
 
       const response = await request(app)
@@ -129,7 +133,9 @@ describe('设施模块', () => {
       expect(response.body.data.facility.name).toBe(newFacility.name);
 
       // 验证数据库
-      const facility = await Facility.findOne({ where: { name: newFacility.name } });
+      const facility = await Facility.findOne({
+        where: { name: newFacility.name },
+      });
       expect(facility).not.toBeNull();
       expect(facility?.location).toBe(newFacility.location);
     });
@@ -142,7 +148,7 @@ describe('设施模块', () => {
           name: '测试设施',
           location: '测试位置',
           status: '正常',
-          attraction_id: attractionId
+          attraction_id: attractionId,
         });
 
       expect(response.status).toBe(200);
@@ -155,7 +161,7 @@ describe('设施模块', () => {
         .post('/api/v1/facility/add')
         .set('Authorization', `Bearer ${adminToken}`)
         .send({
-          name: '测试设施'
+          name: '测试设施',
         });
 
       expect(response.status).toBe(200);
@@ -171,7 +177,7 @@ describe('设施模块', () => {
           name: 'a'.repeat(101),
           location: '测试位置',
           status: '正常',
-          attraction_id: attractionId
+          attraction_id: attractionId,
         });
 
       expect(response.status).toBe(200);
@@ -187,7 +193,7 @@ describe('设施模块', () => {
           name: '测试设施',
           location: '测试位置',
           status: '无效状态',
-          attraction_id: attractionId
+          attraction_id: attractionId,
         });
 
       expect(response.status).toBe(200);

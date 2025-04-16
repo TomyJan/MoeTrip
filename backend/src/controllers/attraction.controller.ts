@@ -18,17 +18,19 @@ export const queryAttractions = async (req: Request, res: Response) => {
       return res.json({
         code: 1001,
         message: '无效的分页参数',
-        data: null
+        data: null,
       });
     }
 
     // 构建查询条件
-    const where = keyword ? {
-      [Op.or]: [
-        { name: { [Op.iLike]: `%${keyword}%` } },
-        { description: { [Op.iLike]: `%${keyword}%` } }
-      ]
-    } : {};
+    const where = keyword
+      ? {
+          [Op.or]: [
+            { name: { [Op.iLike]: `%${keyword}%` } },
+            { description: { [Op.iLike]: `%${keyword}%` } },
+          ],
+        }
+      : {};
 
     // 查询总数
     const total = await Attraction.count({ where });
@@ -38,7 +40,7 @@ export const queryAttractions = async (req: Request, res: Response) => {
       where,
       order: [['created_at', 'DESC']],
       offset: (page - 1) * pageSize,
-      limit: pageSize
+      limit: pageSize,
     });
 
     return res.json({
@@ -48,15 +50,15 @@ export const queryAttractions = async (req: Request, res: Response) => {
         total,
         attractions,
         page,
-        pageSize
-      }
+        pageSize,
+      },
     });
   } catch (error) {
     logger.error('查询景点列表失败:', error);
     return res.json({
       code: 500,
       message: '服务器内部错误',
-      data: null
+      data: null,
     });
   }
 };
@@ -77,7 +79,7 @@ export const addAttraction = async (req: Request, res: Response) => {
       return res.json({
         code: 1001,
         message: '缺少必需的字段',
-        data: null
+        data: null,
       });
     }
 
@@ -86,7 +88,7 @@ export const addAttraction = async (req: Request, res: Response) => {
       return res.json({
         code: 1001,
         message: '景点名称不能超过100个字符',
-        data: null
+        data: null,
       });
     }
 
@@ -94,7 +96,7 @@ export const addAttraction = async (req: Request, res: Response) => {
       return res.json({
         code: 1001,
         message: '开放时间不能超过50个字符',
-        data: null
+        data: null,
       });
     }
 
@@ -102,7 +104,7 @@ export const addAttraction = async (req: Request, res: Response) => {
       return res.json({
         code: 1001,
         message: '图片URL不能超过255个字符',
-        data: null
+        data: null,
       });
     }
 
@@ -112,7 +114,7 @@ export const addAttraction = async (req: Request, res: Response) => {
       return res.json({
         code: 1002,
         message: '景点名称已存在',
-        data: null
+        data: null,
       });
     }
 
@@ -121,7 +123,7 @@ export const addAttraction = async (req: Request, res: Response) => {
       name,
       description,
       open_time,
-      image_url
+      image_url,
     });
 
     logger.info(`新景点已添加: ${name}`);
@@ -129,14 +131,14 @@ export const addAttraction = async (req: Request, res: Response) => {
     return res.json({
       code: 0,
       message: null,
-      data: attraction
+      data: attraction,
     });
   } catch (error) {
     logger.error('添加景点失败:', error);
     return res.json({
       code: 500,
       message: '服务器内部错误',
-      data: null
+      data: null,
     });
   }
 };

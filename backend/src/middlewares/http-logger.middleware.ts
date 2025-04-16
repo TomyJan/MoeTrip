@@ -9,7 +9,7 @@ export const httpLogger = (req: Request, res: Response, next: NextFunction) => {
   res.on('finish', () => {
     const duration = Date.now() - start;
     const message = `${req.method} ${req.originalUrl} ${res.statusCode} ${duration}ms`;
-    
+
     // 根据状态码选择日志级别
     if (res.statusCode >= 500) {
       logger.error(message);

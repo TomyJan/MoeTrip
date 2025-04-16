@@ -22,7 +22,7 @@ beforeAll(async () => {
   try {
     await sequelize.authenticate();
     console.log('测试数据库连接成功');
-    
+
     // 按顺序同步数据库模型
     await sequelize.query('DROP TABLE IF EXISTS orders CASCADE');
     await sequelize.query('DROP TABLE IF EXISTS tickets CASCADE');

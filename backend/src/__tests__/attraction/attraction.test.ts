@@ -12,14 +12,14 @@ describe('景点模块', () => {
           name: '樱花谷',
           description: '春季赏樱胜地，风景优美',
           open_time: '08:00-18:00',
-          image_url: '/images/sakura.jpg'
+          image_url: '/images/sakura.jpg',
         },
         {
           name: '星空湖',
           description: '夜间观星，湖光山色',
           open_time: '10:00-22:00',
-          image_url: '/images/starlake.jpg'
-        }
+          image_url: '/images/starlake.jpg',
+        },
       ]);
     });
 
@@ -88,7 +88,7 @@ describe('景点模块', () => {
         name: '测试景点',
         description: '这是一个测试景点',
         open_time: '09:00-17:00',
-        image_url: '/images/test.jpg'
+        image_url: '/images/test.jpg',
       };
 
       const response = await request(app)
@@ -101,7 +101,9 @@ describe('景点模块', () => {
       expect(response.body.data.name).toBe(newAttraction.name);
 
       // 验证数据库
-      const attraction = await Attraction.findOne({ where: { name: newAttraction.name } });
+      const attraction = await Attraction.findOne({
+        where: { name: newAttraction.name },
+      });
       expect(attraction).not.toBeNull();
       expect(attraction?.description).toBe(newAttraction.description);
     });
@@ -114,7 +116,7 @@ describe('景点模块', () => {
           name: '测试景点',
           description: '这是一个测试景点',
           open_time: '09:00-17:00',
-          image_url: '/images/test.jpg'
+          image_url: '/images/test.jpg',
         });
 
       expect(response.status).toBe(200);
@@ -127,7 +129,7 @@ describe('景点模块', () => {
         .post('/api/v1/attraction/add')
         .set('Authorization', `Bearer ${adminToken}`)
         .send({
-          name: '测试景点'
+          name: '测试景点',
         });
 
       expect(response.status).toBe(200);
@@ -143,7 +145,7 @@ describe('景点模块', () => {
           name: 'a'.repeat(101),
           description: '测试描述',
           open_time: '09:00-17:00',
-          image_url: '/images/test.jpg'
+          image_url: '/images/test.jpg',
         });
 
       expect(response.status).toBe(200);
@@ -157,7 +159,7 @@ describe('景点模块', () => {
         name: '测试景点',
         description: '这是一个测试景点',
         open_time: '09:00-17:00',
-        image_url: '/images/test.jpg'
+        image_url: '/images/test.jpg',
       });
 
       // 尝试创建同名景点
@@ -168,7 +170,7 @@ describe('景点模块', () => {
           name: '测试景点',
           description: '这是另一个测试景点',
           open_time: '10:00-18:00',
-          image_url: '/images/test2.jpg'
+          image_url: '/images/test2.jpg',
         });
 
       expect(response.status).toBe(200);

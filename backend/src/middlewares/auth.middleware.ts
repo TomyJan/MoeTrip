@@ -13,14 +13,18 @@ declare global {
   }
 }
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
       return res.status(200).json({
         code: 2001,
         message: '未提供认证令牌',
-        data: null
+        data: null,
       });
     }
 
@@ -36,18 +40,22 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     return res.status(200).json({
       code: 2001,
       message: '无效的认证令牌',
-      data: null
+      data: null,
     });
   }
 };
 
 // 管理员权限检查中间件
-export const adminMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const adminMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   if (req.user?.role !== 'admin') {
     return res.status(200).json({
       code: 2001,
       message: '需要管理员权限',
-      data: null
+      data: null,
     });
   }
   next();

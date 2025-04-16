@@ -59,7 +59,7 @@ Order.init(
     tableName: 'orders',
     timestamps: true,
     underscored: true,
-  }
+  },
 );
 
 // 设置外键关联

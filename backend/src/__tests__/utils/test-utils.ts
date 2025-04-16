@@ -6,7 +6,9 @@ import Attraction from '@/models/attraction.model';
 import Ticket from '@/models/ticket.model';
 
 // 创建测试用户
-export async function createTestUser(role: 'user' | 'admin' = 'user'): Promise<User> {
+export async function createTestUser(
+  role: 'user' | 'admin' = 'user',
+): Promise<User> {
   return await User.create({
     username: `test_${Date.now()}`,
     password_hash: '12dea96fec20593566ab75692c9949596833adc9', // 'user' 的SHA1值
@@ -16,11 +18,9 @@ export async function createTestUser(role: 'user' | 'admin' = 'user'): Promise<U
 
 // 生成测试用 JWT
 export function generateTestToken(user: User): string {
-  return jwt.sign(
-    { id: user.id, role: user.role },
-    process.env.JWT_SECRET!,
-    { expiresIn: '1h' }
-  );
+  return jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET!, {
+    expiresIn: '1h',
+  });
 }
 
 // 创建测试景点
@@ -45,10 +45,14 @@ export async function createTestTicket(attraction_id: number): Promise<Ticket> {
 // 发送认证请求的辅助函数
 export function authRequest(app: Express, token: string) {
   return {
-    get: (url: string) => request(app).get(url).set('Authorization', `Bearer ${token}`),
-    post: (url: string, body?: any) => request(app).post(url).set('Authorization', `Bearer ${token}`).send(body),
-    put: (url: string, body?: any) => request(app).put(url).set('Authorization', `Bearer ${token}`).send(body),
-    delete: (url: string) => request(app).delete(url).set('Authorization', `Bearer ${token}`),
+    get: (url: string) =>
+      request(app).get(url).set('Authorization', `Bearer ${token}`),
+    post: (url: string, body?: any) =>
+      request(app).post(url).set('Authorization', `Bearer ${token}`).send(body),
+    put: (url: string, body?: any) =>
+      request(app).put(url).set('Authorization', `Bearer ${token}`).send(body),
+    delete: (url: string) =>
+      request(app).delete(url).set('Authorization', `Bearer ${token}`),
   };
 }
 
@@ -64,4 +68,5 @@ export function generateTestData() {
 }
 
 // 等待指定时间
-export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+export const wait = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));

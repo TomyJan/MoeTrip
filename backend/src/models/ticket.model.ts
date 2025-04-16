@@ -49,7 +49,7 @@ Ticket.init(
     tableName: 'tickets',
     timestamps: true,
     underscored: true,
-  }
+  },
 );
 
 // 设置外键关联

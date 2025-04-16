@@ -7,7 +7,10 @@ const sequelize = new Sequelize({
   database: process.env.DB_NAME as string,
   username: process.env.DB_USER as string,
   password: process.env.DB_PASSWORD as string,
-  schema: process.env.DB_TYPE === 'postgres' ? (process.env.DB_SCHEMA as string) : undefined,
+  schema:
+    process.env.DB_TYPE === 'postgres'
+      ? (process.env.DB_SCHEMA as string)
+      : undefined,
   logging: process.env.NODE_ENV === 'development' ? console.log : false,
   define: {
     underscored: true,
@@ -16,12 +19,14 @@ const sequelize = new Sequelize({
     updatedAt: 'updated_at',
   },
   // MySQL特定配置
-  ...(process.env.DB_TYPE === 'mysql' ? {
-    timezone: '+08:00',
-    dialectOptions: {
-      charset: 'utf8mb4',
-    },
-  } : {}),
+  ...(process.env.DB_TYPE === 'mysql'
+    ? {
+        timezone: '+08:00',
+        dialectOptions: {
+          charset: 'utf8mb4',
+        },
+      }
+    : {}),
 });
 
 export default sequelize;

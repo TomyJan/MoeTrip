@@ -46,7 +46,7 @@ Attraction.init(
     tableName: 'attractions',
     timestamps: true,
     underscored: true,
-  }
+  },
 );
 
 export default Attraction;
