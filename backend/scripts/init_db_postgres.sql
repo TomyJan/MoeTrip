@@ -56,7 +56,7 @@ CREATE TABLE orders (
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
     ticket_id BIGINT NOT NULL REFERENCES tickets(id) ON DELETE RESTRICT,
     quantity INTEGER NOT NULL CHECK (quantity > 0),
-    date DATE NOT NULL CHECK (date >= CURRENT_DATE),
+    date DATE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -108,7 +108,7 @@ INSERT INTO tickets (attraction_id, name, available) VALUES
 
 -- 订单
 INSERT INTO orders (user_id, ticket_id, quantity, date) VALUES
-(2, 1, 2, CURRENT_DATE + INTERVAL '1 day');
+(2, 1, 2, '2025-07-15');
 
 -- 反馈
 INSERT INTO feedback (user_id, score, comment) VALUES

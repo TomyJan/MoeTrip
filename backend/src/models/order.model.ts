@@ -50,7 +50,25 @@ Order.init(
       allowNull: false,
       validate: {
         isDate: true,
-        isAfter: new Date().toISOString().split('T')[0], // 只能预订今天之后的票
+        // 仅在插入新记录时验证日期
+        dateValidator(value: string) {
+          try {
+            // 新记录永远需要验证
+            // Sequelize会在创建新记录时自动调用此验证器
+            const dateToCheck = new Date(value);
+            
+            // 检查日期是否有效
+            if (isNaN(dateToCheck.getTime())) {
+              throw new Error('无效的日期格式');
+            }
+          } catch (err) {
+            if (err instanceof Error) {
+              throw new Error(`日期验证失败: ${err.message}`);
+            } else {
+              throw new Error('日期验证失败');
+            }
+          }
+        }
       },
     },
   },

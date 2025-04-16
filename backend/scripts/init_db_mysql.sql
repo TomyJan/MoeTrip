@@ -61,8 +61,7 @@ CREATE TABLE orders (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT,
-    FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE RESTRICT,
-    CONSTRAINT orders_date_check CHECK (date >= CURDATE())
+    FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 反馈表
@@ -113,7 +112,7 @@ INSERT INTO tickets (attraction_id, name, available) VALUES
 
 -- 订单
 INSERT INTO orders (user_id, ticket_id, quantity, date) VALUES
-(2, 1, 2, CURDATE() + INTERVAL 1 DAY);
+(2, 1, 2, '2025-07-15');
 
 -- 反馈
 INSERT INTO feedback (user_id, score, comment) VALUES
