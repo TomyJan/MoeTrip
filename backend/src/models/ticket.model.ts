@@ -1,6 +1,6 @@
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../utils/database';
-import Attraction from './attraction.model';
+import { Model, DataTypes } from "sequelize";
+import sequelize from "../utils/database";
+import Attraction from "./attraction.model";
 
 class Ticket extends Model {
   public id!: number;
@@ -25,7 +25,7 @@ Ticket.init(
       allowNull: false,
       references: {
         model: Attraction,
-        key: 'id',
+        key: "id",
       },
     },
     name: {
@@ -46,16 +46,16 @@ Ticket.init(
   },
   {
     sequelize,
-    tableName: 'tickets',
+    tableName: "tickets",
     timestamps: true,
     underscored: true,
-  }
+  },
 );
 
 // 设置外键关联
 Ticket.belongsTo(Attraction, {
-  foreignKey: 'attraction_id',
-  as: 'attraction',
+  foreignKey: "attraction_id",
+  as: "attraction",
 });
 
 export default Ticket;

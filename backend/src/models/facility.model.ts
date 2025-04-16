@@ -1,6 +1,6 @@
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../utils/database';
-import Attraction from './attraction.model';
+import { Model, DataTypes } from "sequelize";
+import sequelize from "../utils/database";
+import Attraction from "./attraction.model";
 
 class Facility extends Model {
   public id!: number;
@@ -35,9 +35,9 @@ Facility.init(
     status: {
       type: DataTypes.STRING(20),
       allowNull: false,
-      defaultValue: '正常',
+      defaultValue: "正常",
       validate: {
-        isIn: [['正常', '维护']],
+        isIn: [["正常", "维护"]],
       },
     },
     attraction_id: {
@@ -45,22 +45,22 @@ Facility.init(
       allowNull: false,
       references: {
         model: Attraction,
-        key: 'id',
+        key: "id",
       },
     },
   },
   {
     sequelize,
-    tableName: 'facilities',
+    tableName: "facilities",
     timestamps: true,
     underscored: true,
-  }
+  },
 );
 
 // 设置外键关联
 Facility.belongsTo(Attraction, {
-  foreignKey: 'attraction_id',
-  as: 'attraction',
+  foreignKey: "attraction_id",
+  as: "attraction",
 });
 
 export default Facility;

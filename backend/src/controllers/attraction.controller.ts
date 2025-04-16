@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
-import { Op } from 'sequelize';
-import Attraction from '../models/attraction.model';
-import logger from '../utils/logger';
+import { Request, Response } from "express";
+import { Op } from "sequelize";
+import Attraction from "../models/attraction.model";
+import logger from "../utils/logger";
 
 /**
  * 查询景点列表
@@ -11,24 +11,26 @@ import logger from '../utils/logger';
  */
 export const queryAttractions = async (req: Request, res: Response) => {
   try {
-    const { keyword = '', page = 1, pageSize = 10 } = req.body;
+    const { keyword = "", page = 1, pageSize = 10 } = req.body;
 
     // 验证参数
     if (page < 1 || pageSize < 1) {
       return res.json({
         code: 1001,
-        message: '无效的分页参数',
-        data: null
+        message: "无效的分页参数",
+        data: null,
       });
     }
 
     // 构建查询条件
-    const where = keyword ? {
-      [Op.or]: [
-        { name: { [Op.iLike]: `%${keyword}%` } },
-        { description: { [Op.iLike]: `%${keyword}%` } }
-      ]
-    } : {};
+    const where = keyword
+      ? {
+          [Op.or]: [
+            { name: { [Op.iLike]: `%${keyword}%` } },
+            { description: { [Op.iLike]: `%${keyword}%` } },
+          ],
+        }
+      : {};
 
     // 查询总数
     const total = await Attraction.count({ where });
@@ -36,9 +38,9 @@ export const queryAttractions = async (req: Request, res: Response) => {
     // 查询数据
     const attractions = await Attraction.findAll({
       where,
-      order: [['created_at', 'DESC']],
+      order: [["created_at", "DESC"]],
       offset: (page - 1) * pageSize,
-      limit: pageSize
+      limit: pageSize,
     });
 
     return res.json({
@@ -48,15 +50,15 @@ export const queryAttractions = async (req: Request, res: Response) => {
         total,
         attractions,
         page,
-        pageSize
-      }
+        pageSize,
+      },
     });
   } catch (error) {
-    logger.error('查询景点列表失败:', error);
+    logger.error("查询景点列表失败:", error);
     return res.json({
       code: 500,
-      message: '服务器内部错误',
-      data: null
+      message: "服务器内部错误",
+      data: null,
     });
   }
 };
@@ -76,8 +78,8 @@ export const addAttraction = async (req: Request, res: Response) => {
     if (!name || !description || !open_time || !image_url) {
       return res.json({
         code: 1001,
-        message: '缺少必需的字段',
-        data: null
+        message: "缺少必需的字段",
+        data: null,
       });
     }
 
@@ -85,24 +87,24 @@ export const addAttraction = async (req: Request, res: Response) => {
     if (name.length > 100) {
       return res.json({
         code: 1001,
-        message: '景点名称不能超过100个字符',
-        data: null
+        message: "景点名称不能超过100个字符",
+        data: null,
       });
     }
 
     if (open_time.length > 50) {
       return res.json({
         code: 1001,
-        message: '开放时间不能超过50个字符',
-        data: null
+        message: "开放时间不能超过50个字符",
+        data: null,
       });
     }
 
     if (image_url.length > 255) {
       return res.json({
         code: 1001,
-        message: '图片URL不能超过255个字符',
-        data: null
+        message: "图片URL不能超过255个字符",
+        data: null,
       });
     }
 
@@ -111,8 +113,8 @@ export const addAttraction = async (req: Request, res: Response) => {
     if (existing) {
       return res.json({
         code: 1002,
-        message: '景点名称已存在',
-        data: null
+        message: "景点名称已存在",
+        data: null,
       });
     }
 
@@ -121,7 +123,7 @@ export const addAttraction = async (req: Request, res: Response) => {
       name,
       description,
       open_time,
-      image_url
+      image_url,
     });
 
     logger.info(`新景点已添加: ${name}`);
@@ -129,14 +131,14 @@ export const addAttraction = async (req: Request, res: Response) => {
     return res.json({
       code: 0,
       message: null,
-      data: attraction
+      data: attraction,
     });
   } catch (error) {
-    logger.error('添加景点失败:', error);
+    logger.error("添加景点失败:", error);
     return res.json({
       code: 500,
-      message: '服务器内部错误',
-      data: null
+      message: "服务器内部错误",
+      data: null,
     });
   }
 };
