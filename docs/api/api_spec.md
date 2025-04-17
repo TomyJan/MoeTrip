@@ -443,7 +443,7 @@ POST /user/login
 
 ## POST 查询已购门票列表
 
-POST /user/record
+POST /ticket/query_order
 
 管理员或用户获取用户浏览、预定等记录
 
@@ -472,7 +472,7 @@ POST /user/record
   "message": null,
   "data": {
     "total": 1,
-    "records": [
+    "orders": [
       {
         "id": 1,
         "order_id": 1,
@@ -503,13 +503,13 @@ POST /user/record
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
 |» data|object|true|none|数据|none|
 |»» total|number|true|none|记录总数|none|
-|»» records|[object]|true|none|记录信息|none|
-|»»» id|number|true|none|记录ID|ID 编号|
-|»»» order_id|number|true|none|订单ID|none|
-|»»» ticket_id|number|true|none|票种ID|none|
+|»» orders|[object]|true|none|记录信息|none|
+|»»» id|string|true|none|记录ID|ID 编号|
+|»»» order_id|string|true|none|订单ID|none|
+|»»» ticket_id|string|true|none|票种ID|none|
 |»»» quantity|number|true|none|门票数量|none|
 |»»» date|string(date)|true|none|门票日期|none|
-|»»» user_id|number|true|none|用户ID|none|
+|»»» user_id|string|true|none|用户ID|none|
 |»»» created_at|string(date-time)|true|none|创建时间|none|
 
 ## POST 购买门票
@@ -573,14 +573,14 @@ POST /ticket/purchase
 |---|---|---|---|---|---|
 |» code|number|true|none|状态码|0 表示成功，1005 表示票种余量不足，非 0 表示错误|
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
-|» data|object|true|none|数据|none|
+|» data|object¦null|true|none|数据|none|
 |»» ticket|object|true|none|门票信息|none|
-|»»» id|number|true|none|记录ID|ID 编号|
-|»»» order_id|number|true|none|订单ID|none|
-|»»» ticket_id|number|true|none|票种ID|none|
+|»»» id|string|true|none|记录ID|ID 编号|
+|»»» order_id|string|true|none|订单ID|none|
+|»»» ticket_id|string|true|none|票种ID|none|
 |»»» quantity|number|true|none|门票数量|none|
 |»»» date|string(date)|true|none|门票日期|none|
-|»»» user_id|number|true|none|用户ID|none|
+|»»» user_id|string|true|none|用户ID|none|
 |»»» created_at|string(date-time)|true|none|创建时间|none|
 
 ## POST 检查票种余量
@@ -640,7 +640,7 @@ POST /ticket/check
 |---|---|---|---|---|---|
 |» code|number|true|none|状态码|0 表示成功，1005 表示票种余量不足，非 0 表示错误|
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
-|» data|object|true|none|数据|none|
+|» data|object¦null|true|none|数据|none|
 |»» ticket|object|true|none|门票信息|none|
 |»»» id|number|true|none|票种ID|ID 编号|
 |»»» attraction_id|number|true|none|所在景点ID|none|
@@ -706,7 +706,7 @@ POST /ticket/add
 |---|---|---|---|---|---|
 |» code|number|true|none|状态码|0 表示成功，1005 表示票种余量不足，非 0 表示错误|
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
-|» data|object|true|none|数据|none|
+|» data|object¦null|true|none|数据|none|
 |»» ticket|object|true|none|门票信息|none|
 |»»» id|number|true|none|票种ID|ID 编号|
 |»»» attraction_id|number|true|none|所在景点ID|none|
@@ -804,12 +804,12 @@ POST /ticket/add
 
 ```json
 {
-  "id": 1,
-  "order_id": 1,
-  "ticket_id": 1,
+  "id": "1",
+  "order_id": "1",
+  "ticket_id": "1",
   "quantity": 1,
   "date": "2025-07-15",
-  "user_id": 1,
+  "user_id": "1",
   "created_at": "2025-07-15T10:00:00Z"
 }
 
@@ -819,12 +819,12 @@ POST /ticket/add
 
 |名称|类型|必选|约束|中文名|说明|
 |---|---|---|---|---|---|
-|id|number|true|none|记录ID|ID 编号|
-|order_id|number|true|none|订单ID|none|
-|ticket_id|number|true|none|票种ID|none|
+|id|string|true|none|记录ID|ID 编号|
+|order_id|string|true|none|订单ID|none|
+|ticket_id|string|true|none|票种ID|none|
 |quantity|number|true|none|门票数量|none|
 |date|string(date)|true|none|门票日期|none|
-|user_id|number|true|none|用户ID|none|
+|user_id|string|true|none|用户ID|none|
 |created_at|string(date-time)|true|none|创建时间|none|
 
 <h2 id="tocS_单日单条票种信息">单日单条票种信息</h2>

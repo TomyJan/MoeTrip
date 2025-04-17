@@ -3,6 +3,7 @@ import cors from 'cors';
 import userRoutes from './routes/user.routes';
 import attractionRoutes from './routes/attraction.routes';
 import facilityRoutes from './routes/facility.routes';
+import ticketRoutes from './routes/ticket.routes';
 import { httpLogger } from './middlewares/http-logger.middleware';
 import logger from './utils/logger';
 
@@ -35,6 +36,7 @@ app.get('/health', (req, res) => {
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/attraction', attractionRoutes);
 app.use('/api/v1/facility', facilityRoutes);
+app.use('/api/v1/ticket', ticketRoutes);
 
 // 错误处理中间件
 app.use(
