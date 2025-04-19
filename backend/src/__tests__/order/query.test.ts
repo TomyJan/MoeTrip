@@ -5,8 +5,8 @@ import User from '@/models/user.model';
 import Order from '@/models/order.model';
 
 // 使用最简单的测试方法，依赖setup.ts中创建的初始数据
-describe('已购票查询模块', () => {
-  describe('POST /api/v1/ticket/query_order', () => {
+describe('订单模块-查询订单', () => {
+  describe('POST /api/v1/order/query', () => {
     // 普通用户测试
     it('普通用户应该能查询自己的订单', async () => {
       // 获取数据库中的用户ID=2(普通用户)
@@ -19,7 +19,7 @@ describe('已购票查询模块', () => {
       const token = generateTestToken(user);
       
       const response = await request(app)
-        .post('/api/v1/ticket/query_order')
+        .post('/api/v1/order/query')
         .set('Authorization', `Bearer ${token}`)
         .send({});
       
@@ -70,7 +70,7 @@ describe('已购票查询模块', () => {
       const token = generateTestToken(user);
       
       const response = await request(app)
-        .post('/api/v1/ticket/query_order')
+        .post('/api/v1/order/query')
         .set('Authorization', `Bearer ${token}`)
         .send({});
       
@@ -100,7 +100,7 @@ describe('已购票查询模块', () => {
       const token = generateTestToken(admin);
       
       const response = await request(app)
-        .post('/api/v1/ticket/query_order')
+        .post('/api/v1/order/query')
         .set('Authorization', `Bearer ${token}`)
         .send({ user_id: 2 }); // 查询ID=2用户的订单
       
@@ -126,7 +126,7 @@ describe('已购票查询模块', () => {
       const token = generateTestToken(user);
       
       const response = await request(app)
-        .post('/api/v1/ticket/query_order')
+        .post('/api/v1/order/query')
         .set('Authorization', `Bearer ${token}`)
         .send({ user_id: 1 }); // 尝试查询ID=1管理员的订单
       
@@ -138,7 +138,7 @@ describe('已购票查询模块', () => {
     // 未登录用户测试
     it('未登录用户不应该能查询订单', async () => {
       const response = await request(app)
-        .post('/api/v1/ticket/query_order')
+        .post('/api/v1/order/query')
         .send({});
       
       expect(response.status).toBe(200);

@@ -5,7 +5,7 @@ import User from '@/models/user.model';
 import Order from '@/models/order.model';
 import Ticket from '@/models/ticket.model';
 
-describe('修改门票订单模块', () => {
+describe('订单模块-更新订单', () => {
   let regularUser: any;
   let adminUser: any;
   let regularUserToken: string;
@@ -54,13 +54,13 @@ describe('修改门票订单模块', () => {
     }
   });
 
-  describe('POST /api/v1/ticket/update_order', () => {
+  describe('POST /api/v1/order/update', () => {
     // 测试正常用户修改自己的订单数量
     it('普通用户应该能修改自己订单的数量', async () => {
       const newQuantity = testOrder.quantity + 1;
       
       const response = await request(app)
-        .post('/api/v1/ticket/update_order')
+        .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testOrder.id,
@@ -81,7 +81,7 @@ describe('修改门票订单模块', () => {
       const newDate = '2025-08-15'; // 未来日期
       
       const response = await request(app)
-        .post('/api/v1/ticket/update_order')
+        .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testOrder.id,
@@ -105,7 +105,7 @@ describe('修改门票订单模块', () => {
     // 测试正常用户修改自己的订单状态为已取消
     it('普通用户应该能取消自己的订单(修改状态为cancelled)', async () => {
       const response = await request(app)
-        .post('/api/v1/ticket/update_order')
+        .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testOrder.id,
@@ -133,7 +133,7 @@ describe('修改门票订单模块', () => {
       });
       
       const response = await request(app)
-        .post('/api/v1/ticket/update_order')
+        .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${adminToken}`)
         .send({
           order_id: newTestOrder.id,
@@ -173,7 +173,7 @@ describe('修改门票订单模块', () => {
       expect(anotherUser.id).not.toBe(regularUser.id);
       
       const response = await request(app)
-        .post('/api/v1/ticket/update_order')
+        .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: anotherUserOrder.id,
@@ -199,7 +199,7 @@ describe('修改门票订单模块', () => {
     // 测试状态验证
     it('应该验证状态值', async () => {
       const response = await request(app)
-        .post('/api/v1/ticket/update_order')
+        .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testOrder.id,
@@ -215,7 +215,7 @@ describe('修改门票订单模块', () => {
     it('应该验证日期格式和是否为未来日期', async () => {
       // 测试无效日期格式
       const invalidDateResponse = await request(app)
-        .post('/api/v1/ticket/update_order')
+        .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testOrder.id,
@@ -228,7 +228,7 @@ describe('修改门票订单模块', () => {
 
       // 测试过去日期
       const pastDateResponse = await request(app)
-        .post('/api/v1/ticket/update_order')
+        .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testOrder.id,
@@ -243,7 +243,7 @@ describe('修改门票订单模块', () => {
     // 测试不存在的订单
     it('应该验证订单是否存在', async () => {
       const response = await request(app)
-        .post('/api/v1/ticket/update_order')
+        .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: 99999, // 不存在的订单ID
@@ -258,7 +258,7 @@ describe('修改门票订单模块', () => {
     // 测试缺少参数
     it('应该验证必填参数', async () => {
       const response = await request(app)
-        .post('/api/v1/ticket/update_order')
+        .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({});
 
@@ -270,7 +270,7 @@ describe('修改门票订单模块', () => {
     // 测试至少需要一个更新字段
     it('应该验证至少需要一个更新字段', async () => {
       const response = await request(app)
-        .post('/api/v1/ticket/update_order')
+        .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testOrder.id
@@ -310,7 +310,7 @@ describe('修改门票订单模块', () => {
       
       // 尝试修改数量超过可用余量
       const response = await request(app)
-        .post('/api/v1/ticket/update_order')
+        .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testLimitOrder.id,
@@ -340,7 +340,7 @@ describe('修改门票订单模块', () => {
       
       // 取消该订单
       await request(app)
-        .post('/api/v1/ticket/update_order')
+        .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: newOrder.id,
@@ -349,7 +349,7 @@ describe('修改门票订单模块', () => {
       
       // 尝试修改已取消的订单
       const response = await request(app)
-        .post('/api/v1/ticket/update_order')
+        .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: newOrder.id,

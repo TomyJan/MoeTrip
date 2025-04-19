@@ -443,7 +443,7 @@ POST /user/login
 
 ## POST 查询已购门票列表
 
-POST /ticket/query_order
+POST /order/query
 
 管理员或用户获取用户浏览、预定等记录
 
@@ -518,7 +518,7 @@ POST /ticket/query_order
 
 ## POST 购买门票
 
-POST /ticket/purchase
+POST /order/create
 
 用户购买门票，生成订单
 
@@ -723,7 +723,7 @@ POST /ticket/add
 
 ## POST 修改门票订单
 
-POST /ticket/update_order
+POST /order/update
 
 用户修改已购门票的日期或数量
 

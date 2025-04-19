@@ -1,11 +1,10 @@
 import request from 'supertest';
 import app from '@/app';
-import { createTestUser, generateTestToken, createTestAttraction, createTestTicket } from './utils/test-utils';
-import User from '@/models/user.model';
+import { createTestUser, generateTestToken, createTestAttraction, createTestTicket } from '../utils/test-utils';
 import Order from '@/models/order.model';
 import Ticket from '@/models/ticket.model';
 
-describe('购买门票模块', () => {
+describe('订单模块-创建订单', () => {
   let regularUser: any;
   let regularUserToken: string;
   let testTicket: any;
@@ -37,11 +36,11 @@ describe('购买门票模块', () => {
     }
   });
 
-  describe('POST /api/v1/ticket/purchase', () => {
+  describe('POST /api/v1/order/create', () => {
     // 测试正常购票流程
     it('用户应该能成功购票', async () => {
       const response = await request(app)
-        .post('/api/v1/ticket/purchase')
+        .post('/api/v1/order/create')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           ticket_id: testTicket.id,
@@ -51,6 +50,7 @@ describe('购买门票模块', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.code).toBe(0);
+      // 检查API返回的数据结构
       expect(response.body.data.ticket).toBeDefined();
       expect(response.body.data.ticket.user_id).toBe(regularUser.id);
       expect(response.body.data.ticket.ticket_id).toBe(testTicket.id);
@@ -66,7 +66,7 @@ describe('购买门票模块', () => {
     // 测试未认证用户
     it('未认证用户不应该能购票', async () => {
       const response = await request(app)
-        .post('/api/v1/ticket/purchase')
+        .post('/api/v1/order/create')
         .send({
           ticket_id: testTicket.id,
           quantity: 1,
@@ -81,7 +81,7 @@ describe('购买门票模块', () => {
     // 测试参数验证
     it('应该验证必填参数', async () => {
       const response = await request(app)
-        .post('/api/v1/ticket/purchase')
+        .post('/api/v1/order/create')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({});
 
@@ -94,7 +94,7 @@ describe('购买门票模块', () => {
     it('应该验证日期格式和是否为未来日期', async () => {
       // 测试无效日期格式
       const invalidDateResponse = await request(app)
-        .post('/api/v1/ticket/purchase')
+        .post('/api/v1/order/create')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           ticket_id: testTicket.id,
@@ -108,7 +108,7 @@ describe('购买门票模块', () => {
 
       // 测试过去日期
       const pastDateResponse = await request(app)
-        .post('/api/v1/ticket/purchase')
+        .post('/api/v1/order/create')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           ticket_id: testTicket.id,
@@ -124,7 +124,7 @@ describe('购买门票模块', () => {
     // 测试不存在的票种
     it('应该验证票种是否存在', async () => {
       const response = await request(app)
-        .post('/api/v1/ticket/purchase')
+        .post('/api/v1/order/create')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           ticket_id: 99999, // 不存在的票种ID
@@ -133,7 +133,7 @@ describe('购买门票模块', () => {
         });
 
       expect(response.status).toBe(200);
-      expect(response.body.code).toBe(1001);
+      expect(response.body.code).toBe(1001); // 实际API返回的错误码
       expect(response.body.message).toBe('票种不存在');
     });
 
@@ -156,7 +156,7 @@ describe('购买门票模块', () => {
 
       // 再次购买相同数量的票
       const response = await request(app)
-        .post('/api/v1/ticket/purchase')
+        .post('/api/v1/order/create')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           ticket_id: testTicket.id,
@@ -175,4 +175,4 @@ describe('购买门票模块', () => {
       }
     });
   });
-}); 
+});

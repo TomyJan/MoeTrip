@@ -111,14 +111,14 @@ MoeTrip 采用三层架构（前端、后端、数据层），通过 Fetch 进�
   - 组件：`TicketBuy.vue`, `TicketList.vue`, `TicketManage.vue`
   - 交互：Vuetify 3 日历选择日期，显示票务状态和余量
 - **后端**：
-  - 路由：`/ticket/purchase`, `/ticket/check`, `/ticket/add`
+  - 路由：`/order/create`, `/ticket/check`, `/ticket/add`
   - 逻辑：
     - Sequelize 事务确保订单一致性
     - 检查指定日期的票种余量
     - 管理每日票种配额
 - **数据流**：
   - 用户查看余量 -> Fetch `/ticket/check` -> 后端返回余量
-  - 用户购票 -> Fetch `/ticket/purchase` -> 后端验证余量 -> 更新 `orders`
+  - 用户购票 -> Fetch `/order/create` -> 后端验证余量 -> 更新 `orders`
   - 管理员添加票种 -> Fetch `/ticket/add` -> 后端创建新票种
 
 ### 3.4 数据分析与可视化
@@ -150,7 +150,7 @@ MoeTrip 使用非 RESTful API，路由以功能为导向。以下是主要接口
   - POST `/user/record`：查询用户记录
 - **票务**：
   - POST `/ticket/check`：检查票种余量
-  - POST `/ticket/purchase`：购买门票
+  - POST `/order/create`：购买门票
   - POST `/ticket/add`：添加新票种
 
 **错误码**：
