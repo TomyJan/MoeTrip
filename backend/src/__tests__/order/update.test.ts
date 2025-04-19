@@ -1,6 +1,11 @@
 import request from 'supertest';
 import app from '@/app';
-import { createTestUser, generateTestToken, createTestAttraction, createTestTicket } from '../utils/test-utils';
+import {
+  createTestUser,
+  generateTestToken,
+  createTestAttraction,
+  createTestTicket,
+} from '../utils/test-utils';
 import User from '@/models/user.model';
 import Order from '@/models/order.model';
 import Ticket from '@/models/ticket.model';
@@ -17,12 +22,14 @@ describe('订单模块-更新订单', () => {
   beforeAll(async () => {
     try {
       console.log('开始准备测试数据');
-      
+
       // 使用createTestUser创建用户，而不是依赖findByPk
       adminUser = await createTestUser('admin');
       regularUser = await createTestUser('user');
 
-      console.log(`已创建测试用户: 管理员(${adminUser.id}), 普通用户(${regularUser.id})`);
+      console.log(
+        `已创建测试用户: 管理员(${adminUser.id}), 普通用户(${regularUser.id})`,
+      );
 
       // 生成令牌
       adminToken = generateTestToken(adminUser);
@@ -35,8 +42,10 @@ describe('订单模块-更新订单', () => {
         const testAttraction = await createTestAttraction();
         testTicket = await createTestTicket(testAttraction.id);
       }
-      
-      console.log(`已找到/创建测试票种: ID=${testTicket.id}, 名称=${testTicket.name}`);
+
+      console.log(
+        `已找到/创建测试票种: ID=${testTicket.id}, 名称=${testTicket.name}`,
+      );
 
       // 创建一个新的测试订单
       testOrder = await Order.create({
@@ -44,10 +53,12 @@ describe('订单模块-更新订单', () => {
         ticket_id: testTicket.id,
         quantity: 1,
         date: '2025-08-10',
-        status: 'success'
+        status: 'success',
       });
-      
-      console.log(`已创建测试订单: ID=${testOrder.id}, 状态=${testOrder.status}`);
+
+      console.log(
+        `已创建测试订单: ID=${testOrder.id}, 状态=${testOrder.status}`,
+      );
     } catch (error) {
       console.error('测试数据准备失败:', error);
       throw error;
@@ -58,19 +69,19 @@ describe('订单模块-更新订单', () => {
     // 测试正常用户修改自己的订单数量
     it('普通用户应该能修改自己订单的数量', async () => {
       const newQuantity = testOrder.quantity + 1;
-      
+
       const response = await request(app)
         .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testOrder.id,
-          quantity: newQuantity
+          quantity: newQuantity,
         });
 
       expect(response.status).toBe(200);
       expect(response.body.code).toBe(0);
       expect(response.body.data.ticket.quantity).toBe(newQuantity);
-      
+
       // 验证数据库是否已更新
       const updatedOrder = await Order.findByPk(testOrder.id);
       expect(updatedOrder?.quantity).toBe(newQuantity);
@@ -79,26 +90,27 @@ describe('订单模块-更新订单', () => {
     // 测试正常用户修改自己的订单日期
     it('普通用户应该能修改自己订单的日期', async () => {
       const newDate = '2025-08-15'; // 未来日期
-      
+
       const response = await request(app)
         .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testOrder.id,
-          date: newDate
+          date: newDate,
         });
 
       expect(response.status).toBe(200);
       expect(response.body.code).toBe(0);
       expect(response.body.data.ticket.date).toBe(newDate);
-      
+
       // 验证数据库是否已更新 - 直接比较字符串格式的日期
       const updatedOrder = await Order.findByPk(testOrder.id);
       // 将数据库中的日期转换为字符串
-      const dbDate = updatedOrder?.date instanceof Date 
-        ? updatedOrder.date.toISOString().split('T')[0] 
-        : String(updatedOrder?.date).split('T')[0];
-      
+      const dbDate =
+        updatedOrder?.date instanceof Date
+          ? updatedOrder.date.toISOString().split('T')[0]
+          : String(updatedOrder?.date).split('T')[0];
+
       expect(dbDate).toBe(newDate);
     });
 
@@ -109,13 +121,13 @@ describe('订单模块-更新订单', () => {
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testOrder.id,
-          status: 'cancelled'
+          status: 'cancelled',
         });
 
       expect(response.status).toBe(200);
       expect(response.body.code).toBe(0);
       expect(response.body.data.ticket.status).toBe('cancelled');
-      
+
       // 验证数据库是否已更新
       const updatedOrder = await Order.findByPk(testOrder.id);
       expect(updatedOrder?.status).toBe('cancelled');
@@ -129,9 +141,9 @@ describe('订单模块-更新订单', () => {
         ticket_id: testTicket.id,
         quantity: 1,
         date: '2025-07-20',
-        status: 'success'
+        status: 'success',
       });
-      
+
       const response = await request(app)
         .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${adminToken}`)
@@ -139,7 +151,7 @@ describe('订单模块-更新订单', () => {
           order_id: newTestOrder.id,
           quantity: 2,
           date: '2025-07-25',
-          status: 'cancelled'
+          status: 'cancelled',
         });
 
       expect(response.status).toBe(200);
@@ -147,7 +159,7 @@ describe('订单模块-更新订单', () => {
       expect(response.body.data.ticket.quantity).toBe(2);
       expect(response.body.data.ticket.date).toBe('2025-07-25');
       expect(response.body.data.ticket.status).toBe('cancelled');
-      
+
       // 清理创建的测试数据
       await newTestOrder.destroy();
     });
@@ -158,39 +170,41 @@ describe('订单模块-更新订单', () => {
       const anotherUser = await User.create({
         username: `other_user_${Date.now()}`,
         password_hash: '12dea96fec20593566ab75692c9949596833adc9',
-        role: 'user'
+        role: 'user',
       });
-      
+
       const anotherUserOrder = await Order.create({
         user_id: anotherUser.id,
         ticket_id: testTicket.id,
         quantity: 1,
         date: '2025-07-20',
-        status: 'success'
+        status: 'success',
       });
-      
+
       // 确保anotherUser和regularUser不是同一个用户
       expect(anotherUser.id).not.toBe(regularUser.id);
-      
+
       const response = await request(app)
         .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: anotherUserOrder.id,
-          quantity: 2
+          quantity: 2,
         });
 
       // 这里我们期望API会验证用户是否有权修改订单
       expect(response.status).toBe(200);
-      
+
       // 如果API实现没有正确的权限检查，我们记录警告但不使测试失败
       if (response.body.code === 0) {
-        console.warn('警告: API没有正确实现权限检查，普通用户可以修改其他用户的订单');
+        console.warn(
+          '警告: API没有正确实现权限检查，普通用户可以修改其他用户的订单',
+        );
       } else {
         expect(response.body.code).toBe(2001);
         expect(response.body.message).toBe('无权修改此订单');
       }
-      
+
       // 清理创建的测试数据
       await anotherUserOrder.destroy();
       await anotherUser.destroy();
@@ -203,7 +217,7 @@ describe('订单模块-更新订单', () => {
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testOrder.id,
-          status: 'invalid_status'
+          status: 'invalid_status',
         });
 
       expect(response.status).toBe(200);
@@ -219,7 +233,7 @@ describe('订单模块-更新订单', () => {
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testOrder.id,
-          date: '非日期格式'
+          date: '非日期格式',
         });
 
       expect(invalidDateResponse.status).toBe(200);
@@ -232,12 +246,14 @@ describe('订单模块-更新订单', () => {
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testOrder.id,
-          date: '2020-01-01'
+          date: '2020-01-01',
         });
 
       expect(pastDateResponse.status).toBe(200);
       expect(pastDateResponse.body.code).toBe(1001);
-      expect(pastDateResponse.body.message).toBe('预订日期必须是今天或未来日期');
+      expect(pastDateResponse.body.message).toBe(
+        '预订日期必须是今天或未来日期',
+      );
     });
 
     // 测试不存在的订单
@@ -247,7 +263,7 @@ describe('订单模块-更新订单', () => {
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: 99999, // 不存在的订单ID
-          quantity: 2
+          quantity: 2,
         });
 
       expect(response.status).toBe(200);
@@ -273,7 +289,7 @@ describe('订单模块-更新订单', () => {
         .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
-          order_id: testOrder.id
+          order_id: testOrder.id,
         });
 
       expect(response.status).toBe(200);
@@ -287,40 +303,40 @@ describe('订单模块-更新订单', () => {
       const limitedTicket = await Ticket.create({
         attraction_id: 1,
         name: '限量票',
-        available: 1
+        available: 1,
       });
-      
+
       // 创建一个订单占用这个票种
       const existingOrder = await Order.create({
         user_id: adminUser.id,
         ticket_id: limitedTicket.id,
         quantity: 1,
         date: '2025-07-15',
-        status: 'success'
+        status: 'success',
       });
-      
+
       // 创建另一个测试订单
       const testLimitOrder = await Order.create({
         user_id: regularUser.id,
         ticket_id: limitedTicket.id,
         quantity: 1,
         date: '2025-07-15',
-        status: 'success'
+        status: 'success',
       });
-      
+
       // 尝试修改数量超过可用余量
       const response = await request(app)
         .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: testLimitOrder.id,
-          quantity: 2
+          quantity: 2,
         });
 
       expect(response.status).toBe(200);
       expect(response.body.code).toBe(1005);
       expect(response.body.message).toBe('票种余量不足');
-      
+
       // 清理测试数据
       await testLimitOrder.destroy();
       await existingOrder.destroy();
@@ -335,31 +351,31 @@ describe('订单模块-更新订单', () => {
         ticket_id: testTicket.id,
         quantity: 1,
         date: '2025-09-10',
-        status: 'success'
+        status: 'success',
       });
-      
+
       // 取消该订单
       await request(app)
         .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: newOrder.id,
-          status: 'cancelled'
+          status: 'cancelled',
         });
-      
+
       // 尝试修改已取消的订单
       const response = await request(app)
         .post('/api/v1/order/update')
         .set('Authorization', `Bearer ${regularUserToken}`)
         .send({
           order_id: newOrder.id,
-          quantity: 2
+          quantity: 2,
         });
-      
+
       expect(response.status).toBe(200);
       expect(response.body.code).toBe(1007);
       expect(response.body.message).toBe('订单已取消，无法修改');
-      
+
       // 清理测试数据
       await newOrder.destroy();
     });

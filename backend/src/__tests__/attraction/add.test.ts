@@ -20,7 +20,7 @@ describe('景点模块-添加景点', () => {
       // 确保景点名称唯一
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       const newAttraction = {
         name: `测试景点_${timestamp}_${random}`,
         description: '这是一个测试景点',
@@ -49,7 +49,7 @@ describe('景点模块-添加景点', () => {
       // 确保景点名称唯一
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       const response = await request(app)
         .post('/api/v1/attraction/add')
         .set('Authorization', `Bearer ${userToken}`)
@@ -99,7 +99,7 @@ describe('景点模块-添加景点', () => {
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
       const attractionName = `测试景点_${timestamp}_${random}`;
-      
+
       await Attraction.create({
         name: attractionName,
         description: '这是一个测试景点',

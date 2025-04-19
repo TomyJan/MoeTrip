@@ -13,22 +13,22 @@ describe('票种模块-添加票种', () => {
         console.warn('找不到ID=1的管理员用户，跳过测试');
         return;
       }
-      
+
       const adminToken = generateTestToken(admin);
-      
+
       // 获取景点数据
       const attraction = await Ticket.findOne();
       if (!attraction) {
         console.warn('找不到任何票种，跳过测试');
         return;
       }
-      
+
       const attractionId = attraction.attraction_id;
-      
+
       // 确保票种名称唯一
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       const newTicket = {
         attraction_id: attractionId,
         name: `测试票_${timestamp}_${random}`,
@@ -45,7 +45,7 @@ describe('票种模块-添加票种', () => {
       expect(response.body.data.ticket).toBeDefined();
       expect(response.body.data.ticket.name).toBe(newTicket.name);
       expect(response.body.data.ticket.available).toBe(newTicket.available);
-      
+
       // 删除创建的票种，避免影响其他测试
       if (response.body.data.ticket && response.body.data.ticket.id) {
         await Ticket.destroy({ where: { id: response.body.data.ticket.id } });
@@ -59,22 +59,22 @@ describe('票种模块-添加票种', () => {
         console.warn('找不到ID=2的普通用户，跳过测试');
         return;
       }
-      
+
       const userToken = generateTestToken(user);
-      
+
       // 获取景点数据
       const attraction = await Ticket.findOne();
       if (!attraction) {
         console.warn('找不到任何票种，跳过测试');
         return;
       }
-      
+
       const attractionId = attraction.attraction_id;
-      
+
       // 确保票种名称唯一
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       const response = await request(app)
         .post('/api/v1/ticket/add')
         .set('Authorization', `Bearer ${userToken}`)
@@ -96,9 +96,9 @@ describe('票种模块-添加票种', () => {
         console.warn('找不到ID=1的管理员用户，跳过测试');
         return;
       }
-      
+
       const adminToken = generateTestToken(admin);
-      
+
       const response = await request(app)
         .post('/api/v1/ticket/add')
         .set('Authorization', `Bearer ${adminToken}`)
@@ -118,22 +118,22 @@ describe('票种模块-添加票种', () => {
         console.warn('找不到ID=1的管理员用户，跳过测试');
         return;
       }
-      
+
       const adminToken = generateTestToken(admin);
-      
+
       // 获取景点数据
       const attraction = await Ticket.findOne();
       if (!attraction) {
         console.warn('找不到任何票种，跳过测试');
         return;
       }
-      
+
       const attractionId = attraction.attraction_id;
-      
+
       // 确保票种名称唯一
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       const response = await request(app)
         .post('/api/v1/ticket/add')
         .set('Authorization', `Bearer ${adminToken}`)
@@ -155,18 +155,18 @@ describe('票种模块-添加票种', () => {
         console.warn('找不到ID=1的管理员用户，跳过测试');
         return;
       }
-      
+
       const adminToken = generateTestToken(admin);
-      
+
       // 获取景点数据
       const attraction = await Ticket.findOne();
       if (!attraction) {
         console.warn('找不到任何票种，跳过测试');
         return;
       }
-      
+
       const attractionId = attraction.attraction_id;
-      
+
       const response = await request(app)
         .post('/api/v1/ticket/add')
         .set('Authorization', `Bearer ${adminToken}`)
@@ -188,13 +188,13 @@ describe('票种模块-添加票种', () => {
         console.warn('找不到ID=1的管理员用户，跳过测试');
         return;
       }
-      
+
       const adminToken = generateTestToken(admin);
-      
+
       // 确保票种名称唯一
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       const response = await request(app)
         .post('/api/v1/ticket/add')
         .set('Authorization', `Bearer ${adminToken}`)
@@ -216,16 +216,16 @@ describe('票种模块-添加票种', () => {
         console.warn('找不到ID=1的管理员用户，跳过测试');
         return;
       }
-      
+
       const adminToken = generateTestToken(admin);
-      
+
       // 获取一个已存在的票种
       const existingTicket = await Ticket.findOne();
       if (!existingTicket) {
         console.warn('找不到任何票种，跳过测试');
         return;
       }
-      
+
       // 尝试创建同名票种
       const response = await request(app)
         .post('/api/v1/ticket/add')

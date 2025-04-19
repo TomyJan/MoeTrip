@@ -15,7 +15,7 @@ describe('设施模块-查询设施', () => {
       // 创建测试设施（确保名称唯一）
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       await Facility.bulkCreate([
         {
           name: `休息亭_${timestamp}_1_${random}`,
@@ -66,12 +66,12 @@ describe('设施模块-查询设施', () => {
       // 获取第一个设施的名称前缀（不包括时间戳）
       const facilities = await Facility.findAll({
         where: { attraction_id: attractionId },
-        limit: 1
+        limit: 1,
       });
-      
+
       // 使用设施名称的一部分作为搜索关键词
       const keyword = facilities[0].name.split('_')[0];
-      
+
       const response = await request(app)
         .post('/api/v1/facility/query')
         .send({ keyword });

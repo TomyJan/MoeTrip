@@ -29,7 +29,7 @@ describe('设施模块-添加设施', () => {
       // 确保设施名称唯一
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       const newFacility = {
         name: `测试设施_${timestamp}_${random}`,
         location: '测试位置',
@@ -57,7 +57,7 @@ describe('设施模块-添加设施', () => {
     it('应该拒绝非管理员添加设施', async () => {
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       const response = await request(app)
         .post('/api/v1/facility/add')
         .set('Authorization', `Bearer ${userToken}`)
@@ -105,7 +105,7 @@ describe('设施模块-添加设施', () => {
     it('应该验证状态值', async () => {
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       const response = await request(app)
         .post('/api/v1/facility/add')
         .set('Authorization', `Bearer ${adminToken}`)

@@ -1,6 +1,11 @@
 import request from 'supertest';
 import app from '@/app';
-import { createTestUser, generateTestToken, createTestAttraction, createTestTicket } from '../utils/test-utils';
+import {
+  createTestUser,
+  generateTestToken,
+  createTestAttraction,
+  createTestTicket,
+} from '../utils/test-utils';
 import Order from '@/models/order.model';
 import Ticket from '@/models/ticket.model';
 
@@ -13,7 +18,7 @@ describe('订单模块-创建订单', () => {
   beforeAll(async () => {
     try {
       console.log('开始准备测试数据 - 购买门票测试');
-      
+
       // 使用createTestUser创建用户
       regularUser = await createTestUser('user');
       console.log(`已创建测试用户: 普通用户(${regularUser.id})`);
@@ -28,8 +33,10 @@ describe('订单模块-创建订单', () => {
         const testAttraction = await createTestAttraction();
         testTicket = await createTestTicket(testAttraction.id);
       }
-      
-      console.log(`已找到/创建测试票种: ID=${testTicket.id}, 名称=${testTicket.name}`);
+
+      console.log(
+        `已找到/创建测试票种: ID=${testTicket.id}, 名称=${testTicket.name}`,
+      );
     } catch (error) {
       console.error('测试数据准备失败:', error);
       throw error;
@@ -45,7 +52,7 @@ describe('订单模块-创建订单', () => {
         .send({
           ticket_id: testTicket.id,
           quantity: 1,
-          date: '2025-12-25' // 未来日期
+          date: '2025-12-25', // 未来日期
         });
 
       expect(response.status).toBe(200);
@@ -65,13 +72,11 @@ describe('订单模块-创建订单', () => {
 
     // 测试未认证用户
     it('未认证用户不应该能购票', async () => {
-      const response = await request(app)
-        .post('/api/v1/order/create')
-        .send({
-          ticket_id: testTicket.id,
-          quantity: 1,
-          date: '2025-12-25'
-        });
+      const response = await request(app).post('/api/v1/order/create').send({
+        ticket_id: testTicket.id,
+        quantity: 1,
+        date: '2025-12-25',
+      });
 
       expect(response.status).toBe(200);
       expect(response.body.code).toBe(2001);
@@ -99,7 +104,7 @@ describe('订单模块-创建订单', () => {
         .send({
           ticket_id: testTicket.id,
           quantity: 1,
-          date: '非日期格式'
+          date: '非日期格式',
         });
 
       expect(invalidDateResponse.status).toBe(200);
@@ -113,12 +118,14 @@ describe('订单模块-创建订单', () => {
         .send({
           ticket_id: testTicket.id,
           quantity: 1,
-          date: '2020-01-01'
+          date: '2020-01-01',
         });
 
       expect(pastDateResponse.status).toBe(200);
       expect(pastDateResponse.body.code).toBe(1001);
-      expect(pastDateResponse.body.message).toBe('预订日期必须是今天或未来日期');
+      expect(pastDateResponse.body.message).toBe(
+        '预订日期必须是今天或未来日期',
+      );
     });
 
     // 测试不存在的票种
@@ -129,7 +136,7 @@ describe('订单模块-创建订单', () => {
         .send({
           ticket_id: 99999, // 不存在的票种ID
           quantity: 1,
-          date: '2025-12-25'
+          date: '2025-12-25',
         });
 
       expect(response.status).toBe(200);
@@ -145,14 +152,11 @@ describe('订单模块-创建订单', () => {
         ticket_id: testTicket.id,
         quantity: 1,
         date: '2025-11-01',
-        status: 'success'
+        status: 'success',
       });
 
       // 取消该订单
-      await Order.update(
-        { status: 'cancelled' },
-        { where: { id: order.id } }
-      );
+      await Order.update({ status: 'cancelled' }, { where: { id: order.id } });
 
       // 再次购买相同数量的票
       const response = await request(app)
@@ -161,7 +165,7 @@ describe('订单模块-创建订单', () => {
         .send({
           ticket_id: testTicket.id,
           quantity: 1,
-          date: '2025-11-01'
+          date: '2025-11-01',
         });
 
       expect(response.status).toBe(200);

@@ -44,7 +44,7 @@ export const addFeedback = async (req: Request, res: Response) => {
 
     // 检查用户是否已经对该景点提交过反馈
     const existingFeedback = await Feedback.findOne({
-      where: { 
+      where: {
         user_id: userId,
         attraction_id,
       },
@@ -56,11 +56,13 @@ export const addFeedback = async (req: Request, res: Response) => {
         const updatedFeedback = await existingFeedback.update({
           score,
           comment: comment || null,
-          status: 'public'
+          status: 'public',
         });
-        
-        logger.info(`用户(${userId})恢复了对景点(${attraction_id})的反馈，评分: ${score}`);
-        
+
+        logger.info(
+          `用户(${userId})恢复了对景点(${attraction_id})的反馈，评分: ${score}`,
+        );
+
         return res.json({
           code: 0,
           message: null,
@@ -83,8 +85,10 @@ export const addFeedback = async (req: Request, res: Response) => {
       comment: comment || null,
       status: 'public',
     });
-    
-    logger.info(`用户(${userId})对景点(${attraction_id})提交了新反馈，评分: ${score}`);
+
+    logger.info(
+      `用户(${userId})对景点(${attraction_id})提交了新反馈，评分: ${score}`,
+    );
 
     return res.json({
       code: 0,
@@ -117,20 +121,20 @@ export const updateFeedback = async (req: Request, res: Response) => {
     const { id, attraction_id, user_id, score, comment, status } = req.body;
     const userId = req.user?.id;
     const userRole = req.user?.role;
-    
+
     let feedback;
-    
+
     // 根据ID或者用户ID+景点ID查找反馈
     if (id) {
       feedback = await Feedback.findByPk(id);
     } else if (attraction_id) {
       const targetUserId = user_id || userId;
-      
+
       feedback = await Feedback.findOne({
         where: {
           user_id: targetUserId,
-          attraction_id
-        }
+          attraction_id,
+        },
       });
     } else {
       return res.json({
@@ -208,17 +212,21 @@ export const updateFeedback = async (req: Request, res: Response) => {
 
     // 更新反馈
     const updatedFeedback = await feedback.update(updateData);
-    
+
     // 根据状态更新日志内容
     if (updateData.status === 'deleted') {
-      logger.info(`反馈(ID:${feedback.id}, 景点:${feedback.attraction_id})已被${userRole === 'admin' ? '管理员' : '用户'}标记为删除`);
+      logger.info(
+        `反馈(ID:${feedback.id}, 景点:${feedback.attraction_id})已被${userRole === 'admin' ? '管理员' : '用户'}标记为删除`,
+      );
       return res.json({
         code: 0,
         message: '反馈已标记为删除',
         data: { feedback: updatedFeedback },
       });
     } else {
-      logger.info(`反馈(ID:${feedback.id}, 景点:${feedback.attraction_id})已被${userRole === 'admin' ? '管理员' : '用户'}更新`);
+      logger.info(
+        `反馈(ID:${feedback.id}, 景点:${feedback.attraction_id})已被${userRole === 'admin' ? '管理员' : '用户'}更新`,
+      );
       return res.json({
         code: 0,
         message: '反馈已更新',
@@ -264,14 +272,14 @@ export const queryFeedback = async (req: Request, res: Response) => {
       page = 1,
       pageSize = 10,
     } = req.body;
-    
+
     const userId = req.user?.id;
     const userRole = req.user?.role;
 
     // 如果指定了ID，直接查询单个反馈
     if (id) {
       const feedback = await Feedback.findByPk(id);
-      
+
       // 如果反馈不存在
       if (!feedback) {
         return res.json({
@@ -280,7 +288,7 @@ export const queryFeedback = async (req: Request, res: Response) => {
           data: null,
         });
       }
-      
+
       // 权限检查：普通用户只能查看自己的反馈
       if (userRole !== 'admin' && feedback.user_id !== userId) {
         return res.json({
@@ -289,16 +297,19 @@ export const queryFeedback = async (req: Request, res: Response) => {
           data: null,
         });
       }
-      
+
       // 过滤已删除的反馈（除非是管理员且明确要求包含已删除反馈）
-      if (feedback.status === 'deleted' && (userRole !== 'admin' || !include_deleted)) {
+      if (
+        feedback.status === 'deleted' &&
+        (userRole !== 'admin' || !include_deleted)
+      ) {
         return res.json({
           code: 1006,
           message: '反馈不存在或已删除',
           data: null,
         });
       }
-      
+
       return res.json({
         code: 0,
         message: null,
@@ -311,7 +322,7 @@ export const queryFeedback = async (req: Request, res: Response) => {
         },
       });
     }
-    
+
     // 如果请求用户对特定景点的反馈（相当于之前的user-feedback功能）
     if (attraction_id && !user_id && !pageSize) {
       const feedback = await Feedback.findOne({
@@ -368,7 +379,7 @@ export const queryFeedback = async (req: Request, res: Response) => {
       if (user_id) {
         where.user_id = user_id;
       }
-      
+
       if (attraction_id) {
         where.attraction_id = attraction_id;
       }
@@ -418,9 +429,7 @@ export const queryFeedback = async (req: Request, res: Response) => {
       message: null,
       data: {
         total,
-        feedback: [
-          ...feedback,
-        ],
+        feedback: [...feedback],
         avgScore,
         page,
         pageSize,
@@ -444,57 +453,54 @@ export const queryFeedback = async (req: Request, res: Response) => {
 export const getFeedbackStats = async (req: Request, res: Response) => {
   try {
     const { attraction_id, include_deleted } = req.body;
-    
+
     // 构建查询条件
     const where: any = {};
     if (attraction_id) {
       where.attraction_id = attraction_id;
     }
-    
+
     // 默认只统计未删除的反馈
     if (!include_deleted) {
       where.status = 'public';
     }
-    
+
     // 总反馈数
     const totalCount = await Feedback.count({ where });
-    
+
     // 各评分的数量
     const scoreDistribution = await Promise.all(
       [1, 2, 3, 4, 5].map(async (score) => {
-        const count = await Feedback.count({ 
-          where: { 
+        const count = await Feedback.count({
+          where: {
             ...where,
-            score 
-          } 
+            score,
+          },
         });
         return { score, count };
-      })
+      }),
     );
-    
+
     // 计算平均评分
     let avgScore = 0;
     if (totalCount > 0) {
       const sumScore = scoreDistribution.reduce(
-        (sum, item) => sum + item.score * item.count, 
-        0
+        (sum, item) => sum + item.score * item.count,
+        0,
       );
       avgScore = Math.round((sumScore / totalCount) * 10) / 10; // 保留一位小数
     }
-    
+
     // 有评论的反馈数
     const withCommentCount = await Feedback.count({
       where: {
         ...where,
         comment: {
-          [Op.and]: [
-            { [Op.not]: null },
-            { [Op.ne]: '' }
-          ]
-        }
-      }
+          [Op.and]: [{ [Op.not]: null }, { [Op.ne]: '' }],
+        },
+      },
     });
-    
+
     return res.json({
       code: 0,
       message: null,
@@ -503,10 +509,11 @@ export const getFeedbackStats = async (req: Request, res: Response) => {
         avgScore,
         scoreDistribution,
         withCommentCount,
-        withCommentPercent: totalCount > 0 
-          ? Math.round((withCommentCount / totalCount) * 100) 
-          : 0
-      }
+        withCommentPercent:
+          totalCount > 0
+            ? Math.round((withCommentCount / totalCount) * 100)
+            : 0,
+      },
     });
   } catch (error) {
     logger.error('获取反馈统计失败:', error);

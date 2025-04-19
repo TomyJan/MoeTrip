@@ -56,7 +56,7 @@ export const checkTicket = async (req: Request, res: Response) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     dateObj.setHours(0, 0, 0, 0);
-    
+
     if (dateObj < today) {
       return res.json({
         code: 1001,
@@ -83,7 +83,7 @@ export const checkTicket = async (req: Request, res: Response) => {
       where: {
         ticket_id,
         date,
-        status: 'success' // 只计算成功的订单
+        status: 'success', // 只计算成功的订单
       },
     });
 

@@ -12,7 +12,7 @@ export async function createTestUser(
 ): Promise<User> {
   // 先尝试查找已有的用户
   let user: User | null = null;
-  
+
   if (role === 'admin') {
     user = await User.findOne({ where: { role: 'admin' } });
   } else {
@@ -44,7 +44,7 @@ export async function createTestAttraction(): Promise<Attraction> {
   // 确保名称唯一
   const timestamp = Date.now();
   const random = Math.floor(Math.random() * 10000);
-  
+
   return await Attraction.create({
     name: `测试景点_${timestamp}_${random}`,
     description: '这是一个测试景点',
@@ -59,21 +59,23 @@ export async function createTestTicket(attraction_id: number): Promise<Ticket> {
     // 确保名称唯一
     const timestamp = Date.now();
     const random = Math.floor(Math.random() * 10000);
-    
+
     // 先检查景点是否存在
     const attraction = await Attraction.findByPk(attraction_id);
     if (!attraction) {
       throw new Error(`创建测试票种失败：景点ID ${attraction_id} 不存在`);
     }
-    
+
     // 创建票种
     const ticket = await Ticket.create({
       attraction_id,
       name: `测试票种_${timestamp}_${random}`,
       available: 100,
     });
-    
-    console.log(`辅助函数成功创建测试票种: ID=${ticket.id}, 名称=${ticket.name}`);
+
+    console.log(
+      `辅助函数成功创建测试票种: ID=${ticket.id}, 名称=${ticket.name}`,
+    );
     return ticket;
   } catch (error) {
     console.error('辅助函数创建测试票种失败:', error);
@@ -83,11 +85,11 @@ export async function createTestTicket(attraction_id: number): Promise<Ticket> {
 
 // 创建测试反馈
 export async function createTestFeedback(
-  user_id: number, 
-  attraction_id: number, 
+  user_id: number,
+  attraction_id: number,
   status: 'public' | 'deleted' = 'public',
   score?: number,
-  comment?: string | null
+  comment?: string | null,
 ): Promise<Feedback> {
   try {
     // 先检查景点是否存在
@@ -95,35 +97,38 @@ export async function createTestFeedback(
     if (!attraction) {
       throw new Error(`创建测试反馈失败：景点ID ${attraction_id} 不存在`);
     }
-    
+
     // 检查用户是否存在
     const user = await User.findByPk(user_id);
     if (!user) {
       throw new Error(`创建测试反馈失败：用户ID ${user_id} 不存在`);
     }
-    
+
     // 如果未提供分数，使用随机分数
     const finalScore = score ?? Math.floor(Math.random() * 5) + 1; // 1-5之间的随机分数
-    
+
     // 如果未提供评论，使用默认评论
-    const finalComment = comment !== undefined ? comment : `测试反馈 ${Date.now()}`;
-    
+    const finalComment =
+      comment !== undefined ? comment : `测试反馈 ${Date.now()}`;
+
     // 检查是否已存在反馈
     let feedback = await Feedback.findOne({
       where: {
         user_id,
-        attraction_id
-      }
+        attraction_id,
+      },
     });
-    
+
     // 如果已存在反馈，更新它
     if (feedback) {
       await feedback.update({
         score: finalScore,
         comment: finalComment,
-        status
+        status,
       });
-      console.log(`辅助函数更新了测试反馈: ID=${feedback.id}, 用户=${user_id}, 景点=${attraction_id}`);
+      console.log(
+        `辅助函数更新了测试反馈: ID=${feedback.id}, 用户=${user_id}, 景点=${attraction_id}`,
+      );
     } else {
       // 创建新反馈
       feedback = await Feedback.create({
@@ -131,11 +136,13 @@ export async function createTestFeedback(
         attraction_id,
         score: finalScore,
         comment: finalComment,
-        status
+        status,
       });
-      console.log(`辅助函数创建了测试反馈: ID=${feedback.id}, 用户=${user_id}, 景点=${attraction_id}`);
+      console.log(
+        `辅助函数创建了测试反馈: ID=${feedback.id}, 用户=${user_id}, 景点=${attraction_id}`,
+      );
     }
-    
+
     return feedback;
   } catch (error) {
     console.error('辅助函数创建测试反馈失败:', error);

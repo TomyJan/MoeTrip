@@ -17,6 +17,11 @@ router.post('/query', authMiddleware, feedbackController.queryFeedback);
 router.post('/update', authMiddleware, feedbackController.updateFeedback);
 
 // 获取反馈统计 (管理员可见)
-router.post('/stats', authMiddleware, adminMiddleware, feedbackController.getFeedbackStats);
+router.post(
+  '/stats',
+  authMiddleware,
+  adminMiddleware,
+  feedbackController.getFeedbackStats,
+);
 
 export default router;

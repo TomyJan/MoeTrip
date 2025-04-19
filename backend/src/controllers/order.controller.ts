@@ -67,7 +67,7 @@ export const createOrder = async (req: Request, res: Response) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     dateObj.setHours(0, 0, 0, 0);
-    
+
     if (dateObj < today) {
       return res.json({
         code: 1001,
@@ -91,7 +91,7 @@ export const createOrder = async (req: Request, res: Response) => {
       where: {
         ticket_id,
         date,
-        status: 'success' // 只计算成功的订单
+        status: 'success', // 只计算成功的订单
       },
     });
 
@@ -116,7 +116,9 @@ export const createOrder = async (req: Request, res: Response) => {
       status: 'success', // 添加默认状态值
     });
 
-    logger.info(`用户 ${user_id} 预订票种 ${ticket_id} ${quantity} 张，日期: ${date}`);
+    logger.info(
+      `用户 ${user_id} 预订票种 ${ticket_id} ${quantity} 张，日期: ${date}`,
+    );
 
     return res.json({
       code: 0,
@@ -131,7 +133,7 @@ export const createOrder = async (req: Request, res: Response) => {
           user_id: order.user_id,
           status: order.status,
           created_at: order.created_at,
-          updated_at: order.updated_at
+          updated_at: order.updated_at,
         },
       },
     });
@@ -157,7 +159,7 @@ export const queryOrders = async (req: Request, res: Response) => {
 
     // 确定要查询的用户ID
     let targetUserId = currentUserId;
-    
+
     // 如果是管理员且指定了用户ID，则查询指定用户
     if (isAdmin && user_id) {
       targetUserId = user_id;
@@ -175,11 +177,11 @@ export const queryOrders = async (req: Request, res: Response) => {
     // 查询订单记录
     const orders = await Order.findAll({
       where: { user_id: targetUserId },
-      order: [['created_at', 'DESC']]
+      order: [['created_at', 'DESC']],
     });
 
     // 格式化响应数据，只包含API文档中指定的字段
-    const formattedOrders = orders.map(order => ({
+    const formattedOrders = orders.map((order) => ({
       id: order.id,
       order_id: order.id,
       ticket_id: order.ticket_id,
@@ -188,7 +190,7 @@ export const queryOrders = async (req: Request, res: Response) => {
       user_id: order.user_id,
       status: order.status,
       created_at: order.created_at,
-      updated_at: order.updated_at
+      updated_at: order.updated_at,
     }));
 
     return res.json({
@@ -196,8 +198,8 @@ export const queryOrders = async (req: Request, res: Response) => {
       message: null,
       data: {
         total: orders.length,
-        orders: formattedOrders
-      }
+        orders: formattedOrders,
+      },
     });
   } catch (error) {
     logger.error('查询购票记录失败:', error);
@@ -269,8 +271,9 @@ export const updateOrder = async (req: Request, res: Response) => {
     }
 
     // 准备更新数据
-    const updateData: { quantity?: number; date?: string; status?: string } = {};
-    
+    const updateData: { quantity?: number; date?: string; status?: string } =
+      {};
+
     // 如果提供了新数量，验证并添加到更新数据
     if (quantity !== undefined) {
       if (isNaN(quantity) || quantity <= 0) {
@@ -282,7 +285,7 @@ export const updateOrder = async (req: Request, res: Response) => {
       }
       updateData.quantity = quantity;
     }
-    
+
     // 如果提供了新日期，验证并添加到更新数据
     if (date) {
       // 验证日期格式和是否真实存在
@@ -299,7 +302,7 @@ export const updateOrder = async (req: Request, res: Response) => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       dateObj.setHours(0, 0, 0, 0);
-      
+
       if (dateObj < today) {
         return res.json({
           code: 1001,
@@ -307,7 +310,7 @@ export const updateOrder = async (req: Request, res: Response) => {
           data: null,
         });
       }
-      
+
       updateData.date = date;
     }
 
@@ -336,14 +339,14 @@ export const updateOrder = async (req: Request, res: Response) => {
     // 检查新的数量是否可用（如果要修改数量或日期）
     const newQuantity = quantity || order.quantity;
     const newDate = date || order.date;
-    
+
     // 查询该日期已售票数（不包括当前订单）
     const soldCount = await Order.sum('quantity', {
       where: {
         ticket_id: order.ticket_id,
         date: newDate,
         id: { [Op.ne]: order_id }, // 排除当前订单
-        status: 'success' // 只计算成功的订单
+        status: 'success', // 只计算成功的订单
       },
     });
 
@@ -389,7 +392,7 @@ export const updateOrder = async (req: Request, res: Response) => {
           user_id: updatedOrder.user_id,
           status: updatedOrder.status,
           created_at: updatedOrder.created_at,
-          updated_at: updatedOrder.updated_at
+          updated_at: updatedOrder.updated_at,
         },
       },
     });

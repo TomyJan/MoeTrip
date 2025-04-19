@@ -51,8 +51,8 @@ Feedback.init(
       allowNull: false,
       defaultValue: 'public',
       validate: {
-        isIn: [['public', 'deleted']]
-      }
+        isIn: [['public', 'deleted']],
+      },
     },
   },
   {
