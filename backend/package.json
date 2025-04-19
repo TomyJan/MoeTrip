@@ -7,8 +7,10 @@
     "dev": "nodemon",
     "build": "tsc",
     "start": "node dist/index.js",
-    "test": "jest",
+    "test": "jest --runInBand",
+    "test:coverage": "jest --coverage --runInBand",
     "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts",
     "format": "prettier --write \"**/*.ts\""
   },
   "dependencies": {

@@ -15,9 +15,9 @@ module.exports = {
   ],
   coverageDirectory: 'coverage',
   verbose: true,
-  globals: {
-    'ts-jest': {
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', {
       tsconfig: 'tsconfig.json',
-    },
+    }],
   },
 };

@@ -432,7 +432,7 @@ POST /user/login
 |---|---|---|---|---|---|
 |» code|number|true|none|状态码|0 表示成功，1004 表示用户名或密码错误，非 0 表示错误|
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
-|» data|object|true|none|数据|none|
+|» data|object¦null|true|none|数据|none|
 |»» user|object|true|none|用户信息|none|
 |»»» id|string|true|none|用户ID|ID 编号|
 |»»» username|string|true|none|用户名|none|
@@ -501,7 +501,7 @@ POST /ticket/query_order
 |---|---|---|---|---|---|
 |» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
-|» data|object|true|none|数据|none|
+|» data|object¦null|true|none|数据|none|
 |»» total|number|true|none|记录总数|none|
 |»» orders|[object]|true|none|记录信息|none|
 |»»» id|string|true|none|记录ID|ID 编号|
@@ -642,8 +642,8 @@ POST /ticket/check
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
 |» data|object¦null|true|none|数据|none|
 |»» ticket|object|true|none|门票信息|none|
-|»»» id|number|true|none|票种ID|ID 编号|
-|»»» attraction_id|number|true|none|所在景点ID|none|
+|»»» id|string|true|none|票种ID|ID 编号|
+|»»» attraction_id|string|true|none|所在景点ID|none|
 |»»» name|string|true|none|票种名称|名称|
 |»»» available|number|true|none|当日票种余量|none|
 |»»» date|string(date)|true|none|票种日期|none|
@@ -708,8 +708,8 @@ POST /ticket/add
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
 |» data|object¦null|true|none|数据|none|
 |»» ticket|object|true|none|门票信息|none|
-|»»» id|number|true|none|票种ID|ID 编号|
-|»»» attraction_id|number|true|none|所在景点ID|none|
+|»»» id|string|true|none|票种ID|ID 编号|
+|»»» attraction_id|string|true|none|所在景点ID|none|
 |»»» name|string|true|none|票种名称|名称|
 |»»» available|number|true|none|每日票种余量|none|
 
@@ -836,8 +836,8 @@ POST /ticket/add
 
 ```json
 {
-  "id": 1,
-  "attraction_id": 1,
+  "id": "1",
+  "attraction_id": "1",
   "name": "单人票",
   "available": 100,
   "date": "2025-07-15"
@@ -849,8 +849,8 @@ POST /ticket/add
 
 |名称|类型|必选|约束|中文名|说明|
 |---|---|---|---|---|---|
-|id|number|true|none|票种ID|ID 编号|
-|attraction_id|number|true|none|所在景点ID|none|
+|id|string|true|none|票种ID|ID 编号|
+|attraction_id|string|true|none|所在景点ID|none|
 |name|string|true|none|票种名称|名称|
 |available|number|true|none|当日票种余量|none|
 |date|string(date)|true|none|票种日期|none|
@@ -864,8 +864,8 @@ POST /ticket/add
 
 ```json
 {
-  "id": 1,
-  "attraction_id": 1,
+  "id": "1",
+  "attraction_id": "1",
   "name": "单人票",
   "available": 100
 }
@@ -876,8 +876,8 @@ POST /ticket/add
 
 |名称|类型|必选|约束|中文名|说明|
 |---|---|---|---|---|---|
-|id|number|true|none|票种ID|ID 编号|
-|attraction_id|number|true|none|所在景点ID|none|
+|id|string|true|none|票种ID|ID 编号|
+|attraction_id|string|true|none|所在景点ID|none|
 |name|string|true|none|票种名称|名称|
 |available|number|true|none|每日票种余量|none|
 
