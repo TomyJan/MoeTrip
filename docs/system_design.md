@@ -58,18 +58,22 @@ MoeTrip 采用三层架构（前端、后端、数据层），通过 Fetch 进�
 | `users`       | id (PK, int), username (varchar), password_hash (varchar), role (varchar) | 用户信息，role 如"user/admin" |
 | `tickets`     | id (PK, int), attraction_id (FK, int), name (varchar), available (int) | 票种信息，available为每日可用数量 |
 | `orders`      | id (PK, int), user_id (FK, int), ticket_id (FK, int), quantity (int), date (date), created_at (datetime) | 订单信息，包含购票日期 |
-| `feedback`    | id (PK, int), user_id (FK, int), score (int), comment (text), created_at (datetime) | 满意度评分（1-5 分） |
+| `feedback`    | id (PK, int), user_id (FK, int), attraction_id (FK, int), score (int), comment (text), status (varchar), created_at (datetime), updated_at (datetime) | 用户对景点的满意度评分（1-5分）和反馈 |
 
 **关系**：
 - `orders.user_id` -> `users.id`
 - `orders.ticket_id` -> `tickets.id`
 - `facilities.attraction_id` -> `attractions.id`
 - `tickets.attraction_id` -> `attractions.id`
+- `feedback.user_id` -> `users.id`
+- `feedback.attraction_id` -> `attractions.id`
 
 **数据字典**（部分示例）：
 - `attractions.name`: 景点名称，字符串，非空，最大 100 字符
 - `tickets.available`: 每日可用票数，整数，非负
 - `orders.date`: 门票使用日期，日期类型
+- `feedback.score`: 用户评分，整数，范围1-5
+- `feedback.status`: 反馈状态，字符串，取值"public"或"deleted"
 
 ## 3. 模块设计
 
@@ -121,7 +125,25 @@ MoeTrip 采用三层架构（前端、后端、数据层），通过 Fetch 进�
   - 用户购票 -> Fetch `/order/create` -> 后端验证余量 -> 更新 `orders`
   - 管理员添加票种 -> Fetch `/ticket/add` -> 后端创建新票种
 
-### 3.4 数据分析与可视化
+### 3.4 用户反馈管理
+
+- **功能**：
+  - 用户提交景点反馈和评分
+  - 查询反馈（个人/景点/全部）
+  - 更新和删除反馈
+  - 统计反馈数据（管理员）
+- **前端**：
+  - 组件：`FeedbackForm.vue`、`FeedbackList.vue`、`FeedbackStats.vue`
+  - 交互：五星评分组件，评论表单，反馈统计卡片
+- **后端**：
+  - 路由：`/feedback/add`, `/feedback/query`, `/feedback/update`, `/feedback/stats`
+  - 逻辑：Sequelize 操作 `feedback` 表，支持过滤和统计
+- **数据流**：
+  - 用户提交评价 -> Fetch `/feedback/add` -> 后端存储 -> 前端显示成功消息
+  - 用户查询评价 -> Fetch `/feedback/query` -> 后端返回数组 -> 前端展示列表
+  - 管理员查看统计 -> Fetch `/feedback/stats` -> 后端聚合分析 -> 前端显示图表
+
+### 3.5 数据分析与可视化
 
 - **功能**：
   - 统计流量、销售、收入
@@ -152,15 +174,21 @@ MoeTrip 使用非 RESTful API，路由以功能为导向。以下是主要接口
   - POST `/ticket/check`：检查票种余量
   - POST `/order/create`：购买门票
   - POST `/ticket/add`：添加新票种
+- **用户反馈**：
+  - POST `/feedback/add`：添加景点反馈
+  - POST `/feedback/query`：查询反馈列表
+  - POST `/feedback/update`：更新/删除反馈
+  - POST `/feedback/stats`：统计反馈数据（管理员）
 
 **错误码**：
 - 0: 成功
 - 1001: 参数无效
-- 1002: 名称重复
+- 1002: 名称重复/已存在反馈
 - 1003: 用户名已存在
 - 1004: 用户名或密码错误
 - 1005: 票种余量不足
-- 2001: 无管理员权限
+- 1006: 订单/反馈不存在
+- 2001: 无访问权限
 
 **TypeScript 示例**（请求/响应）：
 ```typescript
