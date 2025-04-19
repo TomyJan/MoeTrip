@@ -5,6 +5,7 @@ import attractionRoutes from './routes/attraction.routes';
 import facilityRoutes from './routes/facility.routes';
 import ticketRoutes from './routes/ticket.routes';
 import orderRoutes from './routes/order.routes';
+import feedbackRoutes from './routes/feedback.routes';
 import { httpLogger } from './middlewares/http-logger.middleware';
 import logger from './utils/logger';
 
@@ -39,6 +40,7 @@ app.use('/api/v1/attraction', attractionRoutes);
 app.use('/api/v1/facility', facilityRoutes);
 app.use('/api/v1/ticket', ticketRoutes);
 app.use('/api/v1/order', orderRoutes);
+app.use('/api/v1/feedback', feedbackRoutes);
 
 // 错误处理中间件
 app.use(

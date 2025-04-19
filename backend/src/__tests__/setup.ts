@@ -91,10 +91,14 @@ beforeAll(async () => {
       CREATE TABLE feedback (
         id SERIAL PRIMARY KEY,
         user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        attraction_id INTEGER NOT NULL REFERENCES attractions(id) ON DELETE CASCADE,
         score SMALLINT NOT NULL CHECK (score BETWEEN 1 AND 5),
         comment TEXT,
+        status VARCHAR(10) NOT NULL DEFAULT 'public',
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT valid_feedback_status CHECK (status IN ('public', 'deleted')),
+        UNIQUE (user_id, attraction_id)
       );
       
       -- 8. 创建索引
@@ -104,6 +108,7 @@ beforeAll(async () => {
       CREATE INDEX idx_orders_ticket_id ON orders(ticket_id);
       CREATE INDEX idx_orders_date ON orders(date);
       CREATE INDEX idx_feedback_user_id ON feedback(user_id);
+      CREATE INDEX idx_feedback_attraction_id ON feedback(attraction_id);
     `);
     
     console.log('所有表和索引创建成功');
@@ -161,8 +166,8 @@ beforeEach(async () => {
         (1, 2, 1, 2, '2025-07-15', 'success');
       
       -- 9. 插入反馈数据
-      INSERT INTO feedback (id, user_id, score, comment) VALUES
-        (1, 2, 5, '景色非常美！');
+      INSERT INTO feedback (id, user_id, attraction_id, score, comment, status) VALUES
+        (1, 2, 1, 5, '景色非常美！', 'public');
       
       -- 10. 更新序列号
       SELECT setval('users_id_seq', 3);

@@ -798,6 +798,316 @@ POST /order/update
 |»»» created_at|string(date-time)|true|none|创建时间|none|
 |»»» updated_at|string(date-time)|true|none|更新时间|none|
 
+# 用户反馈
+
+## POST 添加反馈
+
+POST /feedback/add
+
+用户对景点添加反馈评价
+
+> Body 请求参数
+
+```json
+{
+  "attraction_id": 1,
+  "score": 5,
+  "comment": "很好"
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» attraction_id|body|number| 是 | 景点ID|要评价的景点ID|
+|» score|body|number| 是 | 评分|1-5之间的整数评分|
+|» comment|body|string| 否 | 评论内容|评论内容，可选，不超过500字符|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": null,
+  "data": {
+    "feedback": {
+      "id": 1,
+      "user_id": 1,
+      "attraction_id": 1,
+      "score": 5,
+      "comment": "很好",
+      "status": "public",
+      "created_at": "2025-07-15T10:00:00Z",
+      "updated_at": "2025-07-15T10:00:00Z"
+    }
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，1001 参数错误，1002 已存在反馈，2001 未登录，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|反馈成功时返回数据，错误时为 null|
+|»» feedback|object|true|none|反馈信息|包含反馈的详细信息|
+|»»» id|string|true|none|反馈ID|反馈记录的ID|
+|»»» user_id|string|true|none|用户ID|提交反馈的用户ID|
+|»»» attraction_id|number|true|none|景点ID|被评价的景点ID|
+|»»» score|number|true|none|评分|用户评分（1-5）|
+|»»» comment|string|false|none|评论内容|用户评论，可以为null|
+|»»» status|string|true|none|状态|反馈状态，public或deleted|
+|»»» created_at|string(date-time)|true|none|创建时间|反馈创建时间|
+|»»» updated_at|string(date-time)|true|none|更新时间|反馈更新时间|
+
+## POST 查询反馈
+
+POST /feedback/query
+
+查询用户或景点的反馈信息
+
+> Body 请求参数
+
+```json
+{
+  "id": 1,
+  "attraction_id": 1,
+  "user_id": 1,
+  "min_score": 1,
+  "max_score": 5,
+  "has_comment": true,
+  "keyword": "好",
+  "include_deleted": false,
+  "page": 1,
+  "pageSize": 10
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» id|body|number| 否 | 反馈ID|获取单个反馈时使用|
+|» attraction_id|body|number| 否 | 景点ID|获取指定景点的反馈|
+|» user_id|body|number| 否 | 用户ID|获取指定用户的反馈，管理员可查询任何用户|
+|» min_score|body|number| 否 | 最小评分|按最小评分筛选|
+|» max_score|body|number| 否 | 最大评分|按最大评分筛选|
+|» has_comment|body|boolean| 否 | 是否有评论|true筛选有评论的，false筛选无评论的|
+|» keyword|body|string| 否 | 关键词|在评论中搜索的关键词|
+|» include_deleted|body|boolean| 否 | 包含已删除|none|
+|» page|body|number| 否 | 页码|分页参数，默认为1|
+|» pageSize|body|number| 否 | 每页数量|分页参数，默认为10，最大50|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": null,
+  "data": {
+    "total": 1,
+    "feedback": [
+      {
+        "id": "1",
+        "user_id": "1",
+        "attraction_id": 1,
+        "score": 5,
+        "comment": "很好",
+        "status": "public",
+        "created_at": "2025-07-15T10:00:00Z",
+        "updated_at": "2025-07-15T10:00:00Z"
+      }
+    ],
+    "avgScore": 4.9
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，1001 参数错误，1006 反馈不存在，2001 权限错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|查询成功时返回数据，错误时为null|
+|»» total|number|true|none|总数|符合条件的反馈总数|
+|»» feedback|[object]|true|none|反馈列表|反馈记录列表|
+|»»» id|string|true|none|反馈ID|反馈记录的ID|
+|»»» user_id|string|true|none|用户ID|提交反馈的用户ID|
+|»»» attraction_id|number|true|none|景点ID|被评价的景点ID|
+|»»» score|number|true|none|评分|用户评分（1-5）|
+|»»» comment|string|false|none|评论内容|用户评论，可以为null|
+|»»» status|string|true|none|状态|反馈状态，public或deleted|
+|»»» created_at|string(date-time)|true|none|创建时间|反馈创建时间|
+|»»» updated_at|string(date-time)|true|none|更新时间|反馈更新时间|
+|»» avgScore|number|true|none|平均分|指定景点的平均评分|
+
+## POST 更新反馈
+
+POST /feedback/update
+
+> Body 请求参数
+
+```json
+{
+  "id": 1,
+  "score": 5,
+  "comment": "很好",
+  "status": "public"
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» id|body|number| 是 | 反馈ID|要更新的反馈ID|
+|» score|body|number| 否 | 评分|更新的评分，1-5之间|
+|» comment|body|string| 否 | 评论内容|更新的评论内容，null表示清除评论|
+|» status|body|string| 否 | 状态|反馈状态，public正常，deleted表示删除|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "data": {
+    "feedback": {
+      "id": "1",
+      "user_id": "1",
+      "attraction_id": 1,
+      "score": 5,
+      "comment": "很好",
+      "status": "public",
+      "created_at": "2025-07-15T10:00:00Z",
+      "updated_at": "2025-07-15T10:00:00Z"
+    }
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» feedback|object|true|none|反馈信息|更新后的反馈信息|
+|»»» id|string|true|none|反馈ID|反馈记录的ID|
+|»»» user_id|string|true|none|用户ID|提交反馈的用户ID|
+|»»» attraction_id|number|true|none|景点ID|被评价的景点ID|
+|»»» score|number|true|none|评分|用户评分（1-5）|
+|»»» comment|string|false|none|评论内容|用户评论，可以为null|
+|»»» status|string|true|none|状态|反馈状态，public或deleted|
+|»»» created_at|string(date-time)|true|none|创建时间|反馈创建时间|
+|»»» updated_at|string(date-time)|true|none|更新时间|反馈更新时间|
+
+## POST 反馈统计
+
+POST /feedback/stats
+
+获取反馈统计信息（管理员专用）
+
+> Body 请求参数
+
+```json
+{
+  "attraction_id": 1,
+  "include_deleted": false
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» attraction_id|body|number| 否 | 景点ID|指定景点ID获取该景点统计|
+|» include_deleted|body|boolean| 否 | 包含已删除|是否包含已删除反馈，默认false|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": null,
+  "data": {
+    "totalCount": 1,
+    "avgScore": 4.9,
+    "scoreDistribution": [
+      {
+        "score": 5,
+        "count": 1
+      }
+    ],
+    "withCommentCount": 1,
+    "withCommentPercent": 50
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» totalCount|number|true|none|反馈总数|符合条件的反馈总数|
+|»» avgScore|number|true|none|平均分|平均评分，保留一位小数|
+|»» scoreDistribution|[object]|true|none|评分分布|各评分的数量统计|
+|»»» score|number|true|none|评分|评分值（1-5）|
+|»»» count|number|true|none|数量|该评分的反馈数量|
+|»» withCommentCount|number|true|none|有评论数|有评论的反馈数量|
+|»» withCommentPercent|number|true|none|评论百分比|有评论的反馈占比（%）|
+
 # 数据模型
 
 <h2 id="tocS_单个景点信息">单个景点信息</h2>
@@ -969,4 +1279,38 @@ POST /order/update
 |attraction_id|string|true|none|所在景点ID|none|
 |name|string|true|none|票种名称|名称|
 |available|number|true|none|每日票种余量|none|
+
+<h2 id="tocS_单条反馈信息">单条反馈信息</h2>
+
+<a id="schema单条反馈信息"></a>
+<a id="schema_单条反馈信息"></a>
+<a id="tocS单条反馈信息"></a>
+<a id="tocs单条反馈信息"></a>
+
+```json
+{
+  "id": "1",
+  "user_id": "1",
+  "attraction_id": 1,
+  "score": 5,
+  "comment": "很好",
+  "status": "public",
+  "created_at": "2025-07-15T10:00:00Z",
+  "updated_at": "2025-07-15T10:00:00Z"
+}
+
+```
+
+### 属性
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|id|string|true|none|反馈ID|反馈记录的ID|
+|user_id|string|true|none|用户ID|提交反馈的用户ID|
+|attraction_id|number|true|none|景点ID|被评价的景点ID|
+|score|number|true|none|评分|用户评分（1-5）|
+|comment|string|false|none|评论内容|用户评论，可以为null|
+|status|string|true|none|状态|反馈状态，public或deleted|
+|created_at|string(date-time)|true|none|创建时间|反馈创建时间|
+|updated_at|string(date-time)|true|none|更新时间|反馈更新时间|
 

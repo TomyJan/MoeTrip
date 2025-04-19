@@ -67,10 +67,14 @@ CREATE TABLE orders (
 CREATE TABLE feedback (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    attraction_id BIGINT NOT NULL REFERENCES attractions(id) ON DELETE CASCADE,
     score SMALLINT NOT NULL CHECK (score BETWEEN 1 AND 5),
     comment TEXT,
+    status VARCHAR(10) NOT NULL DEFAULT 'public',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT valid_feedback_status CHECK (status IN ('public', 'deleted')),
+    UNIQUE (user_id, attraction_id)
 );
 
 -- 索引
@@ -80,6 +84,7 @@ CREATE INDEX idx_orders_user_id ON orders(user_id);
 CREATE INDEX idx_orders_ticket_id ON orders(ticket_id);
 CREATE INDEX idx_orders_date ON orders(date);
 CREATE INDEX idx_feedback_user_id ON feedback(user_id);
+CREATE INDEX idx_feedback_attraction_id ON feedback(attraction_id);
 
 -- 插入初始数据
 
@@ -113,5 +118,5 @@ INSERT INTO orders (user_id, ticket_id, quantity, date, status) VALUES
 (2, 1, 2, '2025-07-15', 'success');
 
 -- 反馈
-INSERT INTO feedback (user_id, score, comment) VALUES
-(2, 5, '景色非常美！');
+INSERT INTO feedback (user_id, attraction_id, score, comment, status) VALUES
+(2, 1, 5, '景色非常美！', 'public');

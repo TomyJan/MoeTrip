@@ -69,11 +69,15 @@ CREATE TABLE orders (
 CREATE TABLE feedback (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT UNSIGNED NOT NULL,
+    attraction_id BIGINT UNSIGNED NOT NULL,
     score TINYINT NOT NULL CHECK (score BETWEEN 1 AND 5),
     comment TEXT,
+    status ENUM('public', 'deleted') NOT NULL DEFAULT 'public',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (attraction_id) REFERENCES attractions(id) ON DELETE CASCADE,
+    UNIQUE KEY feedback_user_attraction_unique (user_id, attraction_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 索引
@@ -83,6 +87,7 @@ CREATE INDEX idx_orders_user_id ON orders(user_id);
 CREATE INDEX idx_orders_ticket_id ON orders(ticket_id);
 CREATE INDEX idx_orders_date ON orders(date);
 CREATE INDEX idx_feedback_user_id ON feedback(user_id);
+CREATE INDEX idx_feedback_attraction_id ON feedback(attraction_id);
 
 -- 插入初始数据
 
@@ -116,5 +121,5 @@ INSERT INTO orders (user_id, ticket_id, quantity, date, status) VALUES
 (2, 1, 2, '2025-07-15', 'success');
 
 -- 反馈
-INSERT INTO feedback (user_id, score, comment) VALUES
-(2, 5, '景色非常美！');
+INSERT INTO feedback (user_id, attraction_id, score, comment, status) VALUES
+(2, 1, 5, '景色非常美！', 'public');
