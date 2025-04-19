@@ -11,7 +11,7 @@ export async function createTestUser(
 ): Promise<User> {
   // 先尝试查找已有的用户
   let user: User | null = null;
-  
+
   if (role === 'admin') {
     user = await User.findOne({ where: { role: 'admin' } });
   } else {
@@ -43,7 +43,7 @@ export async function createTestAttraction(): Promise<Attraction> {
   // 确保名称唯一
   const timestamp = Date.now();
   const random = Math.floor(Math.random() * 10000);
-  
+
   return await Attraction.create({
     name: `测试景点_${timestamp}_${random}`,
     description: '这是一个测试景点',
@@ -58,21 +58,23 @@ export async function createTestTicket(attraction_id: number): Promise<Ticket> {
     // 确保名称唯一
     const timestamp = Date.now();
     const random = Math.floor(Math.random() * 10000);
-    
+
     // 先检查景点是否存在
     const attraction = await Attraction.findByPk(attraction_id);
     if (!attraction) {
       throw new Error(`创建测试票种失败：景点ID ${attraction_id} 不存在`);
     }
-    
+
     // 创建票种
     const ticket = await Ticket.create({
       attraction_id,
       name: `测试票种_${timestamp}_${random}`,
       available: 100,
     });
-    
-    console.log(`辅助函数成功创建测试票种: ID=${ticket.id}, 名称=${ticket.name}`);
+
+    console.log(
+      `辅助函数成功创建测试票种: ID=${ticket.id}, 名称=${ticket.name}`,
+    );
     return ticket;
   } catch (error) {
     console.error('辅助函数创建测试票种失败:', error);

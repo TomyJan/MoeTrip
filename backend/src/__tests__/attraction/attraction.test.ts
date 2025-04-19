@@ -8,12 +8,14 @@ describe('景点模块', () => {
   describe('POST /api/v1/attraction/query', () => {
     // 在测试前获取初始化脚本创建的景点数量
     let initialAttractionCount = 0;
-    
+
     beforeEach(async () => {
-      const [result] = await sequelize.query('SELECT COUNT(*) as count FROM attractions');
+      const [result] = await sequelize.query(
+        'SELECT COUNT(*) as count FROM attractions',
+      );
       initialAttractionCount = parseInt((result as any)[0].count);
     });
-    
+
     it('应该成功查询景点列表', async () => {
       const response = await request(app)
         .post('/api/v1/attraction/query')
@@ -22,7 +24,9 @@ describe('景点模块', () => {
       expect(response.status).toBe(200);
       expect(response.body.code).toBe(0);
       expect(response.body.data.total).toBe(initialAttractionCount);
-      expect(response.body.data.attractions).toHaveLength(initialAttractionCount);
+      expect(response.body.data.attractions).toHaveLength(
+        initialAttractionCount,
+      );
       expect(response.body.data.page).toBe(1);
       expect(response.body.data.pageSize).toBe(10);
     });
@@ -37,7 +41,11 @@ describe('景点模块', () => {
       expect(response.body.code).toBe(0);
       expect(response.body.data.total).toBeGreaterThan(0);
       // 检查至少一个结果包含关键词
-      expect(response.body.data.attractions.some((a: { name: string }) => a.name.includes('樱花'))).toBe(true);
+      expect(
+        response.body.data.attractions.some((a: { name: string }) =>
+          a.name.includes('樱花'),
+        ),
+      ).toBe(true);
     });
 
     it('应该正确处理分页', async () => {
@@ -80,7 +88,7 @@ describe('景点模块', () => {
       // 确保景点名称唯一
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       const newAttraction = {
         name: `测试景点_${timestamp}_${random}`,
         description: '这是一个测试景点',
@@ -109,7 +117,7 @@ describe('景点模块', () => {
       // 确保景点名称唯一
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       const response = await request(app)
         .post('/api/v1/attraction/add')
         .set('Authorization', `Bearer ${userToken}`)
@@ -159,7 +167,7 @@ describe('景点模块', () => {
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
       const attractionName = `测试景点_${timestamp}_${random}`;
-      
+
       await Attraction.create({
         name: attractionName,
         description: '这是一个测试景点',

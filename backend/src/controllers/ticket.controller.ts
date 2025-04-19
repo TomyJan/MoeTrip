@@ -57,7 +57,7 @@ export const checkTicket = async (req: Request, res: Response) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     dateObj.setHours(0, 0, 0, 0);
-    
+
     if (dateObj < today) {
       return res.json({
         code: 1001,
@@ -156,7 +156,7 @@ export const purchase = async (req: Request, res: Response) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     dateObj.setHours(0, 0, 0, 0);
-    
+
     if (dateObj < today) {
       return res.json({
         code: 1001,
@@ -203,7 +203,9 @@ export const purchase = async (req: Request, res: Response) => {
       date,
     });
 
-    logger.info(`用户 ${user_id} 预订票种 ${ticket_id} ${quantity} 张，日期: ${date}`);
+    logger.info(
+      `用户 ${user_id} 预订票种 ${ticket_id} ${quantity} 张，日期: ${date}`,
+    );
 
     return res.json({
       code: 0,
@@ -331,7 +333,7 @@ export const queryOrders = async (req: Request, res: Response) => {
 
     // 确定要查询的用户ID
     let targetUserId = currentUserId;
-    
+
     // 如果是管理员且指定了用户ID，则查询指定用户
     if (isAdmin && user_id) {
       targetUserId = user_id;
@@ -349,18 +351,18 @@ export const queryOrders = async (req: Request, res: Response) => {
     // 查询订单记录
     const orders = await Order.findAll({
       where: { user_id: targetUserId },
-      order: [['created_at', 'DESC']]
+      order: [['created_at', 'DESC']],
     });
 
     // 格式化响应数据，只包含API文档中指定的字段
-    const formattedOrders = orders.map(order => ({
+    const formattedOrders = orders.map((order) => ({
       id: order.id,
       order_id: order.id,
       ticket_id: order.ticket_id,
       quantity: order.quantity,
       date: order.date,
       user_id: order.user_id,
-      created_at: order.created_at
+      created_at: order.created_at,
     }));
 
     return res.json({
@@ -368,8 +370,8 @@ export const queryOrders = async (req: Request, res: Response) => {
       message: null,
       data: {
         total: orders.length,
-        orders: formattedOrders
-      }
+        orders: formattedOrders,
+      },
     });
   } catch (error) {
     logger.error('查询购票记录失败:', error);

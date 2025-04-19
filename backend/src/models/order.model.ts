@@ -56,7 +56,7 @@ Order.init(
             // 新记录永远需要验证
             // Sequelize会在创建新记录时自动调用此验证器
             const dateToCheck = new Date(value);
-            
+
             // 检查日期是否有效
             if (isNaN(dateToCheck.getTime())) {
               throw new Error('无效的日期格式');
@@ -68,7 +68,7 @@ Order.init(
               throw new Error('日期验证失败');
             }
           }
-        }
+        },
       },
     },
   },

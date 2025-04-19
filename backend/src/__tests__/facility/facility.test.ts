@@ -19,7 +19,7 @@ describe('设施模块', () => {
       // 创建测试设施（确保名称唯一）
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       await Facility.bulkCreate([
         {
           name: `休息亭_${timestamp}_1_${random}`,
@@ -70,12 +70,12 @@ describe('设施模块', () => {
       // 获取第一个设施的名称前缀（不包括时间戳）
       const facilities = await Facility.findAll({
         where: { attraction_id: attractionId },
-        limit: 1
+        limit: 1,
       });
-      
+
       // 使用设施名称的一部分作为搜索关键词
       const keyword = facilities[0].name.split('_')[0];
-      
+
       const response = await request(app)
         .post('/api/v1/facility/query')
         .send({ keyword });
@@ -131,7 +131,7 @@ describe('设施模块', () => {
       // 确保设施名称唯一
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       const newFacility = {
         name: `测试设施_${timestamp}_${random}`,
         location: '测试位置',
@@ -159,7 +159,7 @@ describe('设施模块', () => {
     it('应该拒绝非管理员添加设施', async () => {
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       const response = await request(app)
         .post('/api/v1/facility/add')
         .set('Authorization', `Bearer ${userToken}`)
@@ -207,7 +207,7 @@ describe('设施模块', () => {
     it('应该验证状态值', async () => {
       const timestamp = Date.now();
       const random = Math.floor(Math.random() * 10000);
-      
+
       const response = await request(app)
         .post('/api/v1/facility/add')
         .set('Authorization', `Bearer ${adminToken}`)

@@ -103,7 +103,7 @@ beforeAll(async () => {
       CREATE INDEX idx_orders_date ON orders(date);
       CREATE INDEX idx_feedback_user_id ON feedback(user_id);
     `);
-    
+
     console.log('所有表和索引创建成功');
     console.log('测试数据库初始化完成');
   } catch (error) {
@@ -170,7 +170,7 @@ beforeEach(async () => {
       SELECT setval('orders_id_seq', 2);
       SELECT setval('feedback_id_seq', 2);
     `);
-    
+
     console.log('测试数据已重置');
   } catch (error) {
     console.error('重置测试数据失败:', error);
