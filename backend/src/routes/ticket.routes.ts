@@ -24,4 +24,7 @@ router.post(
   ticketController.addTicket,
 );
 
+// 修改订单（需要用户登录）
+router.post('/update_order', authMiddleware, ticketController.updateOrder);
+
 export default router;

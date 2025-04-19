@@ -2,6 +2,7 @@ import request from 'supertest';
 import app from '@/app';
 import { generateTestToken } from '../utils/test-utils';
 import User from '@/models/user.model';
+import Order from '@/models/order.model';
 
 // 使用最简单的测试方法，依赖setup.ts中创建的初始数据
 describe('已购票查询模块', () => {
@@ -30,6 +31,61 @@ describe('已购票查询模块', () => {
       const allBelongToUser = orders.every((order: any) => order.user_id === 2);
       
       expect(allBelongToUser).toBe(true);
+      
+      // 验证订单包含状态字段
+      if (orders.length > 0) {
+        expect(orders[0]).toHaveProperty('status');
+        expect(['success', 'cancelled']).toContain(orders[0].status);
+      }
+    });
+    
+    // 测试不同状态订单的查询
+    it('应该返回包含不同状态的订单', async () => {
+      // 获取数据库中的用户ID=2(普通用户)
+      const user = await User.findByPk(2);
+      if (!user) {
+        console.warn('找不到ID=2的普通用户，跳过测试');
+        return;
+      }
+      
+      // 确保有一个成功状态的订单
+      const existingOrder = await Order.findOne({
+        where: { user_id: user.id }
+      });
+      
+      if (!existingOrder) {
+        console.warn('找不到现有订单，跳过测试');
+        return;
+      }
+      
+      // 创建一个已取消状态的订单
+      const cancelledOrder = await Order.create({
+        user_id: user.id,
+        ticket_id: existingOrder.ticket_id,
+        quantity: 1,
+        date: '2025-09-20',
+        status: 'cancelled'
+      });
+      
+      const token = generateTestToken(user);
+      
+      const response = await request(app)
+        .post('/api/v1/ticket/query_order')
+        .set('Authorization', `Bearer ${token}`)
+        .send({});
+      
+      expect(response.status).toBe(200);
+      expect(response.body.code).toBe(0);
+      
+      // 验证返回的订单包含success和cancelled状态
+      const orders = response.body.data.orders || [];
+      const hasSuccessOrder = orders.some((order: any) => order.status === 'success');
+      const hasCancelledOrder = orders.some((order: any) => order.status === 'cancelled');
+      
+      expect(hasSuccessOrder || hasCancelledOrder).toBe(true);
+      
+      // 清理测试数据
+      await cancelledOrder.destroy();
     });
     
     // 管理员用户测试

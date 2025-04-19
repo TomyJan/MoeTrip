@@ -474,13 +474,15 @@ POST /ticket/query_order
     "total": 1,
     "orders": [
       {
-        "id": 1,
-        "order_id": 1,
-        "ticket_id": 1,
+        "id": "1",
+        "order_id": "1",
+        "ticket_id": "1",
         "quantity": 1,
         "date": "2025-07-15",
-        "user_id": 1,
-        "created_at": "2025-07-15T10:00:00Z"
+        "user_id": "1",
+        "status": "success",
+        "created_at": "2025-07-15T10:00:00Z",
+        "updated_at": "2025-07-15T10:00:00Z"
       }
     ]
   }
@@ -510,7 +512,9 @@ POST /ticket/query_order
 |»»» quantity|number|true|none|门票数量|none|
 |»»» date|string(date)|true|none|门票日期|none|
 |»»» user_id|string|true|none|用户ID|none|
+|»»» status|string|true|none|订单状态|none|
 |»»» created_at|string(date-time)|true|none|创建时间|none|
+|»»» updated_at|string(date-time)|true|none|更新时间|none|
 
 ## POST 购买门票
 
@@ -547,13 +551,15 @@ POST /ticket/purchase
   "message": null,
   "data": {
     "ticket": {
-      "id": 1,
-      "order_id": 1,
-      "ticket_id": 1,
+      "id": "1",
+      "order_id": "1",
+      "ticket_id": "1",
       "quantity": 1,
       "date": "2025-07-15",
-      "user_id": 1,
-      "created_at": "2025-07-15T10:00:00Z"
+      "user_id": "1",
+      "status": "success",
+      "created_at": "2025-07-15T10:00:00Z",
+      "updated_at": "2025-07-15T10:00:00Z"
     }
   }
 }
@@ -581,7 +587,9 @@ POST /ticket/purchase
 |»»» quantity|number|true|none|门票数量|none|
 |»»» date|string(date)|true|none|门票日期|none|
 |»»» user_id|string|true|none|用户ID|none|
+|»»» status|string|true|none|订单状态|none|
 |»»» created_at|string(date-time)|true|none|创建时间|none|
+|»»» updated_at|string(date-time)|true|none|更新时间|none|
 
 ## POST 检查票种余量
 
@@ -713,6 +721,83 @@ POST /ticket/add
 |»»» name|string|true|none|票种名称|名称|
 |»»» available|number|true|none|每日票种余量|none|
 
+## POST 修改门票订单
+
+POST /ticket/update_order
+
+用户修改已购门票的日期或数量
+
+> Body 请求参数
+
+```json
+{
+  "order_id": 1,
+  "quantity": 1,
+  "date": "2025-07-15",
+  "status": "success"
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» order_id|body|number| 是 | 订单ID|要修改的订单ID|
+|» quantity|body|number| 否 | 门票数量|修改后的数量，不填则保持原数量|
+|» date|body|string(date)| 否 | 门票日期|修改后的日期，不填则保持原日期|
+|» status|body|string| 否 | 订单状态|none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": null,
+  "data": {
+    "ticket": {
+      "id": "1",
+      "order_id": "1",
+      "ticket_id": "1",
+      "quantity": 1,
+      "date": "2025-07-15",
+      "user_id": "1",
+      "status": "success",
+      "created_at": "2025-07-15T10:00:00Z",
+      "updated_at": "2025-07-15T10:00:00Z"
+    }
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，1005 表示票种余量不足，1006 表示订单不存在，2001 表示无权限修改，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» ticket|object|true|none|门票信息|none|
+|»»» id|string|true|none|记录ID|ID 编号|
+|»»» order_id|string|true|none|订单ID|none|
+|»»» ticket_id|string|true|none|票种ID|none|
+|»»» quantity|number|true|none|门票数量|none|
+|»»» date|string(date)|true|none|门票日期|none|
+|»»» user_id|string|true|none|用户ID|none|
+|»»» status|string|true|none|订单状态|none|
+|»»» created_at|string(date-time)|true|none|创建时间|none|
+|»»» updated_at|string(date-time)|true|none|更新时间|none|
+
 # 数据模型
 
 <h2 id="tocS_单个景点信息">单个景点信息</h2>
@@ -810,7 +895,9 @@ POST /ticket/add
   "quantity": 1,
   "date": "2025-07-15",
   "user_id": "1",
-  "created_at": "2025-07-15T10:00:00Z"
+  "status": "success",
+  "created_at": "2025-07-15T10:00:00Z",
+  "updated_at": "2025-07-15T10:00:00Z"
 }
 
 ```
@@ -825,7 +912,9 @@ POST /ticket/add
 |quantity|number|true|none|门票数量|none|
 |date|string(date)|true|none|门票日期|none|
 |user_id|string|true|none|用户ID|none|
+|status|string|true|none|订单状态|none|
 |created_at|string(date-time)|true|none|创建时间|none|
+|updated_at|string(date-time)|true|none|更新时间|none|
 
 <h2 id="tocS_单日单条票种信息">单日单条票种信息</h2>
 

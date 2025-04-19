@@ -58,6 +58,7 @@ CREATE TABLE orders (
     ticket_id BIGINT UNSIGNED NOT NULL,
     quantity INT NOT NULL CHECK (quantity > 0),
     date DATE NOT NULL,
+    status ENUM('success', 'cancelled') NOT NULL DEFAULT 'success',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT,
@@ -111,8 +112,8 @@ INSERT INTO tickets (attraction_id, name, available) VALUES
 (2, '夜游票', 30);
 
 -- 订单
-INSERT INTO orders (user_id, ticket_id, quantity, date) VALUES
-(2, 1, 2, '2025-07-15');
+INSERT INTO orders (user_id, ticket_id, quantity, date, status) VALUES
+(2, 1, 2, '2025-07-15', 'success');
 
 -- 反馈
 INSERT INTO feedback (user_id, score, comment) VALUES

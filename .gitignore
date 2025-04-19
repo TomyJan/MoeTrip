@@ -10,3 +10,6 @@ backend/.env.test
 
 # Logs
 backend/logs/
+
+# Test Coverage Reports
+backend/coverage/

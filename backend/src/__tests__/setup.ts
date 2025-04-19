@@ -81,8 +81,10 @@ beforeAll(async () => {
         ticket_id INTEGER NOT NULL REFERENCES tickets(id) ON DELETE RESTRICT,
         quantity INTEGER NOT NULL CHECK (quantity > 0),
         date DATE NOT NULL,
+        status VARCHAR(20) NOT NULL DEFAULT 'success',
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT valid_status CHECK (status IN ('success', 'cancelled'))
       );
       
       -- 7. 创建feedback表
@@ -155,8 +157,8 @@ beforeEach(async () => {
         (3, 2, '夜游票', 30);
       
       -- 8. 插入订单数据
-      INSERT INTO orders (id, user_id, ticket_id, quantity, date) VALUES
-        (1, 2, 1, 2, '2025-07-15');
+      INSERT INTO orders (id, user_id, ticket_id, quantity, date, status) VALUES
+        (1, 2, 1, 2, '2025-07-15', 'success');
       
       -- 9. 插入反馈数据
       INSERT INTO feedback (id, user_id, score, comment) VALUES

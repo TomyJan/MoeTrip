@@ -9,6 +9,7 @@ class Order extends Model {
   public ticket_id!: number;
   public quantity!: number;
   public date!: Date;
+  public status!: string;
 
   // 时间戳
   public readonly created_at!: Date;
@@ -70,6 +71,14 @@ Order.init(
           }
         }
       },
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'success',
+      validate: {
+        isIn: [['success', 'cancelled']]
+      }
     },
   },
   {
