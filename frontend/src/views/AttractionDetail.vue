@@ -209,7 +209,7 @@ onMounted(() => {
         <v-col cols="12" md="6">
           <v-card elevation="2" rounded="lg">
             <v-img
-              :src="attraction.image_url || 'https://via.placeholder.com/600x400?text=暂无图片'"
+              :src="attraction.image_url"
               height="400"
               cover
               class="bg-grey-lighten-2 rounded-t-lg"

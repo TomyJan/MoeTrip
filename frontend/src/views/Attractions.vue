@@ -127,7 +127,7 @@
             <v-text-field
               v-model="newAttraction.image_url"
               label="图片URL"
-              placeholder="/images/example.jpg"
+              placeholder="/images/new.jpg"
               variant="outlined"
               density="comfortable"
               bg-color="surface-variant"
@@ -283,7 +283,7 @@ const addAttraction = async () => {
       name: newAttraction.name,
       description: newAttraction.description,
       open_time: newAttraction.open_time,
-      image_url: newAttraction.image_url || '/placeholder-image.jpg'
+      image_url: newAttraction.image_url || '/images/new.jpg'
     });
     
     // 检查是否请求成功

@@ -1,7 +1,7 @@
 <template>
   <v-card class="mb-4 attraction-card" @click="$emit('view')" variant="elevated" rounded="lg">
     <v-img
-      :src="attraction.image_url || '/placeholder-image.jpg'"
+      :src="attraction.image_url || '/images/new.jpg'"
       height="200px"
       cover
       class="rounded-t-lg"
