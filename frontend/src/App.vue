@@ -25,11 +25,13 @@ const handleLogout = () => {
 const themeModeText = {
   system: '跟随系统',
   dark: '深色模式',
-  light: '浅色模式'
+  light: '浅色模式',
 };
 
 // 获取当前主题模式的文本
-const currentThemeModeText = computed(() => themeModeText[themeStore.mode as keyof typeof themeModeText]);
+const currentThemeModeText = computed(
+  () => themeModeText[themeStore.mode as keyof typeof themeModeText],
+);
 
 // 切换主题模式
 const setThemeMode = (mode: 'system' | 'dark' | 'light') => {
@@ -49,7 +51,11 @@ onMounted(() => {
       <v-app-bar-title class="text-md-h6">萌游旅行</v-app-bar-title>
       <v-spacer></v-spacer>
 
-      <v-btn to="/attractions" variant="text" rounded="pill" class="ml-2 d-none d-sm-flex"
+      <v-btn
+        to="/attractions"
+        variant="text"
+        rounded="pill"
+        class="ml-2 d-none d-sm-flex"
         >景点</v-btn
       >
 
@@ -131,8 +137,12 @@ onMounted(() => {
         </v-menu>
       </template>
 
-            <!-- 主题切换按钮 -->
-            <v-menu location="bottom end" transition="scale-transition" min-width="200">
+      <!-- 主题切换按钮 -->
+      <v-menu
+        location="bottom end"
+        transition="scale-transition"
+        min-width="200"
+      >
         <template v-slot:activator="{ props }">
           <v-btn
             variant="text"
@@ -143,7 +153,11 @@ onMounted(() => {
             min-width="36"
           >
             <v-icon>
-              {{ themeStore.isDarkMode ? 'mdi-weather-night' : 'mdi-weather-sunny' }}
+              {{
+                themeStore.isDarkMode
+                  ? 'mdi-weather-night'
+                  : 'mdi-weather-sunny'
+              }}
             </v-icon>
             <v-tooltip activator="parent" location="bottom">
               主题设置 (当前: {{ currentThemeModeText }})
@@ -179,7 +193,6 @@ onMounted(() => {
           </v-list>
         </v-card>
       </v-menu>
-
     </v-app-bar>
 
     <v-main :class="{ 'auth-main': isAuthPage }">

@@ -284,70 +284,74 @@ const loading = ref(false);
 const getChartThemeConfig = () => {
   // 检测是否为深色模式
   const isDarkMode = document.body.getAttribute('data-theme') === 'dark';
-  
+
   return {
     // 文本颜色配置
     textStyle: {
-      color: `var(--chart-text-color)`
+      color: `var(--chart-text-color)`,
     },
     // 标题颜色配置
     title: {
       textStyle: {
-        color: `var(--chart-title-color)`
-      }
+        color: `var(--chart-title-color)`,
+      },
     },
     // 图例颜色配置
     legend: {
       textStyle: {
-        color: `var(--chart-text-color)`
-      }
+        color: `var(--chart-text-color)`,
+      },
     },
     // 坐标轴配置
     xAxis: {
       axisLine: {
         lineStyle: {
-          color: `var(--chart-axis-color)`
-        }
+          color: `var(--chart-axis-color)`,
+        },
       },
       axisLabel: {
-        color: `var(--chart-axis-color)`
+        color: `var(--chart-axis-color)`,
       },
       splitLine: {
         lineStyle: {
-          color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-        }
-      }
+          color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+        },
+      },
     },
     yAxis: {
       axisLine: {
         lineStyle: {
-          color: `var(--chart-axis-color)`
-        }
+          color: `var(--chart-axis-color)`,
+        },
       },
       axisLabel: {
-        color: `var(--chart-axis-color)`
+        color: `var(--chart-axis-color)`,
       },
       splitLine: {
         lineStyle: {
-          color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-        }
-      }
+          color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+        },
+      },
     },
     // 提示框配置
     tooltip: {
-      backgroundColor: isDarkMode ? 'rgba(50, 50, 50, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-      borderColor: isDarkMode ? 'rgba(70, 70, 70, 0.9)' : 'rgba(200, 200, 200, 0.9)',
+      backgroundColor: isDarkMode
+        ? 'rgba(50, 50, 50, 0.9)'
+        : 'rgba(255, 255, 255, 0.9)',
+      borderColor: isDarkMode
+        ? 'rgba(70, 70, 70, 0.9)'
+        : 'rgba(200, 200, 200, 0.9)',
       textStyle: {
-        color: isDarkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)'
-      }
-    }
+        color: isDarkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)',
+      },
+    },
   };
 };
 
 // 评分分布图表配置
 const scoreDistributionOption = computed(() => {
   const themeConfig = getChartThemeConfig();
-  
+
   if (!stats.value || !stats.value.scoreDistribution) {
     return {
       ...themeConfig,
@@ -361,15 +365,15 @@ const scoreDistributionOption = computed(() => {
         trigger: 'item',
       },
       grid: {
-        show: false
+        show: false,
       },
       xAxis: {
         show: false,
-        type: 'category'
+        type: 'category',
       },
       yAxis: {
         show: false,
-        type: 'value'
+        type: 'value',
       },
       series: [
         {
@@ -377,11 +381,14 @@ const scoreDistributionOption = computed(() => {
           radius: ['40%', '70%'],
           itemStyle: {
             borderRadius: 10,
-            borderColor: document.body.getAttribute('data-theme') === 'dark' ? '#2C2B30' : '#fff',
+            borderColor:
+              document.body.getAttribute('data-theme') === 'dark'
+                ? '#2C2B30'
+                : '#fff',
             borderWidth: 2,
           },
           label: {
-            color: 'var(--chart-label-color)'
+            color: 'var(--chart-label-color)',
           },
           data: [
             { value: 0, name: '1星' },
@@ -408,15 +415,15 @@ const scoreDistributionOption = computed(() => {
       trigger: 'item',
     },
     grid: {
-      show: false
+      show: false,
     },
     xAxis: {
       show: false,
-      type: 'category'
+      type: 'category',
     },
     yAxis: {
       show: false,
-      type: 'value'
+      type: 'value',
     },
     series: [
       {
@@ -424,17 +431,20 @@ const scoreDistributionOption = computed(() => {
         radius: ['40%', '70%'],
         itemStyle: {
           borderRadius: 10,
-          borderColor: document.body.getAttribute('data-theme') === 'dark' ? '#2C2B30' : '#fff',
+          borderColor:
+            document.body.getAttribute('data-theme') === 'dark'
+              ? '#2C2B30'
+              : '#fff',
           borderWidth: 2,
         },
         label: {
-          color: 'var(--chart-label-color)'
+          color: 'var(--chart-label-color)',
         },
         emphasis: {
           label: {
             color: 'var(--chart-label-color)',
-            fontWeight: 'bold'
-          }
+            fontWeight: 'bold',
+          },
         },
         data: [
           { value: distribution['1'] || 0, name: '1星' },

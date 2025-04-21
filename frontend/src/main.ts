@@ -43,9 +43,11 @@ if (typeof window !== 'undefined') {
   if (savedTheme === 'dark') {
     initialTheme = 'dark';
   } else if (savedTheme === 'system') {
-    initialTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches 
-      ? 'dark' 
-      : 'light';
+    initialTheme =
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
   }
 }
 

@@ -455,63 +455,67 @@ const generateMockData = () => {
 const getChartThemeConfig = () => {
   // 检测是否为深色模式
   const isDarkMode = document.body.getAttribute('data-theme') === 'dark';
-  
+
   return {
     // 文本颜色配置
     textStyle: {
-      color: `var(--chart-text-color)`
+      color: `var(--chart-text-color)`,
     },
     // 标题颜色配置
     title: {
       textStyle: {
-        color: `var(--chart-title-color)`
-      }
+        color: `var(--chart-title-color)`,
+      },
     },
     // 图例颜色配置
     legend: {
       textStyle: {
-        color: `var(--chart-text-color)`
-      }
+        color: `var(--chart-text-color)`,
+      },
     },
     // 坐标轴配置
     xAxis: {
       axisLine: {
         lineStyle: {
-          color: `var(--chart-axis-color)`
-        }
+          color: `var(--chart-axis-color)`,
+        },
       },
       axisLabel: {
-        color: `var(--chart-axis-color)`
+        color: `var(--chart-axis-color)`,
       },
       splitLine: {
         lineStyle: {
-          color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-        }
-      }
+          color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+        },
+      },
     },
     yAxis: {
       axisLine: {
         lineStyle: {
-          color: `var(--chart-axis-color)`
-        }
+          color: `var(--chart-axis-color)`,
+        },
       },
       axisLabel: {
-        color: `var(--chart-axis-color)`
+        color: `var(--chart-axis-color)`,
       },
       splitLine: {
         lineStyle: {
-          color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-        }
-      }
+          color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+        },
+      },
     },
     // 提示框配置
     tooltip: {
-      backgroundColor: isDarkMode ? 'rgba(50, 50, 50, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-      borderColor: isDarkMode ? 'rgba(70, 70, 70, 0.9)' : 'rgba(200, 200, 200, 0.9)',
+      backgroundColor: isDarkMode
+        ? 'rgba(50, 50, 50, 0.9)'
+        : 'rgba(255, 255, 255, 0.9)',
+      borderColor: isDarkMode
+        ? 'rgba(70, 70, 70, 0.9)'
+        : 'rgba(200, 200, 200, 0.9)',
       textStyle: {
-        color: isDarkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)'
-      }
-    }
+        color: isDarkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)',
+      },
+    },
   };
 };
 
@@ -564,8 +568,8 @@ const feedbackTrendOption = computed(() => {
         max: 5,
         position: 'left',
         nameTextStyle: {
-          color: 'var(--chart-text-color)'
-        }
+          color: 'var(--chart-text-color)',
+        },
       },
       {
         ...themeConfig.yAxis,
@@ -573,8 +577,8 @@ const feedbackTrendOption = computed(() => {
         name: '反馈数量',
         position: 'right',
         nameTextStyle: {
-          color: 'var(--chart-text-color)'
-        }
+          color: 'var(--chart-text-color)',
+        },
       },
     ],
     series: [
@@ -598,7 +602,10 @@ const feedbackTrendOption = computed(() => {
         yAxisIndex: 1,
         data: counts,
         itemStyle: {
-          color: document.body.getAttribute('data-theme') === 'dark' ? '#546E7A' : '#35495e',
+          color:
+            document.body.getAttribute('data-theme') === 'dark'
+              ? '#546E7A'
+              : '#35495e',
         },
       },
     ],
@@ -625,7 +632,7 @@ function generateRandomData(length: number, min: number, max: number) {
 // 访问量图表配置
 const visitorsChartOption = computed(() => {
   const themeConfig = getChartThemeConfig();
-  
+
   return {
     ...themeConfig,
     title: {
@@ -654,14 +661,23 @@ const visitorsChartOption = computed(() => {
         name: '访问量',
         areaStyle: {
           opacity: 0.6,
-          color: document.body.getAttribute('data-theme') === 'dark' ? '#4B7BEC' : '#4B7BEC'
+          color:
+            document.body.getAttribute('data-theme') === 'dark'
+              ? '#4B7BEC'
+              : '#4B7BEC',
         },
         itemStyle: {
-          color: document.body.getAttribute('data-theme') === 'dark' ? '#4B7BEC' : '#4B7BEC'
+          color:
+            document.body.getAttribute('data-theme') === 'dark'
+              ? '#4B7BEC'
+              : '#4B7BEC',
         },
         lineStyle: {
-          color: document.body.getAttribute('data-theme') === 'dark' ? '#4B7BEC' : '#4B7BEC'
-        }
+          color:
+            document.body.getAttribute('data-theme') === 'dark'
+              ? '#4B7BEC'
+              : '#4B7BEC',
+        },
       },
     ],
   };
@@ -670,7 +686,7 @@ const visitorsChartOption = computed(() => {
 // 评分分布图表配置
 const scoreDistributionOption = computed(() => {
   const themeConfig = getChartThemeConfig();
-  
+
   if (!feedbackStats.value || !feedbackStats.value.scoreDistribution) {
     return {
       ...themeConfig,
@@ -684,15 +700,15 @@ const scoreDistributionOption = computed(() => {
         trigger: 'item',
       },
       grid: {
-        show: false
+        show: false,
       },
       xAxis: {
         show: false,
-        type: 'category'
+        type: 'category',
       },
       yAxis: {
         show: false,
-        type: 'value'
+        type: 'value',
       },
       series: [
         {
@@ -700,11 +716,14 @@ const scoreDistributionOption = computed(() => {
           radius: ['40%', '70%'],
           itemStyle: {
             borderRadius: 10,
-            borderColor: document.body.getAttribute('data-theme') === 'dark' ? '#2C2B30' : '#fff',
+            borderColor:
+              document.body.getAttribute('data-theme') === 'dark'
+                ? '#2C2B30'
+                : '#fff',
             borderWidth: 2,
           },
           label: {
-            color: 'var(--chart-label-color)'
+            color: 'var(--chart-label-color)',
           },
           data: [
             { value: 0, name: '1星' },
@@ -731,15 +750,15 @@ const scoreDistributionOption = computed(() => {
       trigger: 'item',
     },
     grid: {
-      show: false
+      show: false,
     },
     xAxis: {
       show: false,
-      type: 'category'
+      type: 'category',
     },
     yAxis: {
       show: false,
-      type: 'value'
+      type: 'value',
     },
     series: [
       {
@@ -747,17 +766,20 @@ const scoreDistributionOption = computed(() => {
         radius: ['40%', '70%'],
         itemStyle: {
           borderRadius: 10,
-          borderColor: document.body.getAttribute('data-theme') === 'dark' ? '#2C2B30' : '#fff',
+          borderColor:
+            document.body.getAttribute('data-theme') === 'dark'
+              ? '#2C2B30'
+              : '#fff',
           borderWidth: 2,
         },
         label: {
-          color: 'var(--chart-label-color)'
+          color: 'var(--chart-label-color)',
         },
         emphasis: {
           label: {
             color: 'var(--chart-label-color)',
-            fontWeight: 'bold'
-          }
+            fontWeight: 'bold',
+          },
         },
         data: [
           { value: distribution['1'] || 0, name: '1星' },
@@ -774,7 +796,7 @@ const scoreDistributionOption = computed(() => {
 // 热门景点图表配置
 const topAttractionsOption = computed(() => {
   const themeConfig = getChartThemeConfig();
-  
+
   // 确保attractions是数组并且有数据
   const attractions = Array.isArray(attractionStats.value.attractions)
     ? attractionStats.value.attractions.slice(0, 5)
@@ -816,8 +838,11 @@ const topAttractionsOption = computed(() => {
         type: 'bar',
         data: counts.length > 0 ? counts : [0],
         itemStyle: {
-          color: document.body.getAttribute('data-theme') === 'dark' ? '#5C6BC0' : '#3949AB'
-        }
+          color:
+            document.body.getAttribute('data-theme') === 'dark'
+              ? '#5C6BC0'
+              : '#3949AB',
+        },
       },
     ],
   };
@@ -827,7 +852,9 @@ const topAttractionsOption = computed(() => {
 <style scoped>
 .v-card {
   overflow: hidden;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
   border: 1px solid var(--card-border);
   background: var(--md-surface);
 }
@@ -844,12 +871,12 @@ const topAttractionsOption = computed(() => {
   border: 1px solid var(--card-border);
 }
 
-.v-card[variant="outlined"] {
+.v-card[variant='outlined'] {
   background: var(--md-background);
   border: 1px dashed var(--card-border);
 }
 
-.v-card[variant="outlined"]:hover {
+.v-card[variant='outlined']:hover {
   background: var(--md-surface-variant);
   border: 1px solid var(--card-border);
 }
