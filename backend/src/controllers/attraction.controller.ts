@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Op } from 'sequelize';
 import Attraction from '../models/attraction.model';
+import Feedback from '../models/feedback.model';
 import logger from '../utils/logger';
 
 /**
@@ -46,12 +47,60 @@ export const queryAttractions = async (req: Request, res: Response) => {
       limit: pageSize,
     });
 
+    // 准备带有评分信息的景点数据
+    const enhancedAttractions = await Promise.all(
+      attractions.map(async (attraction) => {
+        const plainAttraction = attraction.get({ plain: true });
+        
+        // 参考feedback.controller.ts中的方法查询每个景点的评分统计
+        const where = {
+          attraction_id: plainAttraction.id,
+          status: 'public'
+        };
+        
+        // 查询该景点的评价总数
+        const feedback_total = await Feedback.count({ where });
+        
+        // 计算平均评分
+        let feedback_avg = '0.0';
+        if (feedback_total > 0) {
+          // 查询每个评分的数量
+          const scoreDistribution = await Promise.all(
+            [1, 2, 3, 4, 5].map(async (score) => {
+              const count = await Feedback.count({
+                where: {
+                  ...where,
+                  score,
+                },
+              });
+              return { score, count };
+            })
+          );
+          
+          // 计算总分和平均分
+          const sumScore = scoreDistribution.reduce(
+            (sum, item) => sum + item.score * item.count,
+            0
+          );
+          
+          feedback_avg = (Math.round((sumScore / feedback_total) * 10) / 10).toFixed(1);
+        }
+        
+        // 将评分信息添加到景点数据中
+        return {
+          ...plainAttraction,
+          feedback_avg,
+          feedback_total
+        };
+      })
+    );
+
     return res.json({
       code: 0,
       message: null,
       data: {
         total,
-        attractions,
+        attractions: enhancedAttractions,
         page,
         pageSize,
       },
@@ -131,10 +180,17 @@ export const addAttraction = async (req: Request, res: Response) => {
 
     logger.info(`新景点已添加: ${name}`);
 
+    // 为新添加的景点设置默认评分信息
+    const attractionWithFeedback = {
+      ...attraction.get({ plain: true }),
+      feedback_avg: '0.0',
+      feedback_total: 0
+    };
+
     return res.json({
       code: 0,
       message: null,
-      data: attraction,
+      data: { attraction: attractionWithFeedback },
     });
   } catch (error) {
     logger.error('添加景点失败:', error);

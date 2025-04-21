@@ -69,24 +69,28 @@ async function loadAttractionDetail() {
     }
     
     // 加载景点反馈
-    const feedbackResult = await feedbackApi.query({ 
-      attraction_id: attractionId,
-      page: 1,
-      pageSize: 10
-    })
-    
-    // 检查是否请求成功
-    if (!feedbackResult.success) {
-      // 只在控制台显示错误，不影响景点展示
-      console.error('获取反馈失败:', feedbackResult.error);
-      return;
-    }
-    
-    const feedbackResponse = feedbackResult.data;
-    if (feedbackResponse.data && feedbackResponse.data.feedback) {
-      feedbacks.value = feedbackResponse.data.feedback
-    } else if (feedbackResponse.data) {
-      feedbacks.value = feedbackResponse.data
+    if (userStore.isLoggedIn) {
+      const feedbackResult = await feedbackApi.query({ 
+        attraction_id: attractionId,
+        page: 1,
+        pageSize: 10
+      })
+      
+      // 检查是否请求成功
+      if (!feedbackResult.success) {
+        // 只在控制台显示错误，不影响景点展示
+        console.error('获取反馈失败:', feedbackResult.error);
+        return;
+      }
+      
+      const feedbackResponse = feedbackResult.data;
+      if (feedbackResponse.data && feedbackResponse.data.feedback) {
+        feedbacks.value = feedbackResponse.data.feedback
+      } else if (feedbackResponse.data) {
+        feedbacks.value = feedbackResponse.data
+      }
+    } else {
+      feedbacks.value = [];
     }
   } catch (error) {
     console.error('加载景点详情失败', error)
@@ -139,7 +143,7 @@ async function submitFeedback() {
 
 // 计算平均评分
 const averageScore = computed(() => {
-  if (!feedbacks.value || feedbacks.value.length === 0) {
+  if (!userStore.isLoggedIn || !feedbacks.value || feedbacks.value.length === 0) {
     return '0'
   }
   
@@ -227,15 +231,15 @@ onMounted(() => {
             <v-card-text>
               <v-row align="center" class="mx-0 mb-2">
                 <v-rating
-                  :model-value="parseFloat(averageScore)"
+                  :model-value="parseFloat(attraction.feedback_avg)"
                   color="amber-darken-2"
                   density="comfortable"
                   half-increments
                   readonly
                   size="small"
                 ></v-rating>
-                <span class="ms-2 text-subtitle-1">{{ averageScore }}分</span>
-                <span class="text-caption text-medium-emphasis ms-2">({{ feedbacks.length }}条评价)</span>
+                <span class="ms-2 text-subtitle-1">{{ attraction.feedback_avg }}分</span>
+                <span class="text-caption text-medium-emphasis ms-2">({{ attraction.feedback_total }}条评价)</span>
               </v-row>
               
               <v-divider class="mb-3"></v-divider>
@@ -278,7 +282,21 @@ onMounted(() => {
         <v-col cols="12">
           <h2 class="text-md-h5 mb-4 font-weight-medium">用户评价</h2>
           
-          <v-card v-if="feedbacks.length === 0" elevation="0" rounded="lg" class="text-center py-12 bg-surface-variant">
+          <v-card v-if="!userStore.isLoggedIn" elevation="0" rounded="lg" class="text-center py-12 bg-surface-variant">
+            <v-icon icon="mdi-lock-outline" size="large" color="on-surface-variant"></v-icon>
+            <p class="text-md-body-1 mt-2 text-medium-emphasis">登录后可见</p>
+            <v-btn
+              color="primary"
+              variant="tonal"
+              rounded="pill"
+              class="mt-4"
+              to="/login"
+            >
+              去登录
+            </v-btn>
+          </v-card>
+          
+          <v-card v-else-if="feedbacks.length === 0" elevation="0" rounded="lg" class="text-center py-12 bg-surface-variant">
             <v-icon icon="mdi-comment-outline" size="large" color="on-surface-variant"></v-icon>
             <p class="text-md-body-1 mt-2 text-medium-emphasis">暂无评价</p>
           </v-card>
