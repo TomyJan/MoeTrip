@@ -94,3 +94,16 @@ MoeTrip 是一个旅游景区信息管理系统，采用前后端分离架构，
 
 API 文档：[docs/api/api_spec.md](docs/api/api_spec.md)
 
+## 许可证
+
+本项目采用 MPL 2.0 许可证，详情请参见 [LICENSE](LICENSE)
+
+- [Vue.js](https://vuejs.org/)
+- [Vuetify](https://vuetifyjs.com/)
+- [ECharts](https://echarts.apache.org/)
+- [Express](https://expressjs.com/)
+- [Sequelize](https://sequelize.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Node.js](https://nodejs.org/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Jest](https://jestjs.io/)
