@@ -4,23 +4,32 @@
     :max-width="maxWidth"
     :persistent="persistent"
   >
-    <v-card>
-      <v-card-title>{{ title }}</v-card-title>
-      <v-card-subtitle v-if="subtitle">{{ subtitle }}</v-card-subtitle>
+    <v-card rounded="lg" elevation="3">
+      <v-card-title class="text-md-h6">{{ title }}</v-card-title>
+      <v-card-subtitle v-if="subtitle" class="pb-2">{{ subtitle }}</v-card-subtitle>
       
-      <v-card-text>
+      <v-card-text class="pt-2">
         <slot></slot>
       </v-card-text>
       
-      <v-card-actions v-if="!hideActions" class="d-flex">
+      <v-card-actions v-if="!hideActions" class="d-flex pa-4">
         <v-spacer v-if="alignActionsEnd"></v-spacer>
         <slot name="actions">
-          <v-btn color="grey" @click="onCancel">{{ cancelText }}</v-btn>
+          <v-btn 
+            color="secondary" 
+            variant="text" 
+            @click="onCancel"
+            rounded="pill"
+          >
+            {{ cancelText }}
+          </v-btn>
           <v-btn
             color="primary"
+            variant="tonal"
             class="ml-2"
             :loading="loading"
             @click="onConfirm"
+            rounded="pill"
           >
             {{ confirmText }}
           </v-btn>
@@ -84,3 +93,15 @@ function onConfirm() {
   emit('confirm')
 }
 </script>
+
+<style scoped>
+:deep(.v-card) {
+  overflow: hidden;
+}
+
+:deep(.v-btn) {
+  text-transform: none;
+  letter-spacing: 0.0178571em;
+  font-weight: 500;
+}
+</style>

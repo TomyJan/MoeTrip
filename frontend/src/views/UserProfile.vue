@@ -574,7 +574,7 @@ onMounted(() => {
 
 <template>
   <v-container>
-    <h1 class="text-h4 mb-6">个人中心</h1>
+    <h1 class="text-md-h4 mb-6 font-weight-medium">个人中心</h1>
     
     <!-- 主内容区 -->
     <div v-if="userStore.isLoggedIn">
@@ -598,17 +598,19 @@ onMounted(() => {
       <!-- 加载完成 -->
       <v-row v-else>
         <v-col cols="12" md="4">
-          <v-card>
-            <v-card-title class="text-h5">基本资料</v-card-title>
+          <v-card rounded="lg" elevation="1">
+            <v-card-title class="text-md-h6">基本资料</v-card-title>
             <v-divider></v-divider>
             
             <v-card-text class="pt-4">
-              <v-avatar size="120" color="primary" class="mb-4">
-                <v-icon icon="mdi-account" size="64" color="white"></v-icon>
-              </v-avatar>
+              <div class="d-flex justify-center">
+                <v-avatar size="120" color="primary" class="mb-4">
+                  <v-icon icon="mdi-account" size="64" color="white"></v-icon>
+                </v-avatar>
+              </div>
               
-              <h2 class="text-h5 mb-2 text-center">{{ userStore.username }}</h2>
-              <p class="text-caption text-grey text-center">用户ID: {{ userStore.id }}</p>
+              <h2 class="text-md-h5 mb-2 text-center">{{ userStore.username }}</h2>
+              <p class="text-caption text-medium-emphasis text-center">用户ID: {{ userStore.id }}</p>
               
               <v-divider class="my-4"></v-divider>
               
@@ -618,8 +620,10 @@ onMounted(() => {
               
               <v-btn 
                 block 
-                color="primary" 
-                class="mt-4"
+                color="primary"
+                variant="tonal"
+                rounded="pill"
+                class="mt-4 text-none"
                 @click="showChangePasswordDialog = true"
               >
                 修改密码
@@ -630,11 +634,11 @@ onMounted(() => {
         
         <v-col cols="12" md="8">
           <!-- 订单信息 -->
-          <v-card class="mb-6">
-            <v-card-title class="text-h5 d-flex align-center">
+          <v-card class="mb-6" rounded="lg" elevation="1">
+            <v-card-title class="text-md-h6 d-flex align-center">
               我的订单
               <v-spacer></v-spacer>
-              <v-chip>{{ totalOrders }} 条记录</v-chip>
+              <v-chip rounded="pill" size="small">{{ totalOrders }} 条记录</v-chip>
             </v-card-title>
             <v-divider></v-divider>
             
@@ -647,8 +651,8 @@ onMounted(() => {
             <!-- 订单列表 -->
             <template v-else>
               <v-card-text v-if="userOrders.length === 0" class="text-center py-8">
-                <v-icon icon="mdi-ticket-outline" size="large" color="grey"></v-icon>
-                <p class="text-body-1 mt-2">您还没有任何订单</p>
+                <v-icon icon="mdi-ticket-outline" size="large" color="secondary"></v-icon>
+                <p class="text-md-body-1 mt-2 text-medium-emphasis">您还没有任何订单</p>
               </v-card-text>
               
               <div v-else>
@@ -657,6 +661,7 @@ onMounted(() => {
                     v-for="order in userOrders"
                     :key="order.id"
                     class="mb-3"
+                    rounded="lg"
                   >
                     <template v-slot:prepend>
                       <v-avatar color="primary" class="mr-3">
@@ -670,6 +675,8 @@ onMounted(() => {
                       <v-chip
                         :color="formatOrderStatus(order.status).color"
                         size="small"
+                        variant="flat"
+                        rounded="pill"
                       >
                         {{ formatOrderStatus(order.status).text }}
                       </v-chip>
@@ -681,7 +688,7 @@ onMounted(() => {
                         <v-spacer></v-spacer>
                         <span class="text-primary">{{ order.total_price ? `¥ ${order.total_price}` : '免费' }}</span>
                       </div>
-                      <div class="mt-1 text-caption text-grey">
+                      <div class="mt-1 text-caption text-medium-emphasis">
                         订单号: {{ order.id }} | {{ formatDateTime(order.created_at) }}
                       </div>
                     </v-list-item-subtitle>
@@ -692,6 +699,8 @@ onMounted(() => {
                         variant="text"
                         color="primary"
                         size="small"
+                        rounded="pill"
+                        class="text-none"
                         @click="payOrder(order.id)"
                       >
                         支付
@@ -735,11 +744,11 @@ onMounted(() => {
           </v-card>
           
           <!-- 反馈信息 -->
-          <v-card>
-            <v-card-title class="text-h5 d-flex align-center">
-              我的反馈
+          <v-card rounded="lg" elevation="1">
+            <v-card-title class="text-md-h6 d-flex align-center">
+              我的评价
               <v-spacer></v-spacer>
-              <v-chip>{{ totalItems }} 条记录</v-chip>
+              <v-chip rounded="pill" size="small">{{ totalItems }} 条记录</v-chip>
             </v-card-title>
             <v-divider></v-divider>
             
@@ -766,8 +775,8 @@ onMounted(() => {
             <!-- 反馈列表 -->
             <template v-else>
               <v-card-text v-if="userFeedbacks.length === 0" class="text-center py-8">
-                <v-icon icon="mdi-comment-outline" size="large" color="grey"></v-icon>
-                <p class="text-body-1 mt-2">您还没有提交过任何反馈</p>
+                <v-icon icon="mdi-comment-outline" size="large" color="secondary"></v-icon>
+                <p class="text-md-body-1 mt-2 text-medium-emphasis">您还没有提交过任何反馈</p>
               </v-card-text>
               
               <div v-else>
@@ -776,6 +785,7 @@ onMounted(() => {
                     v-for="feedback in userFeedbacks"
                     :key="feedback.id"
                     class="mb-3"
+                    rounded="lg"
                   >
                     <template v-slot:prepend>
                       <v-avatar color="amber" class="mr-3">
@@ -808,9 +818,9 @@ onMounted(() => {
                     <v-list-item-subtitle>
                       <div class="mt-2">
                         <span v-if="feedback.comment" class="text-body-2">{{ feedback.comment }}</span>
-                        <span v-else class="text-caption text-grey">无评论内容</span>
+                        <span v-else class="text-caption text-medium-emphasis">无评论内容</span>
                       </div>
-                      <div class="mt-1 text-caption text-grey">
+                      <div class="mt-1 text-caption text-medium-emphasis">
                         {{ formatDateTime(feedback.created_at) }}
                       </div>
                     </v-list-item-subtitle>
@@ -836,17 +846,25 @@ onMounted(() => {
       </v-row>
     </div>
     
-    <!-- 未登录状态 -->
+    <!-- 登录提示 -->
     <v-alert
       v-else
-      type="info"
+      type="warning"
       variant="tonal"
       class="mt-4"
+      rounded="lg"
+      border
     >
-      请先登录以访问个人中心
-      <div class="mt-4">
-        <v-btn color="primary" to="/login">
-          去登录
+      请先登录以查看个人信息
+      <div class="mt-3">
+        <v-btn 
+          color="primary" 
+          variant="tonal"
+          rounded="pill"
+          class="text-none"
+          to="/login"
+        >
+          立即登录
         </v-btn>
       </div>
     </v-alert>
@@ -894,35 +912,56 @@ onMounted(() => {
     </v-dialog>
     
     <!-- 编辑反馈对话框 -->
-    <v-dialog v-model="showEditDialog" max-width="500">
-      <v-card>
-        <v-card-title>编辑反馈</v-card-title>
-        <v-card-subtitle v-if="editingFeedback">
-          景点: {{ editingFeedback.attraction_name || `景点 #${editingFeedback.attraction_id}` }}
-        </v-card-subtitle>
-        
-        <v-card-text v-if="editingFeedback">
+    <v-dialog v-model="showEditDialog" max-width="600">
+      <v-card rounded="lg" elevation="3">
+        <v-card-title class="text-md-h6">编辑评价</v-card-title>
+        <v-card-text class="pt-3">
           <v-form @submit.prevent="updateFeedback">
+            <p class="text-md-subtitle-1 mb-2">景点: {{ editingFeedback?.attraction_name || '未知景点' }}</p>
+            
             <v-rating
+              v-if="editingFeedback"
               v-model="editingFeedback.score"
-              color="amber"
+              color="amber-darken-2"
               hover
-              required
+              half-increments
+              size="large"
+              class="mb-3"
             ></v-rating>
             
             <v-textarea
+              v-if="editingFeedback"
               v-model="editingFeedback.comment"
-              label="反馈内容"
+              label="评价内容"
+              variant="outlined"
+              density="comfortable"
+              bg-color="surface-variant"
+              rounded="lg"
+              class="mb-3"
               rows="3"
-              placeholder="请输入您的反馈内容(可选)"
             ></v-textarea>
           </v-form>
         </v-card-text>
         
-        <v-card-actions>
+        <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn text @click="showEditDialog = false">取消</v-btn>
-          <v-btn color="primary" @click="updateFeedback">保存</v-btn>
+          <v-btn 
+            color="secondary" 
+            variant="text" 
+            rounded="pill"
+            class="mr-2"
+            @click="showEditDialog = false"
+          >
+            取消
+          </v-btn>
+          <v-btn 
+            color="primary" 
+            variant="tonal"
+            rounded="pill"
+            @click="updateFeedback"
+          >
+            保存修改
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -965,35 +1004,58 @@ onMounted(() => {
     </v-snackbar>
     
     <!-- 编辑订单对话框 -->
-    <v-dialog v-model="showEditOrderDialog" max-width="500">
-      <v-card>
-        <v-card-title>编辑订单</v-card-title>
-        <v-card-subtitle v-if="currentOrder">
-          景点: {{ currentOrder.attraction?.attraction_name || `景点 #${currentOrder.attraction_id}` }}
-        </v-card-subtitle>
-        
-        <v-card-text v-if="currentOrder">
-          <v-form @submit.prevent="confirmEditOrder">
+    <v-dialog v-model="showEditOrderDialog" max-width="600">
+      <v-card rounded="lg" elevation="3">
+        <v-card-title class="text-md-h6">修改订单</v-card-title>
+        <v-card-text class="pt-3">
+          <v-form v-if="currentOrder" @submit.prevent="confirmEditOrder">
+            <p class="text-md-subtitle-1 mb-2">景点: {{ currentOrder.attraction_name || '未知景点' }}</p>
+            <p class="text-md-subtitle-2 mb-3">票种: {{ currentOrder.ticket_name || '普通票' }}</p>
+            
             <v-text-field
-              v-model="currentOrder.quantity"
+              v-model.number="currentOrder.quantity"
               label="数量"
               type="number"
               min="1"
-              required
+              variant="outlined"
+              density="comfortable"
+              bg-color="surface-variant"
+              rounded="lg"
+              class="mb-3"
             ></v-text-field>
             
-            <v-date-picker
+            <v-text-field
               v-model="currentOrder.date"
-              label="游览日期"
-              required
-            ></v-date-picker>
+              label="预约日期"
+              type="date"
+              variant="outlined"
+              density="comfortable"
+              bg-color="surface-variant"
+              rounded="lg"
+              class="mb-3"
+            ></v-text-field>
           </v-form>
         </v-card-text>
         
-        <v-card-actions>
+        <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn text @click="showEditOrderDialog = false">取消</v-btn>
-          <v-btn color="primary" @click="confirmEditOrder" :loading="loading">确认修改</v-btn>
+          <v-btn 
+            color="secondary" 
+            variant="text" 
+            rounded="pill"
+            class="mr-2"
+            @click="showEditOrderDialog = false"
+          >
+            取消
+          </v-btn>
+          <v-btn 
+            color="primary"
+            variant="tonal"
+            rounded="pill"
+            @click="confirmEditOrder"
+          >
+            保存修改
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -1003,11 +1065,21 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.v-avatar {
-  margin: 0 auto;
-  display: block;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.v-card {
+  overflow: hidden;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.v-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08),
+              0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.v-list-item {
+  transition: background-color 0.2s ease;
+}
+
+.v-list-item:hover {
+  background-color: var(--md-surface-variant);
 }
 </style>

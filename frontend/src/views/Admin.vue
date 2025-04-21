@@ -44,8 +44,8 @@
         </v-row>
         
         <!-- 功能导航 -->
-        <v-card class="mb-6">
-          <v-card-title>系统管理</v-card-title>
+        <v-card class="mb-6" rounded="lg" elevation="1">
+          <v-card-title class="text-md-h6">系统管理</v-card-title>
           <v-card-text>
             <v-row>
               <v-col v-for="(item, index) in adminMenus" :key="index" cols="12" sm="6" md="4" lg="3">
@@ -54,11 +54,13 @@
                   variant="outlined"
                   class="h-100"
                   hover
+                  rounded="lg"
+                  elevation="0"
                 >
                   <v-card-text class="d-flex flex-column align-center text-center">
                     <v-icon :icon="item.icon" size="large" color="primary" class="mb-4"></v-icon>
-                    <div class="text-subtitle-1 font-weight-bold">{{ item.title }}</div>
-                    <div class="text-body-2 text-grey">{{ item.description }}</div>
+                    <div class="text-subtitle-1 font-weight-medium">{{ item.title }}</div>
+                    <div class="text-body-2 text-medium-emphasis">{{ item.description }}</div>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -70,8 +72,8 @@
         <v-row>
           <!-- 最近一周访问量 -->
           <v-col cols="12" md="6">
-            <v-card class="mb-4">
-              <v-card-title class="text-center">最近一周访问量</v-card-title>
+            <v-card class="mb-4" rounded="lg" elevation="1">
+              <v-card-title class="text-center text-md-h6">最近一周访问量</v-card-title>
               <v-card-text style="height: 300px">
                 <v-chart 
                   :option="visitorsChartOption" 
@@ -84,8 +86,8 @@
           
           <!-- 评分分布 -->
           <v-col cols="12" md="6">
-            <v-card class="mb-4">
-              <v-card-title class="text-center">评分分布</v-card-title>
+            <v-card class="mb-4" rounded="lg" elevation="1">
+              <v-card-title class="text-center text-md-h6">评分分布</v-card-title>
               <v-card-text style="height: 300px">
                 <v-chart 
                   :option="scoreDistributionOption" 
@@ -98,8 +100,8 @@
           
           <!-- 热门景点 -->
           <v-col cols="12">
-            <v-card class="mb-4">
-              <v-card-title class="text-center">热门景点</v-card-title>
+            <v-card class="mb-4" rounded="lg" elevation="1">
+              <v-card-title class="text-center text-md-h6">热门景点</v-card-title>
               <v-card-text style="height: 300px">
                 <v-chart 
                   :option="topAttractionsOption" 
@@ -112,16 +114,19 @@
         </v-row>
         
         <!-- 反馈趋势图 -->
-        <v-card>
+        <v-card rounded="lg" elevation="1">
           <v-card-title class="d-flex">
-            <span>反馈趋势</span>
+            <span class="text-md-h6">反馈趋势</span>
             <v-spacer></v-spacer>
             <v-select
               v-model="timeRange"
               :items="timeRanges"
-              density="compact"
+              density="comfortable"
               variant="outlined"
+              bg-color="surface-variant"
+              rounded="lg"
               hide-details
+              class="select-md3"
               style="max-width: 150px"
             ></v-select>
           </v-card-title>
@@ -139,22 +144,11 @@
   </v-container>
   
   <!-- 消息提示条 -->
-  <v-snackbar
-    v-model="showSnackbar"
+  <AppSnackbar
+    v-model:show="showSnackbar"
+    :text="snackbarText"
     :color="snackbarColor"
-    :timeout="3000"
-    location="top"
-  >
-    {{ snackbarText }}
-    <template v-slot:actions>
-      <v-btn
-        variant="text"
-        @click="showSnackbar = false"
-      >
-        关闭
-      </v-btn>
-    </template>
-  </v-snackbar>
+  />
 </template>
 
 <script setup lang="ts">
@@ -174,6 +168,7 @@ import {
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 import dayjs from 'dayjs'
+import AppSnackbar from '../components/AppSnackbar.vue'
 
 // 注册必要的ECharts组件
 use([
@@ -652,11 +647,20 @@ const topAttractionsOption = computed(() => {
 
 <style scoped>
 .v-card {
-  transition: all 0.2s ease-in-out;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
 }
 
 .v-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08),
+              0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.select-md3 :deep(.v-field__outline) {
+  opacity: 0.8;
+}
+
+.select-md3 :deep(.v-field--focused .v-field__outline) {
+  opacity: 1;
 }
 </style>

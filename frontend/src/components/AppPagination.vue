@@ -6,14 +6,18 @@
           v-model="currentPage"
           :length="Math.ceil(totalItems / pageSize)"
           @update:model-value="onPageChange"
+          rounded="lg"
+          active-color="primary"
+          variant="elevated"
+          class="md3-pagination"
         ></v-pagination>
       </v-col>
     </v-row>
     
     <v-row v-else-if="showEmpty">
       <v-col cols="12" class="text-center py-8">
-        <v-icon :icon="emptyIcon" size="large" color="grey"></v-icon>
-        <p class="mt-2 text-body-1">{{ emptyText }}</p>
+        <v-icon :icon="emptyIcon" size="large" color="secondary"></v-icon>
+        <p class="mt-2 text-md-body-1 text-medium-emphasis">{{ emptyText }}</p>
       </v-col>
     </v-row>
   </div>
@@ -51,3 +55,16 @@ function onPageChange(page: number) {
   emit('update:page', page)
 }
 </script>
+
+<style scoped>
+.md3-pagination :deep(.v-pagination__item) {
+  font-weight: 500;
+  min-width: 36px;
+  height: 36px;
+}
+
+.md3-pagination :deep(.v-pagination__item--is-active) {
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+</style>

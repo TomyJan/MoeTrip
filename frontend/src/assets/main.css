@@ -1,17 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
 :root {
-  --primary-color: #42b883;
-  --secondary-color: #35495e;
-  --accent-color: #ff7875;
-  --background-color: #f5f5f5;
-  --text-color: #333333;
+  /* Material Design 3 调色板 */
+  --md-primary: #6750A4;
+  --md-on-primary: #FFFFFF;
+  --md-primary-container: #EADDFF;
+  --md-on-primary-container: #21005E;
+  --md-secondary: #625B71;
+  --md-on-secondary: #FFFFFF;
+  --md-secondary-container: #E8DEF8;
+  --md-on-secondary-container: #1E192B;
+  --md-tertiary: #7D5260;
+  --md-on-tertiary: #FFFFFF;
+  --md-tertiary-container: #FFD8E4;
+  --md-on-tertiary-container: #370B1E;
+  --md-error: #B3261E;
+  --md-on-error: #FFFFFF;
+  --md-error-container: #F9DEDC;
+  --md-on-error-container: #410E0B;
+  --md-background: #FFFBFE;
+  --md-on-background: #1C1B1F;
+  --md-surface: #FFFBFE;
+  --md-on-surface: #1C1B1F;
+  --md-surface-variant: #E7E0EC;
+  --md-on-surface-variant: #49454F;
+  --md-outline: #79747E;
+  --md-outline-variant: #C4C7C5;
+  --md-shadow: #000000;
+  --md-scrim: #000000;
+  --md-inverse-surface: #313033;
+  --md-inverse-on-surface: #F4EFF4;
+  --md-inverse-primary: #D0BCFF;
+  
+  /* 为了向后兼容，保留旧变量名但使用 MD3 颜色 */
+  --primary-color: var(--md-primary);
+  --secondary-color: var(--md-secondary);
+  --accent-color: var(--md-tertiary);
+  --background-color: var(--md-background);
+  --text-color: var(--md-on-background);
+  
+  /* MD3 字体设置 */
+  font-family: Roboto, MiSans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', sans-serif;
-  background-color: var(--background-color);
-  color: var(--text-color);
+  background-color: var(--md-background);
+  color: var(--md-on-background);
   min-height: 100vh;
 }
 
@@ -37,21 +73,110 @@ body {
   margin-bottom: 16px;
 }
 
+/* MD3 卡片样式 */
 .card {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--md-surface);
+  border-radius: 12px; /* MD3 使用更大的圆角 */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* 更柔和的阴影 */
   padding: 16px;
   margin-bottom: 16px;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .card-title {
   font-size: 1.5rem;
+  font-weight: 500; /* MD3 使用较轻的字重 */
   margin-bottom: 16px;
-  color: var(--primary-color);
+  color: var(--md-primary);
 }
 
 .highlight {
-  color: var(--primary-color);
-  font-weight: bold;
+  color: var(--md-primary);
+  font-weight: 500;
+}
+
+/* MD3 按钮样式扩展 */
+.md-button {
+  border-radius: 20px;
+  font-weight: 500;
+  text-transform: none;
+  padding: 8px 16px;
+  letter-spacing: 0.01em;
+}
+
+/* MD3 文本样式 */
+.md-display-large {
+  font-size: 57px;
+  line-height: 64px;
+  font-weight: 400;
+}
+
+.md-display-medium {
+  font-size: 45px;
+  line-height: 52px;
+  font-weight: 400;
+}
+
+.md-display-small {
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: 400;
+}
+
+.md-headline-large {
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 400;
+}
+
+.md-headline-medium {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 400;
+}
+
+.md-headline-small {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+}
+
+.md-body-large {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+.md-body-medium {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.md-body-small {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+.md-label-large {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+.md-label-medium {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+.md-label-small {
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 500;
 }

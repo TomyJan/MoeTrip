@@ -2,35 +2,46 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <h1 class="text-h4 mb-4">景点信息</h1>
+        <h1 class="text-md-h4 mb-4 font-weight-medium">景点信息</h1>
         
         <!-- 搜索栏 -->
-        <v-row class="mb-4">
+        <v-row class="mb-4 align-center">
           <v-col cols="12" sm="6" md="4">
             <v-text-field
               v-model="searchKeyword"
               label="搜索景点"
               prepend-inner-icon="mdi-magnify"
               hide-details
-              density="compact"
+              density="comfortable"
               variant="outlined"
+              bg-color="surface-variant"
+              rounded="lg"
+              class="search-field"
               @keyup.enter="loadAttractions"
             ></v-text-field>
           </v-col>
           <v-col cols="12" sm="6" md="2">
             <v-btn 
               color="primary"
+              variant="tonal"
               block
+              rounded="pill"
+              class="text-none"
               @click="loadAttractions"
             >
+              <v-icon icon="mdi-magnify" size="small" class="mr-1"></v-icon>
               搜索
             </v-btn>
           </v-col>
           <v-col v-if="userStore.isAdmin" cols="12" sm="6" md="3">
             <v-btn 
-              color="success"
+              color="primary"
+              variant="elevated"
               prepend-icon="mdi-plus"
               block
+              rounded="pill"
+              class="text-none"
+              elevation="2"
               @click="showAddDialog = true"
             >
               添加景点
@@ -51,8 +62,8 @@
         <!-- 暂无数据 -->
         <v-row v-else>
           <v-col cols="12" class="text-center py-8">
-            <v-icon icon="mdi-alert-circle-outline" size="large" color="grey"></v-icon>
-            <p class="mt-2 text-body-1">暂无景点数据</p>
+            <v-icon icon="mdi-alert-circle-outline" size="large" color="secondary"></v-icon>
+            <p class="mt-2 text-md-body-1 text-medium-emphasis">暂无景点数据</p>
           </v-col>
         </v-row>
         
@@ -63,6 +74,10 @@
               v-model="page"
               :length="Math.ceil(totalItems / pageSize)"
               @update:model-value="loadAttractions"
+              rounded="lg"
+              active-color="primary"
+              variant="elevated"
+              class="md3-pagination"
             ></v-pagination>
           </v-col>
         </v-row>
@@ -71,19 +86,29 @@
     
     <!-- 添加景点对话框 -->
     <v-dialog v-model="showAddDialog" max-width="600px">
-      <v-card>
-        <v-card-title>添加新景点</v-card-title>
+      <v-card rounded="lg" elevation="3">
+        <v-card-title class="text-md-h6">添加新景点</v-card-title>
         <v-card-text>
           <v-form @submit.prevent="addAttraction">
             <v-text-field
               v-model="newAttraction.name"
               label="景点名称"
+              variant="outlined"
+              density="comfortable"
+              class="mb-3"
+              bg-color="surface-variant"
+              rounded="lg"
               required
             ></v-text-field>
             
             <v-textarea
               v-model="newAttraction.description"
               label="景点描述"
+              variant="outlined"
+              density="comfortable"
+              class="mb-3"
+              bg-color="surface-variant"
+              rounded="lg"
               required
             ></v-textarea>
             
@@ -91,6 +116,11 @@
               v-model="newAttraction.open_time"
               label="开放时间"
               placeholder="09:00-18:00"
+              variant="outlined"
+              density="comfortable"
+              class="mb-3"
+              bg-color="surface-variant"
+              rounded="lg"
               required
             ></v-text-field>
             
@@ -98,36 +128,45 @@
               v-model="newAttraction.image_url"
               label="图片URL"
               placeholder="/images/example.jpg"
+              variant="outlined"
+              density="comfortable"
+              bg-color="surface-variant"
+              rounded="lg"
               required
             ></v-text-field>
           </v-form>
         </v-card-text>
         
-        <v-card-actions>
+        <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn color="grey" @click="showAddDialog = false">取消</v-btn>
-          <v-btn color="primary" @click="addAttraction" :loading="loading">添加</v-btn>
+          <v-btn 
+            color="secondary" 
+            variant="text" 
+            rounded="pill"
+            class="mr-2"
+            @click="showAddDialog = false"
+          >
+            取消
+          </v-btn>
+          <v-btn 
+            color="primary" 
+            variant="tonal"
+            rounded="pill"
+            @click="addAttraction" 
+            :loading="loading"
+          >
+            添加
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <!-- 消息提示条 -->
-    <v-snackbar
-      v-model="showSnackbar"
+    <AppSnackbar
+      v-model:show="showSnackbar"
+      :text="snackbarText"
       :color="snackbarColor"
-      :timeout="3000"
-      location="top"
-    >
-      {{ snackbarText }}
-      <template v-slot:actions>
-        <v-btn
-          variant="text"
-          @click="showSnackbar = false"
-        >
-          关闭
-        </v-btn>
-      </template>
-    </v-snackbar>
+    />
   </v-container>
 </template>
 
@@ -137,6 +176,7 @@ import { useUserStore } from '../stores'
 import { attractionApi } from '../utils/api'
 import { useRouter } from 'vue-router'
 import AttractionCard from '../components/AttractionCard.vue'
+import AppSnackbar from '../components/AppSnackbar.vue'
 
 // 定义类型
 interface Attraction {
@@ -289,3 +329,29 @@ onMounted(() => {
   loadAttractions()
 })
 </script>
+
+<style scoped>
+.search-field :deep(.v-field__outline) {
+  opacity: 0.8;
+}
+
+.search-field :deep(.v-field--focused .v-field__outline) {
+  opacity: 1;
+}
+
+.md3-pagination :deep(.v-pagination__item) {
+  font-weight: 500;
+  min-width: 36px;
+  height: 36px;
+}
+
+.md3-pagination :deep(.v-pagination__item--is-active) {
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 调整按钮高度 */
+.v-row.align-center :deep(.v-btn) {
+  height: 48px;
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
-  <v-card class="elevation-12">
-    <v-card-title class="text-center py-4">
-      <h2>{{ title }}</h2>
+  <v-card class="elevation-3" rounded="lg">
+    <v-card-title class="text-center py-5">
+      <h2 class="text-md-h5 font-weight-medium">{{ title }}</h2>
     </v-card-title>
     
     <v-card-text>
@@ -11,6 +11,10 @@
           label="用户名"
           prepend-icon="mdi-account"
           variant="outlined"
+          density="comfortable"
+          class="mb-3"
+          bg-color="surface-variant"
+          rounded="lg"
           :error-messages="usernameError"
           @input="clearError('username')"
           required
@@ -22,6 +26,10 @@
           prepend-icon="mdi-lock"
           type="password"
           variant="outlined"
+          density="comfortable"
+          class="mb-3"
+          bg-color="surface-variant"
+          rounded="lg"
           :error-messages="passwordError"
           @input="clearError('password')"
           required
@@ -32,19 +40,25 @@
         <v-alert
           v-if="errorMessage"
           type="error"
-          class="mt-3"
-          density="compact"
+          class="mt-4 mb-3"
+          variant="tonal"
+          rounded="lg"
+          border
         >
           {{ errorMessage }}
         </v-alert>
         
-        <div class="d-flex justify-center mt-4">
+        <div class="d-flex justify-center mt-6">
           <v-btn
             type="submit"
             color="primary"
             block
             :loading="loading"
+            size="large"
+            rounded="pill"
             min-width="120"
+            min-height="48"
+            elevation="2"
           >
             {{ submitText }}
           </v-btn>
@@ -52,7 +66,7 @@
       </v-form>
     </v-card-text>
     
-    <v-card-actions class="justify-center pb-4">
+    <v-card-actions class="justify-center pb-5">
       <slot name="bottom-actions"></slot>
     </v-card-actions>
   </v-card>
@@ -97,3 +111,28 @@ function clearError(field: string) {
   emit('clearError', field)
 }
 </script>
+
+<style scoped>
+/* MD3 样式增强 */
+:deep(.v-btn) {
+  text-transform: none;
+  letter-spacing: 0.0178571em;
+  font-weight: 500;
+}
+
+:deep(.v-btn--disabled) {
+  opacity: 0.38;
+}
+
+:deep(.v-field) {
+  border-radius: 8px;
+}
+
+:deep(.v-field__outline) {
+  opacity: 0.8;
+}
+
+:deep(.v-field--focused .v-field__outline) {
+  opacity: 1;
+}
+</style>

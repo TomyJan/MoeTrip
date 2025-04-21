@@ -18,10 +18,11 @@
                 :items="attractionOptions || []"
                 item-title="name"
                 item-value="id"
-                density="compact"
+                density="comfortable"
                 variant="outlined"
                 clearable
                 return-object
+                hide-details
                 @update:model-value="loadFeedback"
               ></v-select>
             </v-col>
@@ -31,7 +32,7 @@
                 v-model="filters.min_score"
                 label="最低评分"
                 :items="[1, 2, 3, 4, 5]"
-                density="compact"
+                density="comfortable"
                 variant="outlined"
                 clearable
                 hide-details
@@ -45,7 +46,7 @@
                 v-model="filters.max_score"
                 label="最高评分"
                 :items="[1, 2, 3, 4, 5]"
-                density="compact"
+                density="comfortable"
                 variant="outlined"
                 clearable
                 hide-details
@@ -481,3 +482,10 @@ onMounted(() => {
   loadFeedback()
 })
 </script>
+
+<style scoped>
+/* 调整按钮和输入框高度一致 */
+:deep(.v-btn) {
+  height: 48px;
+}
+</style>

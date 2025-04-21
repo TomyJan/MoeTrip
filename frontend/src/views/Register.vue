@@ -19,6 +19,10 @@
               prepend-icon="mdi-lock-check"
               type="password"
               variant="outlined"
+              density="comfortable"
+              bg-color="surface-variant"
+              rounded="lg"
+              class="mb-3"
               :error-messages="confirmPasswordError"
               @input="confirmPasswordError = ''"
               required
@@ -34,6 +38,12 @@
         </AuthForm>
       </v-col>
     </v-row>
+    
+    <AppSnackbar
+      v-model:show="showSnackbar"
+      :text="snackbarText"
+      :color="snackbarColor"
+    />
   </v-container>
 </template>
 
@@ -44,6 +54,7 @@ import { useUserStore } from '../stores'
 import { authApi } from '../utils/api'
 import CryptoJS from 'crypto-js'
 import AuthForm from '../components/AuthForm.vue'
+import AppSnackbar from '../components/AppSnackbar.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -62,6 +73,11 @@ const passwordError = ref('')
 const confirmPasswordError = ref('')
 const errorMessage = ref('')
 const loading = ref(false)
+
+// 消息提示
+const showSnackbar = ref(false)
+const snackbarText = ref('')
+const snackbarColor = ref('success')
 
 // 清除错误消息
 const clearError = (field: string) => {
@@ -134,8 +150,15 @@ const handleRegister = async (data: { username: string, password: string }) => {
       token: response.data.token
     })
     
+    // 显示成功消息
+    snackbarText.value = '注册成功，即将跳转到首页'
+    snackbarColor.value = 'success'
+    showSnackbar.value = true
+    
     // 注册成功后重定向到首页
-    router.push('/')
+    setTimeout(() => {
+      router.push('/')
+    }, 1500)
   } catch (error) {
     // 处理注册错误
     console.error('注册出错:', error)
@@ -145,3 +168,13 @@ const handleRegister = async (data: { username: string, password: string }) => {
   }
 }
 </script>
+
+<style scoped>
+:deep(.v-field__outline) {
+  opacity: 0.8;
+}
+
+:deep(.v-field--focused .v-field__outline) {
+  opacity: 1;
+}
+</style>

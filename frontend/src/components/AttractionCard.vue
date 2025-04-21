@@ -1,27 +1,36 @@
 <template>
-  <v-card class="mb-4 attraction-card" @click="$emit('view')">
+  <v-card class="mb-4 attraction-card" @click="$emit('view')" variant="elevated" rounded="lg">
     <v-img
       :src="attraction.image_url || '/placeholder-image.jpg'"
       height="200px"
       cover
+      class="rounded-t-lg"
     ></v-img>
     
-    <v-card-title>{{ attraction.name }}</v-card-title>
+    <v-card-title class="text-md-h6">{{ attraction.name }}</v-card-title>
     
     <v-card-text>
       <p>{{ attraction.description }}</p>
-      <p class="mt-2">
-        <v-icon icon="mdi-clock-outline" size="small"></v-icon>
-        <span class="ml-1">开放时间: {{ attraction.open_time }}</span>
+      <p class="mt-2 d-flex align-center text-md-body-1">
+        <v-icon icon="mdi-clock-outline" size="small" class="mr-1"></v-icon>
+        <span>开放时间: {{ attraction.open_time }}</span>
       </p>
     </v-card-text>
     
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-icon
-        :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+      <v-btn
+        variant="text"
+        icon
+        rounded="pill"
+        size="small"
+        :ripple="false"
         @click.stop="expanded = !expanded"
-      ></v-icon>
+      >
+        <v-icon
+          :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+        ></v-icon>
+      </v-btn>
     </v-card-actions>
     
     <v-expand-transition>
@@ -30,7 +39,14 @@
         <v-card-text>
           <p class="text-subtitle-1 mb-2">设施信息:</p>
           <v-chip-group>
-            <v-chip v-for="facility in facilities || ['休息区', '卫生间', '售票处']" :key="facility">
+            <v-chip 
+              v-for="facility in facilities || ['休息区', '卫生间', '售票处']" 
+              :key="facility"
+              variant="elevated"
+              color="secondary"
+              size="small"
+              rounded="pill"
+            >
               {{ facility }}
             </v-chip>
           </v-chip-group>
@@ -71,10 +87,15 @@ const expanded = ref(false)
 .attraction-card {
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
+  /* MD3 采用较大的阴影半径和较低的阴影不透明度 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08),
+              0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .attraction-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  /* 升高时使用更大的阴影 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08),
+              0 8px 16px rgba(0, 0, 0, 0.08);
 }
 </style>

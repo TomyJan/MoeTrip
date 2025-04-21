@@ -1,5 +1,5 @@
 <template>
-  <v-row class="mb-4">
+  <v-row class="mb-4 align-center">
     <slot name="filters"></slot>
     
     <v-col :cols="searchColSize">
@@ -8,8 +8,11 @@
         :label="searchLabel"
         prepend-inner-icon="mdi-magnify"
         hide-details
-        density="compact"
         variant="outlined"
+        density="comfortable"
+        bg-color="surface-variant"
+        rounded="lg"
+        class="search-field"
         @keyup.enter="onSearch"
       ></v-text-field>
     </v-col>
@@ -17,9 +20,13 @@
     <v-col :cols="buttonColSize">
       <v-btn 
         color="primary"
+        variant="tonal"
         block
+        rounded="pill"
+        class="text-none"
         @click="onSearch"
       >
+        <v-icon icon="mdi-magnify" class="mr-1"></v-icon>
         {{ searchButtonText }}
       </v-btn>
     </v-col>
@@ -66,3 +73,18 @@ function onSearch() {
   emit('search', searchTerm.value)
 }
 </script>
+
+<style scoped>
+.search-field :deep(.v-field__outline) {
+  opacity: 0.8;
+}
+
+.search-field :deep(.v-field--focused .v-field__outline) {
+  opacity: 1;
+}
+
+/* 调整按钮高度 */
+:deep(.v-btn) {
+  height: 48px;
+}
+</style>

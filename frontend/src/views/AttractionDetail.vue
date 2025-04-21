@@ -156,19 +156,19 @@ onMounted(() => {
   <v-container>
     <!-- 加载中状态 -->
     <div v-if="loading" class="loading-skeleton">
-      <v-card class="mb-4">
+      <v-card class="mb-4" rounded="lg">
         <v-card-title>
           <v-skeleton-loader type="text"></v-skeleton-loader>
         </v-card-title>
       </v-card>
       
-      <v-card class="mb-4">
+      <v-card class="mb-4" rounded="lg">
         <v-card-text>
           <v-skeleton-loader type="image"></v-skeleton-loader>
         </v-card-text>
       </v-card>
       
-      <v-card>
+      <v-card rounded="lg">
         <v-card-text>
           <v-skeleton-loader type="paragraph"></v-skeleton-loader>
         </v-card-text>
@@ -181,10 +181,12 @@ onMounted(() => {
       type="error"
       variant="tonal"
       class="mt-4"
+      rounded="lg"
+      border
     >
       {{ loadingError }}
       <div class="mt-2">
-        <v-btn color="primary" @click="router.push('/attractions')">
+        <v-btn color="primary" rounded="pill" variant="tonal" @click="router.push('/attractions')">
           返回景点列表
         </v-btn>
       </div>
@@ -196,17 +198,17 @@ onMounted(() => {
         { title: '首页', disabled: false, to: '/' },
         { title: '景点', disabled: false, to: '/attractions' },
         { title: attraction.name, disabled: true }
-      ]"></v-breadcrumbs>
+      ]" rounded="pill"></v-breadcrumbs>
       
       <v-row>
         <!-- 景点图片 -->
         <v-col cols="12" md="6">
-          <v-card elevation="2">
+          <v-card elevation="2" rounded="lg">
             <v-img
               :src="attraction.image_url || 'https://via.placeholder.com/600x400?text=暂无图片'"
               height="400"
               cover
-              class="bg-grey-lighten-2"
+              class="bg-grey-lighten-2 rounded-t-lg"
             >
               <template v-slot:placeholder>
                 <div class="d-flex align-center justify-center fill-height">
@@ -219,46 +221,50 @@ onMounted(() => {
         
         <!-- 景点信息 -->
         <v-col cols="12" md="6">
-          <v-card>
-            <v-card-title class="text-h4">{{ attraction.name }}</v-card-title>
+          <v-card rounded="lg" elevation="2">
+            <v-card-title class="text-md-h4">{{ attraction.name }}</v-card-title>
             
             <v-card-text>
               <v-row align="center" class="mx-0 mb-2">
                 <v-rating
                   :model-value="parseFloat(averageScore)"
-                  color="amber"
-                  density="compact"
+                  color="amber-darken-2"
+                  density="comfortable"
                   half-increments
                   readonly
                   size="small"
                 ></v-rating>
                 <span class="ms-2 text-subtitle-1">{{ averageScore }}分</span>
-                <span class="text-caption text-grey ms-2">({{ feedbacks.length }}条评价)</span>
+                <span class="text-caption text-medium-emphasis ms-2">({{ feedbacks.length }}条评价)</span>
               </v-row>
               
               <v-divider class="mb-3"></v-divider>
               
-              <div class="mb-3">
+              <div class="mb-3 d-flex align-center">
+                <v-icon icon="mdi-clock-outline" size="small" color="primary" class="me-2"></v-icon>
                 <strong>开放时间：</strong> {{ attraction.open_time || '暂无信息' }}
               </div>
               
-              <div class="mb-3">
+              <div class="mb-3 d-flex align-center">
+                <v-icon icon="mdi-calendar-outline" size="small" color="primary" class="me-2"></v-icon>
                 <strong>创建时间：</strong> {{ formatShortDate(attraction.created_at) }}
               </div>
               
               <v-divider class="my-3"></v-divider>
               
-              <div class="text-subtitle-1 mb-2">景点描述</div>
-              <p class="text-body-1">{{ attraction.description || '暂无描述' }}</p>
+              <div class="text-subtitle-1 mb-2 font-weight-medium">景点描述</div>
+              <p class="text-md-body-1">{{ attraction.description || '暂无描述' }}</p>
             </v-card-text>
             
-            <v-card-actions>
+            <v-card-actions class="pa-4">
               <v-spacer></v-spacer>
               <v-btn
                 color="primary"
+                variant="tonal"
+                rounded="pill"
                 prepend-icon="mdi-message-draw"
-                @click="showAddFeedbackDialog = true"
-                :disabled="!userStore.isLoggedIn"
+                class="text-none"
+                @click="userStore.isLoggedIn ? showAddFeedbackDialog = true : router.push('/login')"
               >
                 写评价
               </v-btn>
@@ -270,30 +276,36 @@ onMounted(() => {
       <!-- 反馈列表 -->
       <v-row class="mt-6">
         <v-col cols="12">
-          <h2 class="text-h5 mb-4">用户评价</h2>
+          <h2 class="text-md-h5 mb-4 font-weight-medium">用户评价</h2>
           
-          <v-card v-if="feedbacks.length === 0" elevation="0" class="text-center py-12 bg-grey-lighten-4">
-            <v-icon icon="mdi-comment-outline" size="large" color="grey"></v-icon>
-            <p class="text-body-1 mt-2">暂无评价</p>
+          <v-card v-if="feedbacks.length === 0" elevation="0" rounded="lg" class="text-center py-12 bg-surface-variant">
+            <v-icon icon="mdi-comment-outline" size="large" color="on-surface-variant"></v-icon>
+            <p class="text-md-body-1 mt-2 text-medium-emphasis">暂无评价</p>
           </v-card>
           
           <div v-else>
-            <v-card v-for="feedback in feedbacks" :key="feedback.id" class="mb-4">
+            <v-card v-for="feedback in feedbacks" :key="feedback.id" class="mb-4" rounded="lg" elevation="1">
               <v-card-title class="d-flex align-center">
                 <span class="text-subtitle-1">用户 #{{ feedback.user_id }}</span>
                 <v-spacer></v-spacer>
-                <v-chip color="amber" size="small" class="ml-2">
+                <v-chip 
+                  color="amber-darken-2" 
+                  size="small" 
+                  class="ml-2"
+                  rounded="pill"
+                  variant="flat"
+                >
                   {{ feedback.score }} <v-icon size="x-small" icon="mdi-star" class="ml-1"></v-icon>
                 </v-chip>
               </v-card-title>
               
               <v-card-subtitle>
-                <span class="text-caption text-grey">{{ formatShortDate(feedback.created_at) }}</span>
+                <span class="text-caption text-medium-emphasis">{{ formatShortDate(feedback.created_at) }}</span>
               </v-card-subtitle>
               
-              <v-card-text>
-                <p v-if="feedback.comment">{{ feedback.comment }}</p>
-                <p v-else class="text-grey">该用户未留下评论</p>
+              <v-card-text class="pt-2">
+                <p v-if="feedback.comment" class="text-md-body-1">{{ feedback.comment }}</p>
+                <p v-else class="text-medium-emphasis">该用户未留下评论</p>
               </v-card-text>
             </v-card>
           </div>
@@ -336,10 +348,12 @@ onMounted(() => {
 <style scoped>
 .v-card {
   transition: all 0.2s ease-in-out;
+  overflow: hidden;
 }
 
 .v-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08),
+              0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .loading-skeleton {

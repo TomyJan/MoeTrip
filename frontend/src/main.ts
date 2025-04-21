@@ -39,18 +39,44 @@ import './assets/main.css'
 const vuetify = createVuetify({
   components,
   directives,
+  // 启用 Material Design 3
   theme: {
     defaultTheme: 'light',
+    // 配置 MD3 主题
     themes: {
       light: {
+        dark: false,
         colors: {
-          primary: '#42b883',
-          secondary: '#35495e',
-          accent: '#ff7875',
-          error: '#f44336',
-          info: '#2196F3',
-          success: '#4CAF50',
-          warning: '#FFC107'
+          // MD3 默认主色调
+          primary: '#6750A4', // MD3 主色
+          secondary: '#625B71', // MD3 次要色
+          tertiary: '#7D5260', // MD3 第三色
+          error: '#B3261E',
+          surface: '#FFFBFE',
+          background: '#FFFBFE',
+          'on-primary': '#FFFFFF',
+          'on-secondary': '#FFFFFF',
+          'on-tertiary': '#FFFFFF',
+          'on-error': '#FFFFFF',
+          'surface-variant': '#E7E0EC',
+          'on-surface-variant': '#49454F'
+        }
+      },
+      dark: {
+        dark: true,
+        colors: {
+          primary: '#D0BCFF', // MD3 暗色主题主色
+          secondary: '#CCC2DC', // MD3 暗色主题次要色
+          tertiary: '#EFB8C8', // MD3 暗色主题第三色
+          error: '#F2B8B5',
+          surface: '#1C1B1F',
+          background: '#1C1B1F',
+          'on-primary': '#381E72',
+          'on-secondary': '#332D41',
+          'on-tertiary': '#492532',
+          'on-error': '#601410',
+          'surface-variant': '#49454F',
+          'on-surface-variant': '#CAC4D0'
         }
       }
     }
