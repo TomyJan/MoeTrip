@@ -1,116 +1,119 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
-import { useUserStore } from '../stores'
-import { feedbackApi, orderApi } from '../utils/api'
-import { formatDateTime } from '../utils/format'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, watch } from 'vue';
+import { useUserStore } from '../stores';
+import { feedbackApi, orderApi } from '../utils/api';
+import { formatDateTime } from '../utils/format';
+import { useRouter } from 'vue-router';
 
 // 定义类型
 interface Feedback {
-  id: number
-  user_id: number
-  attraction_id: number
-  attraction_name: string
-  score: number
-  comment?: string
-  created_at?: string
-  updated_at?: string
+  id: number;
+  user_id: number;
+  attraction_id: number;
+  attraction_name: string;
+  score: number;
+  comment?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface Order {
-  id: number
-  user_id: number
-  attraction_id: number
-  attraction_name?: string
-  ticket_id: number
-  ticket_name?: string
-  quantity: number
-  date?: string
-  total_price: number
-  status: string
-  created_at?: string
+  id: number;
+  user_id: number;
+  attraction_id: number;
+  attraction_name?: string;
+  ticket_id: number;
+  ticket_name?: string;
+  quantity: number;
+  date?: string;
+  total_price: number;
+  status: string;
+  created_at?: string;
 }
 
 interface ApiDebug {
-  request: any
-  response: any
-  error: any
+  request: any;
+  response: any;
+  error: any;
 }
 
-const userStore = useUserStore()
-const router = useRouter()
-const loading = ref(true)
-const loadingFeedbacks = ref(true)
-const loadingOrders = ref(true)
-const loadingError = ref('')
-const apiDebug = ref<ApiDebug>({ request: null, response: null, error: null })
+const userStore = useUserStore();
+const router = useRouter();
+const loading = ref(true);
+const loadingFeedbacks = ref(true);
+const loadingOrders = ref(true);
+const loadingError = ref('');
+const apiDebug = ref<ApiDebug>({ request: null, response: null, error: null });
 
 // 用户反馈列表
-const userFeedbacks = ref<Feedback[]>([])
-const page = ref(1)
-const pageSize = ref(5)
-const totalItems = ref(0)
+const userFeedbacks = ref<Feedback[]>([]);
+const page = ref(1);
+const pageSize = ref(5);
+const totalItems = ref(0);
 
 // 用户订单列表
-const userOrders = ref<Order[]>([])
-const orderPage = ref(1)
-const orderPageSize = ref(5)
-const totalOrders = ref(0)
+const userOrders = ref<Order[]>([]);
+const orderPage = ref(1);
+const orderPageSize = ref(5);
+const totalOrders = ref(0);
 
 // 编辑反馈相关
-const showEditDialog = ref(false)
-const editingFeedback = ref<Feedback | null>(null)
+const showEditDialog = ref(false);
+const editingFeedback = ref<Feedback | null>(null);
 
 // 添加调试信息
-console.log('UserProfile 组件初始化')
-console.log('用户登录状态:', userStore.isLoggedIn)
-console.log('用户ID:', userStore.id)
-console.log('用户名:', userStore.username)
+console.log('UserProfile 组件初始化');
+console.log('用户登录状态:', userStore.isLoggedIn);
+console.log('用户ID:', userStore.id);
+console.log('用户名:', userStore.username);
 
 // 监听用户登录状态变化
-watch(() => userStore.isLoggedIn, (newVal) => {
-  console.log('用户登录状态变化:', newVal)
-  if (newVal) {
-    loadUserFeedbacks()
-    loadUserOrders()
-  }
-})
+watch(
+  () => userStore.isLoggedIn,
+  (newVal) => {
+    console.log('用户登录状态变化:', newVal);
+    if (newVal) {
+      loadUserFeedbacks();
+      loadUserOrders();
+    }
+  },
+);
 
 // 加载用户的反馈
 async function loadUserFeedbacks() {
   if (!userStore.isLoggedIn || !userStore.id) {
-    loadingError.value = '请先登录'
-    loading.value = false
-    loadingFeedbacks.value = false
-    return
+    loadingError.value = '请先登录';
+    loading.value = false;
+    loadingFeedbacks.value = false;
+    return;
   }
-  
-  loadingFeedbacks.value = true
+
+  loadingFeedbacks.value = true;
   apiDebug.value = { request: null, response: null, error: null };
-  
+
   try {
     const userId = userStore.id;
     console.log('尝试加载用户ID为', userId, '的反馈');
-    
+
     // 防止API请求参数错误
     if (!userId || typeof userId !== 'number') {
       throw new Error('无效的用户ID');
     }
-    
+
     const params = {
       user_id: userId,
       page: page.value,
-      pageSize: pageSize.value
+      pageSize: pageSize.value,
     };
-    
+
     console.log('API请求参数:', params);
     apiDebug.value.request = params;
-    
+
     // 调用反馈API
     const result = await feedbackApi.query(params);
     apiDebug.value.response = result;
     console.log('API请求响应:', result);
-    
+
     // 检查是否请求成功
     if (!result.success) {
       snackbarText.value = result.error || '获取反馈失败';
@@ -120,7 +123,7 @@ async function loadUserFeedbacks() {
       totalItems.value = 0;
       return;
     }
-    
+
     // 处理成功响应
     const response = result.data;
     if (response.data) {
@@ -142,9 +145,9 @@ async function loadUserFeedbacks() {
   } catch (error) {
     console.error('加载用户反馈失败', error);
     apiDebug.value.error = error;
-    userFeedbacks.value = []; 
+    userFeedbacks.value = [];
     totalItems.value = 0;
-    
+
     // 详细记录错误
     if (error instanceof Error) {
       loadingError.value = `加载反馈失败: ${error.message}`;
@@ -164,20 +167,20 @@ async function loadUserFeedbacks() {
 // 加载用户的订单
 async function loadUserOrders() {
   if (!userStore.isLoggedIn || !userStore.id) {
-    loadingOrders.value = false
-    return
+    loadingOrders.value = false;
+    return;
   }
-  
-  loadingOrders.value = true
-  
+
+  loadingOrders.value = true;
+
   try {
     const userId = userStore.id as number;
-    
+
     // 使用订单API查询
     const result = await orderApi.query({
-      user_id: userId
+      user_id: userId,
     });
-    
+
     // 检查是否请求成功
     if (!result.success) {
       snackbarText.value = result.error || '获取订单失败';
@@ -187,11 +190,11 @@ async function loadUserOrders() {
       totalOrders.value = 0;
       return;
     }
-    
+
     // 处理成功响应
     const response = result.data;
     console.log('订单数据:', response.data);
-    
+
     if (response.data) {
       if (response.data.orders) {
         userOrders.value = response.data.orders;
@@ -212,8 +215,9 @@ async function loadUserOrders() {
     console.error('加载用户订单失败', error);
     userOrders.value = [];
     totalOrders.value = 0;
-    
-    snackbarText.value = error instanceof Error ? error.message : '加载用户订单失败';
+
+    snackbarText.value =
+      error instanceof Error ? error.message : '加载用户订单失败';
     snackbarColor.value = 'error';
     showSnackbar.value = true;
   } finally {
@@ -230,17 +234,17 @@ function editFeedback(feedback: Feedback) {
 // 更新反馈
 async function updateFeedback() {
   if (!editingFeedback.value) return;
-  
+
   try {
     // 调用API更新反馈
     const result = await feedbackApi.update({
       id: editingFeedback.value.id,
       score: editingFeedback.value.score,
-      comment: editingFeedback.value.comment
+      comment: editingFeedback.value.comment,
     });
-    
+
     console.log('更新反馈结果:', result);
-    
+
     // 检查是否请求成功
     if (!result.success) {
       snackbarText.value = result.error || '更新反馈失败';
@@ -248,18 +252,21 @@ async function updateFeedback() {
       showSnackbar.value = true;
       return;
     }
-    
+
     // 更新本地数据
-    const index = userFeedbacks.value.findIndex(f => f.id === editingFeedback.value?.id);
+    const index = userFeedbacks.value.findIndex(
+      (f) => f.id === editingFeedback.value?.id,
+    );
     if (index >= 0 && editingFeedback.value) {
       userFeedbacks.value[index] = { ...editingFeedback.value };
     }
-    
+
     showEditDialog.value = false;
     editingFeedback.value = null;
   } catch (error) {
     console.error('更新反馈失败', error);
-    snackbarText.value = error instanceof Error ? error.message : '更新反馈失败';
+    snackbarText.value =
+      error instanceof Error ? error.message : '更新反馈失败';
     snackbarColor.value = 'error';
     showSnackbar.value = true;
   }
@@ -268,14 +275,14 @@ async function updateFeedback() {
 // 删除反馈
 async function deleteFeedback(feedback: Feedback) {
   if (!confirm('确定要删除此反馈吗？')) return;
-  
+
   try {
     // 调用删除API，通过update来更改状态实现删除
     const result = await feedbackApi.update({
       id: feedback.id,
-      status: 'deleted'
+      status: 'deleted',
     });
-    
+
     // 检查是否请求成功
     if (!result.success) {
       snackbarText.value = result.error || '删除反馈失败';
@@ -283,13 +290,16 @@ async function deleteFeedback(feedback: Feedback) {
       showSnackbar.value = true;
       return;
     }
-    
+
     // 更新本地数据
-    userFeedbacks.value = userFeedbacks.value.filter(f => f.id !== feedback.id);
+    userFeedbacks.value = userFeedbacks.value.filter(
+      (f) => f.id !== feedback.id,
+    );
     totalItems.value--;
   } catch (error) {
     console.error('删除反馈失败', error);
-    snackbarText.value = error instanceof Error ? error.message : '删除反馈失败';
+    snackbarText.value =
+      error instanceof Error ? error.message : '删除反馈失败';
     snackbarColor.value = 'error';
     showSnackbar.value = true;
   }
@@ -312,15 +322,15 @@ async function payOrder(orderId: number) {
     // 显示确认对话框
     const confirm = window.confirm('确定要支付此订单吗？');
     if (!confirm) return;
-    
+
     loading.value = true;
-    
+
     // 调用更新订单API
     const result = await orderApi.update({
       order_id: orderId,
       status: 'success',
     });
-    
+
     // 检查是否请求成功
     if (!result.success) {
       snackbarText.value = result.error || '订单支付失败';
@@ -328,7 +338,7 @@ async function payOrder(orderId: number) {
       showSnackbar.value = true;
       return;
     }
-    
+
     // 支付成功
     snackbarText.value = '订单支付成功';
     snackbarColor.value = 'success';
@@ -336,7 +346,8 @@ async function payOrder(orderId: number) {
     await loadUserOrders(); // 重新加载订单
   } catch (error) {
     console.error('支付订单出错', error);
-    snackbarText.value = error instanceof Error ? error.message : '支付过程中出现错误';
+    snackbarText.value =
+      error instanceof Error ? error.message : '支付过程中出现错误';
     snackbarColor.value = 'error';
     showSnackbar.value = true;
   } finally {
@@ -350,15 +361,15 @@ async function cancelOrder(orderId: number) {
     // 显示确认对话框
     const confirm = window.confirm('确定要取消此订单吗？');
     if (!confirm) return;
-    
+
     loading.value = true;
-    
+
     // 调用更新订单API
     const result = await orderApi.update({
       order_id: orderId,
       status: 'canceled',
     });
-    
+
     // 检查是否请求成功
     if (!result.success) {
       snackbarText.value = result.error || '取消订单失败';
@@ -366,7 +377,7 @@ async function cancelOrder(orderId: number) {
       showSnackbar.value = true;
       return;
     }
-    
+
     // 取消成功
     snackbarText.value = '订单已取消';
     snackbarColor.value = 'success';
@@ -374,7 +385,8 @@ async function cancelOrder(orderId: number) {
     await loadUserOrders(); // 重新加载订单
   } catch (error) {
     console.error('取消订单出错', error);
-    snackbarText.value = error instanceof Error ? error.message : '取消过程中出现错误';
+    snackbarText.value =
+      error instanceof Error ? error.message : '取消过程中出现错误';
     snackbarColor.value = 'error';
     showSnackbar.value = true;
   } finally {
@@ -383,31 +395,31 @@ async function cancelOrder(orderId: number) {
 }
 
 // 格式化订单状态
-function formatOrderStatus(status: string): { text: string, color: string } {
+function formatOrderStatus(status: string): { text: string; color: string } {
   switch (status) {
     case '已完成':
-      return { text: '已完成', color: 'success' }
+      return { text: '已完成', color: 'success' };
     case '待支付':
-      return { text: '待支付', color: 'warning' }
+      return { text: '待支付', color: 'warning' };
     case '已取消':
-      return { text: '已取消', color: 'error' }
+      return { text: '已取消', color: 'error' };
     default:
-      return { text: status, color: 'primary' }
+      return { text: status, color: 'primary' };
   }
 }
 
 // 格式化日期为YYYY-MM-DD格式
 function formatDateOnly(dateString: string | undefined | null): string {
   if (!dateString) return '';
-  
+
   // 确保我们处理的是字符串
   const dateStr = String(dateString);
-  
+
   // 如果已经是YYYY-MM-DD格式，直接返回
   if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
     return dateStr;
   }
-  
+
   try {
     // 否则进行转换
     const date = new Date(dateStr);
@@ -423,17 +435,17 @@ function formatDateOnly(dateString: string | undefined | null): string {
 }
 
 // 修改密码相关
-const showChangePasswordDialog = ref(false)
+const showChangePasswordDialog = ref(false);
 const passwordForm = ref({
   oldPassword: '',
   newPassword: '',
-  confirmPassword: ''
-})
+  confirmPassword: '',
+});
 const passwordErrors = ref({
   oldPassword: '',
   newPassword: '',
-  confirmPassword: ''
-})
+  confirmPassword: '',
+});
 
 // 修改密码
 function changePassword() {
@@ -441,84 +453,87 @@ function changePassword() {
   passwordErrors.value = {
     oldPassword: '',
     newPassword: '',
-    confirmPassword: ''
-  }
-  
+    confirmPassword: '',
+  };
+
   // 简单验证
-  let hasError = false
-  
+  let hasError = false;
+
   if (!passwordForm.value.oldPassword) {
-    passwordErrors.value.oldPassword = '请输入当前密码'
-    hasError = true
+    passwordErrors.value.oldPassword = '请输入当前密码';
+    hasError = true;
   }
-  
+
   if (!passwordForm.value.newPassword) {
-    passwordErrors.value.newPassword = '请输入新密码'
-    hasError = true
+    passwordErrors.value.newPassword = '请输入新密码';
+    hasError = true;
   } else if (passwordForm.value.newPassword.length < 6) {
-    passwordErrors.value.newPassword = '密码长度至少为6位'
-    hasError = true
+    passwordErrors.value.newPassword = '密码长度至少为6位';
+    hasError = true;
   }
-  
+
   if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
-    passwordErrors.value.confirmPassword = '两次输入的密码不一致'
-    hasError = true
+    passwordErrors.value.confirmPassword = '两次输入的密码不一致';
+    hasError = true;
   }
-  
+
   if (hasError) {
-    return
+    return;
   }
-  
+
   // TODO: 实现密码修改API调用
-  alert('密码修改功能待实现')
-  
+  alert('密码修改功能待实现');
+
   // 重置表单并关闭对话框
   passwordForm.value = {
     oldPassword: '',
     newPassword: '',
-    confirmPassword: ''
-  }
-  showChangePasswordDialog.value = false
+    confirmPassword: '',
+  };
+  showChangePasswordDialog.value = false;
 }
 
 // 重新加载数据
 function reloadData() {
-  console.log('手动重新加载数据')
-  userStore.restoreFromStorage()
-  loading.value = true
-  loadingError.value = ''
-  
+  console.log('手动重新加载数据');
+  userStore.restoreFromStorage();
+  loading.value = true;
+  loadingError.value = '';
+
   if (userStore.isLoggedIn) {
-    loadUserFeedbacks()
+    loadUserFeedbacks();
   } else {
-    loading.value = false
-    loadingError.value = '无法恢复用户会话，请重新登录'
+    loading.value = false;
+    loadingError.value = '无法恢复用户会话，请重新登录';
   }
 }
 
 // 加载页面数据
 function loadPageData() {
-  console.log('加载页面数据')
-  loading.value = true
-  loadingError.value = ''
-  userStore.restoreFromStorage()
-  
+  console.log('加载页面数据');
+  loading.value = true;
+  loadingError.value = '';
+  userStore.restoreFromStorage();
+
   if (userStore.isLoggedIn) {
-    loadUserFeedbacks()
-    loadUserOrders()
+    loadUserFeedbacks();
+    loadUserOrders();
   } else {
-    loading.value = false
-    loadingError.value = '请先登录'
+    loading.value = false;
+    loadingError.value = '请先登录';
   }
 }
 
 // 监听路由变化
-watch(() => router.currentRoute.value.path, (newPath) => {
-  console.log('路由变化:', newPath)
-  if (newPath === '/profile') {
-    loadPageData()
-  }
-})
+watch(
+  () => router.currentRoute.value.path,
+  (newPath) => {
+    console.log('路由变化:', newPath);
+    if (newPath === '/profile') {
+      loadPageData();
+    }
+  },
+);
 
 // 编辑订单函数
 function editOrder(order: any) {
@@ -529,21 +544,21 @@ function editOrder(order: any) {
 // 确认修改订单
 async function confirmEditOrder() {
   if (!currentOrder.value) return;
-  
+
   loading.value = true;
   showEditOrderDialog.value = false;
-  
+
   try {
     // 格式化日期为YYYY-MM-DD格式
     const formattedDate = formatDateOnly(currentOrder.value.date);
-    
+
     // 使用真实API调用更新订单
     const result = await orderApi.update({
       order_id: currentOrder.value.id,
       quantity: currentOrder.value.quantity,
-      date: formattedDate
+      date: formattedDate,
     });
-    
+
     // 检查是否请求成功
     if (!result.success) {
       snackbarText.value = result.error || '修改订单失败';
@@ -551,7 +566,7 @@ async function confirmEditOrder() {
       showSnackbar.value = true;
       return;
     }
-    
+
     // 修改成功
     snackbarText.value = '订单修改成功';
     snackbarColor.value = 'success';
@@ -559,7 +574,8 @@ async function confirmEditOrder() {
     await loadUserOrders(); // 重新加载订单
   } catch (error) {
     console.error('修改订单出错', error);
-    snackbarText.value = error instanceof Error ? error.message : '修改订单失败';
+    snackbarText.value =
+      error instanceof Error ? error.message : '修改订单失败';
     snackbarColor.value = 'error';
     showSnackbar.value = true;
   } finally {
@@ -568,58 +584,57 @@ async function confirmEditOrder() {
 }
 
 onMounted(() => {
-  loadPageData()
-})
+  loadPageData();
+});
 </script>
 
 <template>
   <v-container>
     <h1 class="text-md-h4 mb-6 font-weight-medium">个人中心</h1>
-    
+
     <!-- 主内容区 -->
     <div v-if="userStore.isLoggedIn">
       <!-- 加载中状态 -->
       <div v-if="loading && !loadingError" class="py-4">
-        <v-skeleton-loader
-          type="card"
-        ></v-skeleton-loader>
-        
-        <v-skeleton-loader
-          type="list-item"
-          class="mt-4"
-        ></v-skeleton-loader>
-        
-        <v-skeleton-loader
-          type="list-item"
-          class="mt-4"
-        ></v-skeleton-loader>
+        <v-skeleton-loader type="card"></v-skeleton-loader>
+
+        <v-skeleton-loader type="list-item" class="mt-4"></v-skeleton-loader>
+
+        <v-skeleton-loader type="list-item" class="mt-4"></v-skeleton-loader>
       </div>
-      
+
       <!-- 加载完成 -->
       <v-row v-else>
         <v-col cols="12" md="4">
           <v-card rounded="lg" elevation="1">
             <v-card-title class="text-md-h6">基本资料</v-card-title>
             <v-divider></v-divider>
-            
+
             <v-card-text class="pt-4">
               <div class="d-flex justify-center">
                 <v-avatar size="120" color="primary" class="mb-4">
                   <v-icon icon="mdi-account" size="64" color="white"></v-icon>
                 </v-avatar>
               </div>
-              
-              <h2 class="text-md-h5 mb-2 text-center">{{ userStore.username }}</h2>
-              <p class="text-caption text-medium-emphasis text-center">用户ID: {{ userStore.id }}</p>
-              
+
+              <h2 class="text-md-h5 mb-2 text-center">
+                {{ userStore.username }}
+              </h2>
+              <p class="text-caption text-medium-emphasis text-center">
+                用户ID: {{ userStore.id }}
+              </p>
+
               <v-divider class="my-4"></v-divider>
-              
-              <p><strong>用户类型:</strong> {{ userStore.isAdmin ? '管理员' : '普通用户' }}</p>
-              
+
+              <p>
+                <strong>用户类型:</strong>
+                {{ userStore.isAdmin ? '管理员' : '普通用户' }}
+              </p>
+
               <v-divider class="my-4"></v-divider>
-              
-              <v-btn 
-                block 
+
+              <v-btn
+                block
                 color="primary"
                 variant="tonal"
                 rounded="pill"
@@ -631,30 +646,44 @@ onMounted(() => {
             </v-card-text>
           </v-card>
         </v-col>
-        
+
         <v-col cols="12" md="8">
           <!-- 订单信息 -->
           <v-card class="mb-6" rounded="lg" elevation="1">
             <v-card-title class="text-md-h6 d-flex align-center">
               我的订单
               <v-spacer></v-spacer>
-              <v-chip rounded="pill" size="small">{{ totalOrders }} 条记录</v-chip>
+              <v-chip rounded="pill" size="small"
+                >{{ totalOrders }} 条记录</v-chip
+              >
             </v-card-title>
             <v-divider></v-divider>
-            
+
             <!-- 加载订单中 -->
             <div v-if="loadingOrders" class="py-4">
               <v-skeleton-loader type="list-item"></v-skeleton-loader>
-              <v-skeleton-loader type="list-item" class="mt-2"></v-skeleton-loader>
+              <v-skeleton-loader
+                type="list-item"
+                class="mt-2"
+              ></v-skeleton-loader>
             </div>
-            
+
             <!-- 订单列表 -->
             <template v-else>
-              <v-card-text v-if="userOrders.length === 0" class="text-center py-8">
-                <v-icon icon="mdi-ticket-outline" size="large" color="secondary"></v-icon>
-                <p class="text-md-body-1 mt-2 text-medium-emphasis">您还没有任何订单</p>
+              <v-card-text
+                v-if="userOrders.length === 0"
+                class="text-center py-8"
+              >
+                <v-icon
+                  icon="mdi-ticket-outline"
+                  size="large"
+                  color="secondary"
+                ></v-icon>
+                <p class="text-md-body-1 mt-2 text-medium-emphasis">
+                  您还没有任何订单
+                </p>
               </v-card-text>
-              
+
               <div v-else>
                 <v-list>
                   <v-list-item
@@ -668,9 +697,11 @@ onMounted(() => {
                         <v-icon icon="mdi-ticket" color="white"></v-icon>
                       </v-avatar>
                     </template>
-                    
+
                     <v-list-item-title class="d-flex align-center">
-                      <span>{{ order.attraction_name || `景点 #${order.attraction_id}` }}</span>
+                      <span>{{
+                        order.attraction_name || `景点 #${order.attraction_id}`
+                      }}</span>
                       <v-spacer></v-spacer>
                       <v-chip
                         :color="formatOrderStatus(order.status).color"
@@ -681,18 +712,25 @@ onMounted(() => {
                         {{ formatOrderStatus(order.status).text }}
                       </v-chip>
                     </v-list-item-title>
-                    
+
                     <v-list-item-subtitle>
                       <div class="mt-2 d-flex align-center">
-                        <span>{{ order.ticket_name || '门票' }} × {{ order.quantity }} | {{ formatDateOnly(order.date) }}</span>
+                        <span
+                          >{{ order.ticket_name || '门票' }} ×
+                          {{ order.quantity }} |
+                          {{ formatDateOnly(order.date) }}</span
+                        >
                         <v-spacer></v-spacer>
-                        <span class="text-primary">{{ order.total_price ? `¥ ${order.total_price}` : '免费' }}</span>
+                        <span class="text-primary">{{
+                          order.total_price ? `¥ ${order.total_price}` : '免费'
+                        }}</span>
                       </div>
                       <div class="mt-1 text-caption text-medium-emphasis">
-                        订单号: {{ order.id }} | {{ formatDateTime(order.created_at) }}
+                        订单号: {{ order.id }} |
+                        {{ formatDateTime(order.created_at) }}
                       </div>
                     </v-list-item-subtitle>
-                    
+
                     <template v-slot:append>
                       <v-btn
                         v-if="order.status === '待支付'"
@@ -715,7 +753,10 @@ onMounted(() => {
                         取消
                       </v-btn>
                       <v-btn
-                        v-if="order.status !== '已取消' && order.status !== 'canceled'"
+                        v-if="
+                          order.status !== '已取消' &&
+                          order.status !== 'canceled'
+                        "
                         variant="text"
                         color="info"
                         size="small"
@@ -726,9 +767,9 @@ onMounted(() => {
                     </template>
                   </v-list-item>
                 </v-list>
-                
+
                 <v-divider class="my-2"></v-divider>
-                
+
                 <div class="py-2">
                   <v-pagination
                     v-if="totalOrders > orderPageSize"
@@ -742,43 +783,57 @@ onMounted(() => {
               </div>
             </template>
           </v-card>
-          
+
           <!-- 反馈信息 -->
           <v-card rounded="lg" elevation="1">
             <v-card-title class="text-md-h6 d-flex align-center">
               我的评价
               <v-spacer></v-spacer>
-              <v-chip rounded="pill" size="small">{{ totalItems }} 条记录</v-chip>
+              <v-chip rounded="pill" size="small"
+                >{{ totalItems }} 条记录</v-chip
+              >
             </v-card-title>
             <v-divider></v-divider>
-            
+
             <!-- 加载用户反馈中 -->
             <div v-if="loadingFeedbacks" class="py-4">
               <v-skeleton-loader type="list-item"></v-skeleton-loader>
-              <v-skeleton-loader type="list-item" class="mt-2"></v-skeleton-loader>
-              <v-skeleton-loader type="list-item" class="mt-2"></v-skeleton-loader>
+              <v-skeleton-loader
+                type="list-item"
+                class="mt-2"
+              ></v-skeleton-loader>
+              <v-skeleton-loader
+                type="list-item"
+                class="mt-2"
+              ></v-skeleton-loader>
             </div>
-            
+
             <!-- 加载失败 -->
             <v-card-text v-else-if="loadingError" class="py-4">
-              <v-alert
-                type="warning"
-                variant="tonal"
-              >
+              <v-alert type="warning" variant="tonal">
                 {{ loadingError }}
               </v-alert>
               <div class="d-flex justify-center mt-4">
                 <v-btn color="primary" @click="reloadData">重新加载</v-btn>
               </div>
             </v-card-text>
-            
+
             <!-- 反馈列表 -->
             <template v-else>
-              <v-card-text v-if="userFeedbacks.length === 0" class="text-center py-8">
-                <v-icon icon="mdi-comment-outline" size="large" color="secondary"></v-icon>
-                <p class="text-md-body-1 mt-2 text-medium-emphasis">您还没有提交过任何反馈</p>
+              <v-card-text
+                v-if="userFeedbacks.length === 0"
+                class="text-center py-8"
+              >
+                <v-icon
+                  icon="mdi-comment-outline"
+                  size="large"
+                  color="secondary"
+                ></v-icon>
+                <p class="text-md-body-1 mt-2 text-medium-emphasis">
+                  您还没有提交过任何反馈
+                </p>
               </v-card-text>
-              
+
               <div v-else>
                 <v-list>
                   <v-list-item
@@ -789,12 +844,20 @@ onMounted(() => {
                   >
                     <template v-slot:prepend>
                       <v-avatar color="amber" class="mr-3">
-                        <span class="text-h6 text-white">{{ feedback.score }}</span>
+                        <span class="text-h6 text-white">{{
+                          feedback.score
+                        }}</span>
                       </v-avatar>
                     </template>
-                    
+
                     <v-list-item-title class="d-flex align-center">
-                      <span>{{ feedback.attraction_name || `景点 #${feedback.attraction_id}` }} {{ formatDateTime(feedback.updated_at) }}</span>
+                      <span
+                        >{{
+                          feedback.attraction_name ||
+                          `景点 #${feedback.attraction_id}`
+                        }}
+                        {{ formatDateTime(feedback.updated_at) }}</span
+                      >
                       <v-spacer></v-spacer>
                       <div>
                         <v-btn
@@ -814,11 +877,15 @@ onMounted(() => {
                         ></v-btn>
                       </div>
                     </v-list-item-title>
-                    
+
                     <v-list-item-subtitle>
                       <div class="mt-2">
-                        <span v-if="feedback.comment" class="text-body-2">{{ feedback.comment }}</span>
-                        <span v-else class="text-caption text-medium-emphasis">无评论内容</span>
+                        <span v-if="feedback.comment" class="text-body-2">{{
+                          feedback.comment
+                        }}</span>
+                        <span v-else class="text-caption text-medium-emphasis"
+                          >无评论内容</span
+                        >
                       </div>
                       <div class="mt-1 text-caption text-medium-emphasis">
                         {{ formatDateTime(feedback.created_at) }}
@@ -826,9 +893,9 @@ onMounted(() => {
                     </v-list-item-subtitle>
                   </v-list-item>
                 </v-list>
-                
+
                 <v-divider class="my-2"></v-divider>
-                
+
                 <div class="py-2">
                   <v-pagination
                     v-if="totalItems > pageSize"
@@ -845,7 +912,7 @@ onMounted(() => {
         </v-col>
       </v-row>
     </div>
-    
+
     <!-- 登录提示 -->
     <v-alert
       v-else
@@ -857,8 +924,8 @@ onMounted(() => {
     >
       请先登录以查看个人信息
       <div class="mt-3">
-        <v-btn 
-          color="primary" 
+        <v-btn
+          color="primary"
           variant="tonal"
           rounded="pill"
           class="text-none"
@@ -868,12 +935,12 @@ onMounted(() => {
         </v-btn>
       </div>
     </v-alert>
-    
+
     <!-- 修改密码对话框 -->
     <v-dialog v-model="showChangePasswordDialog" max-width="500">
       <v-card>
         <v-card-title>修改密码</v-card-title>
-        
+
         <v-card-text>
           <v-form @submit.prevent="changePassword">
             <v-text-field
@@ -883,7 +950,7 @@ onMounted(() => {
               :error-messages="passwordErrors.oldPassword"
               required
             ></v-text-field>
-            
+
             <v-text-field
               v-model="passwordForm.newPassword"
               label="新密码"
@@ -892,7 +959,7 @@ onMounted(() => {
               hint="密码长度至少为6位"
               required
             ></v-text-field>
-            
+
             <v-text-field
               v-model="passwordForm.confirmPassword"
               label="确认新密码"
@@ -902,7 +969,7 @@ onMounted(() => {
             ></v-text-field>
           </v-form>
         </v-card-text>
-        
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn text @click="showChangePasswordDialog = false">取消</v-btn>
@@ -910,15 +977,17 @@ onMounted(() => {
         </v-card-actions>
       </v-card>
     </v-dialog>
-    
+
     <!-- 编辑反馈对话框 -->
     <v-dialog v-model="showEditDialog" max-width="600">
       <v-card rounded="lg" elevation="3">
         <v-card-title class="text-md-h6">编辑评价</v-card-title>
         <v-card-text class="pt-3">
           <v-form @submit.prevent="updateFeedback">
-            <p class="text-md-subtitle-1 mb-2">景点: {{ editingFeedback?.attraction_name || '未知景点' }}</p>
-            
+            <p class="text-md-subtitle-1 mb-2">
+              景点: {{ editingFeedback?.attraction_name || '未知景点' }}
+            </p>
+
             <v-rating
               v-if="editingFeedback"
               v-model="editingFeedback.score"
@@ -928,7 +997,7 @@ onMounted(() => {
               size="large"
               class="mb-3"
             ></v-rating>
-            
+
             <v-textarea
               v-if="editingFeedback"
               v-model="editingFeedback.comment"
@@ -942,20 +1011,20 @@ onMounted(() => {
             ></v-textarea>
           </v-form>
         </v-card-text>
-        
+
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn 
-            color="secondary" 
-            variant="text" 
+          <v-btn
+            color="secondary"
+            variant="text"
             rounded="pill"
             class="mr-2"
             @click="showEditDialog = false"
           >
             取消
           </v-btn>
-          <v-btn 
-            color="primary" 
+          <v-btn
+            color="primary"
             variant="tonal"
             rounded="pill"
             @click="updateFeedback"
@@ -965,26 +1034,38 @@ onMounted(() => {
         </v-card-actions>
       </v-card>
     </v-dialog>
-    
+
     <!-- 调试面板 -->
     <v-expansion-panels v-if="loadingError" class="mt-6">
       <v-expansion-panel>
-        <v-expansion-panel-title>
-          API请求调试信息
-        </v-expansion-panel-title>
+        <v-expansion-panel-title> API请求调试信息 </v-expansion-panel-title>
         <v-expansion-panel-text>
           <h3 class="text-subtitle-1 font-weight-bold">请求参数:</h3>
-          <pre>{{ apiDebug.request ? JSON.stringify(apiDebug.request, null, 2) : '无请求数据' }}</pre>
-          
+          <pre>{{
+            apiDebug.request
+              ? JSON.stringify(apiDebug.request, null, 2)
+              : '无请求数据'
+          }}</pre>
+
           <h3 class="text-subtitle-1 font-weight-bold mt-4">响应数据:</h3>
-          <pre>{{ apiDebug.response ? JSON.stringify(apiDebug.response, null, 2) : '无响应数据' }}</pre>
-          
+          <pre>{{
+            apiDebug.response
+              ? JSON.stringify(apiDebug.response, null, 2)
+              : '无响应数据'
+          }}</pre>
+
           <h3 class="text-subtitle-1 font-weight-bold mt-4">错误信息:</h3>
-          <pre>{{ apiDebug.error ? (typeof apiDebug.error === 'object' ? JSON.stringify(apiDebug.error, null, 2) : apiDebug.error) : '无错误信息' }}</pre>
+          <pre>{{
+            apiDebug.error
+              ? typeof apiDebug.error === 'object'
+                ? JSON.stringify(apiDebug.error, null, 2)
+                : apiDebug.error
+              : '无错误信息'
+          }}</pre>
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
-    
+
     <!-- 消息提示 -->
     <v-snackbar
       v-model="showSnackbar"
@@ -994,24 +1075,23 @@ onMounted(() => {
     >
       {{ snackbarText }}
       <template v-slot:actions>
-        <v-btn
-          variant="text"
-          @click="showSnackbar = false"
-        >
-          关闭
-        </v-btn>
+        <v-btn variant="text" @click="showSnackbar = false"> 关闭 </v-btn>
       </template>
     </v-snackbar>
-    
+
     <!-- 编辑订单对话框 -->
     <v-dialog v-model="showEditOrderDialog" max-width="600">
       <v-card rounded="lg" elevation="3">
         <v-card-title class="text-md-h6">修改订单</v-card-title>
         <v-card-text class="pt-3">
           <v-form v-if="currentOrder" @submit.prevent="confirmEditOrder">
-            <p class="text-md-subtitle-1 mb-2">景点: {{ currentOrder.attraction_name || '未知景点' }}</p>
-            <p class="text-md-subtitle-2 mb-3">票种: {{ currentOrder.ticket_name || '普通票' }}</p>
-            
+            <p class="text-md-subtitle-1 mb-2">
+              景点: {{ currentOrder.attraction_name || '未知景点' }}
+            </p>
+            <p class="text-md-subtitle-2 mb-3">
+              票种: {{ currentOrder.ticket_name || '普通票' }}
+            </p>
+
             <v-text-field
               v-model.number="currentOrder.quantity"
               label="数量"
@@ -1023,7 +1103,7 @@ onMounted(() => {
               rounded="lg"
               class="mb-3"
             ></v-text-field>
-            
+
             <v-text-field
               v-model="currentOrder.date"
               label="预约日期"
@@ -1036,19 +1116,19 @@ onMounted(() => {
             ></v-text-field>
           </v-form>
         </v-card-text>
-        
+
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn 
-            color="secondary" 
-            variant="text" 
+          <v-btn
+            color="secondary"
+            variant="text"
             rounded="pill"
             class="mr-2"
             @click="showEditOrderDialog = false"
           >
             取消
           </v-btn>
-          <v-btn 
+          <v-btn
             color="primary"
             variant="tonal"
             rounded="pill"
@@ -1059,7 +1139,7 @@ onMounted(() => {
         </v-card-actions>
       </v-card>
     </v-dialog>
-    
+
     <v-divider></v-divider>
   </v-container>
 </template>
@@ -1071,8 +1151,9 @@ onMounted(() => {
 }
 
 .v-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08),
-              0 2px 4px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .v-list-item {

@@ -28,48 +28,56 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed } from 'vue';
 
 interface Props {
-  show: boolean
-  text: string
-  color?: string
-  timeout?: number
-  location?: string
+  show: boolean;
+  text: string;
+  color?: string;
+  timeout?: number;
+  location?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   color: 'success',
   timeout: 3000,
-  location: 'top'
-})
+  location: 'top',
+});
 
 const emit = defineEmits<{
-  (e: 'update:show', value: boolean): void
-}>()
+  (e: 'update:show', value: boolean): void;
+}>();
 
-const localShow = ref(props.show)
+const localShow = ref(props.show);
 
 // 根据颜色自动选择图标
 const icon = computed(() => {
   switch (props.color) {
-    case 'success': return 'mdi-check-circle-outline'
-    case 'error': return 'mdi-alert-circle-outline'
-    case 'warning': return 'mdi-alert-outline'
-    case 'info': return 'mdi-information-outline'
-    default: return ''
+    case 'success':
+      return 'mdi-check-circle-outline';
+    case 'error':
+      return 'mdi-alert-circle-outline';
+    case 'warning':
+      return 'mdi-alert-outline';
+    case 'info':
+      return 'mdi-information-outline';
+    default:
+      return '';
   }
-})
+});
 
-watch(() => props.show, (newValue) => {
-  localShow.value = newValue
-})
+watch(
+  () => props.show,
+  (newValue) => {
+    localShow.value = newValue;
+  },
+);
 
 watch(localShow, (newValue) => {
   if (newValue !== props.show) {
-    emit('update:show', newValue)
+    emit('update:show', newValue);
   }
-})
+});
 </script>
 
 <style scoped>

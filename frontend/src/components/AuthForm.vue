@@ -3,7 +3,7 @@
     <v-card-title class="text-center py-5">
       <h2 class="text-md-h5 font-weight-medium">{{ title }}</h2>
     </v-card-title>
-    
+
     <v-card-text>
       <v-form @submit.prevent="onSubmit">
         <v-text-field
@@ -19,7 +19,7 @@
           @input="clearError('username')"
           required
         ></v-text-field>
-        
+
         <v-text-field
           v-model="password"
           label="密码"
@@ -34,9 +34,9 @@
           @input="clearError('password')"
           required
         ></v-text-field>
-        
+
         <slot name="additional-fields"></slot>
-        
+
         <v-alert
           v-if="errorMessage"
           type="error"
@@ -47,7 +47,7 @@
         >
           {{ errorMessage }}
         </v-alert>
-        
+
         <div class="d-flex justify-center mt-6">
           <v-btn
             type="submit"
@@ -65,7 +65,7 @@
         </div>
       </v-form>
     </v-card-text>
-    
+
     <v-card-actions class="justify-center pb-5">
       <slot name="bottom-actions"></slot>
     </v-card-actions>
@@ -73,17 +73,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 interface Props {
-  title: string
-  submitText: string
-  loading?: boolean
-  initialUsername?: string
-  initialPassword?: string
-  usernameError?: string
-  passwordError?: string
-  errorMessage?: string
+  title: string;
+  submitText: string;
+  loading?: boolean;
+  initialUsername?: string;
+  initialPassword?: string;
+  usernameError?: string;
+  passwordError?: string;
+  errorMessage?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -92,23 +92,23 @@ const props = withDefaults(defineProps<Props>(), {
   initialPassword: '',
   usernameError: '',
   passwordError: '',
-  errorMessage: ''
-})
+  errorMessage: '',
+});
 
 const emit = defineEmits<{
-  (e: 'submit', data: { username: string, password: string }): void
-  (e: 'clearError', field: string): void
-}>()
+  (e: 'submit', data: { username: string; password: string }): void;
+  (e: 'clearError', field: string): void;
+}>();
 
-const username = ref(props.initialUsername)
-const password = ref(props.initialPassword)
+const username = ref(props.initialUsername);
+const password = ref(props.initialPassword);
 
 function onSubmit() {
-  emit('submit', { username: username.value, password: password.value })
+  emit('submit', { username: username.value, password: password.value });
 }
 
 function clearError(field: string) {
-  emit('clearError', field)
+  emit('clearError', field);
 }
 </script>
 

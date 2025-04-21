@@ -1,7 +1,7 @@
 <template>
   <v-row class="mb-4 align-center">
     <slot name="filters"></slot>
-    
+
     <v-col :cols="searchColSize">
       <v-text-field
         v-model="searchTerm"
@@ -16,9 +16,9 @@
         @keyup.enter="onSearch"
       ></v-text-field>
     </v-col>
-    
+
     <v-col :cols="buttonColSize">
-      <v-btn 
+      <v-btn
         color="primary"
         variant="tonal"
         block
@@ -30,20 +30,20 @@
         {{ searchButtonText }}
       </v-btn>
     </v-col>
-    
+
     <slot name="actions"></slot>
   </v-row>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch } from 'vue';
 
 interface Props {
-  initialSearchTerm?: string
-  searchLabel?: string
-  searchButtonText?: string
-  searchColSize?: number
-  buttonColSize?: number
+  initialSearchTerm?: string;
+  searchLabel?: string;
+  searchButtonText?: string;
+  searchColSize?: number;
+  buttonColSize?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -51,26 +51,29 @@ const props = withDefaults(defineProps<Props>(), {
   searchLabel: '搜索',
   searchButtonText: '搜索',
   searchColSize: 4,
-  buttonColSize: 2
-})
+  buttonColSize: 2,
+});
 
 const emit = defineEmits<{
-  (e: 'search', term: string): void
-  (e: 'update:searchTerm', term: string): void
-}>()
+  (e: 'search', term: string): void;
+  (e: 'update:searchTerm', term: string): void;
+}>();
 
-const searchTerm = ref(props.initialSearchTerm)
+const searchTerm = ref(props.initialSearchTerm);
 
-watch(() => props.initialSearchTerm, (newValue) => {
-  searchTerm.value = newValue
-})
+watch(
+  () => props.initialSearchTerm,
+  (newValue) => {
+    searchTerm.value = newValue;
+  },
+);
 
 watch(searchTerm, (newValue) => {
-  emit('update:searchTerm', newValue)
-})
+  emit('update:searchTerm', newValue);
+});
 
 function onSearch() {
-  emit('search', searchTerm.value)
+  emit('search', searchTerm.value);
 }
 </script>
 

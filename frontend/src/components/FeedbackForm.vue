@@ -10,7 +10,7 @@
       class="mb-3"
       required
     ></v-rating>
-    
+
     <v-textarea
       v-model="comment"
       label="评价内容"
@@ -24,21 +24,21 @@
       rounded="lg"
       class="mb-4 feedback-textarea"
     ></v-textarea>
-    
+
     <div class="d-flex justify-end mt-4">
-      <v-btn 
-        color="secondary" 
-        variant="text" 
-        class="mr-3" 
+      <v-btn
+        color="secondary"
+        variant="text"
+        class="mr-3"
         rounded="pill"
         @click="$emit('cancel')"
       >
         取消
       </v-btn>
-      <v-btn 
-        color="primary" 
+      <v-btn
+        color="primary"
         variant="tonal"
-        type="submit" 
+        type="submit"
         :loading="loading"
         rounded="pill"
       >
@@ -49,27 +49,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 interface Props {
-  initialScore?: number
-  initialComment?: string
-  loading?: boolean
+  initialScore?: number;
+  initialComment?: string;
+  loading?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   initialScore: 5,
   initialComment: '',
-  loading: false
-})
+  loading: false,
+});
 
 defineEmits<{
-  (e: 'submit', data: { score: number, comment: string }): void
-  (e: 'cancel'): void
-}>()
+  (e: 'submit', data: { score: number; comment: string }): void;
+  (e: 'cancel'): void;
+}>();
 
-const score = ref(props.initialScore)
-const comment = ref(props.initialComment)
+const score = ref(props.initialScore);
+const comment = ref(props.initialComment);
 </script>
 
 <style scoped>

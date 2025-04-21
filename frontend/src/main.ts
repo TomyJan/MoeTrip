@@ -1,23 +1,23 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
-import 'vuetify/styles'
-import '@mdi/font/css/materialdesignicons.css'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import { createVuetify } from 'vuetify';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
+import 'vuetify/styles';
+import '@mdi/font/css/materialdesignicons.css';
 
 // ECharts配置
-import VChart from 'vue-echarts'
-import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
-import { LineChart, BarChart, PieChart } from 'echarts/charts'
+import VChart from 'vue-echarts';
+import { use } from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
+import { LineChart, BarChart, PieChart } from 'echarts/charts';
 import {
   GridComponent,
   TooltipComponent,
   LegendComponent,
   DataZoomComponent,
-  ToolboxComponent
-} from 'echarts/components'
+  ToolboxComponent,
+} from 'echarts/components';
 
 // 注册 ECharts 组件
 use([
@@ -29,12 +29,12 @@ use([
   TooltipComponent,
   LegendComponent,
   DataZoomComponent,
-  ToolboxComponent
-])
+  ToolboxComponent,
+]);
 
-import App from './App.vue'
-import router from './router'
-import './assets/main.css'
+import App from './App.vue';
+import router from './router';
+import './assets/main.css';
 
 const vuetify = createVuetify({
   components,
@@ -59,8 +59,8 @@ const vuetify = createVuetify({
           'on-tertiary': '#FFFFFF',
           'on-error': '#FFFFFF',
           'surface-variant': '#E7E0EC',
-          'on-surface-variant': '#49454F'
-        }
+          'on-surface-variant': '#49454F',
+        },
       },
       dark: {
         dark: true,
@@ -76,24 +76,24 @@ const vuetify = createVuetify({
           'on-tertiary': '#492532',
           'on-error': '#601410',
           'surface-variant': '#49454F',
-          'on-surface-variant': '#CAC4D0'
-        }
-      }
-    }
-  }
-})
+          'on-surface-variant': '#CAC4D0',
+        },
+      },
+    },
+  },
+});
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.use(createPinia())
-app.use(router)
-app.use(vuetify)
+app.use(createPinia());
+app.use(router);
+app.use(vuetify);
 
 // 开发环境启用性能分析
-app.config.performance = true
+app.config.performance = true;
 
 // 注册ECharts全局组件
-app.component('VChart', VChart)
+app.component('VChart', VChart);
 
 // 挂载应用
-app.mount('#app')
+app.mount('#app');

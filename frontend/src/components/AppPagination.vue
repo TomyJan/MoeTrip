@@ -13,7 +13,7 @@
         ></v-pagination>
       </v-col>
     </v-row>
-    
+
     <v-row v-else-if="showEmpty">
       <v-col cols="12" class="text-center py-8">
         <v-icon :icon="emptyIcon" size="large" color="secondary"></v-icon>
@@ -24,35 +24,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch } from 'vue';
 
 interface Props {
-  page: number
-  pageSize: number
-  totalItems: number
-  showEmpty?: boolean
-  emptyText?: string
-  emptyIcon?: string
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  showEmpty?: boolean;
+  emptyText?: string;
+  emptyIcon?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   showEmpty: true,
   emptyText: '暂无数据',
-  emptyIcon: 'mdi-alert-circle-outline'
-})
+  emptyIcon: 'mdi-alert-circle-outline',
+});
 
 const emit = defineEmits<{
-  (e: 'update:page', page: number): void
-}>()
+  (e: 'update:page', page: number): void;
+}>();
 
-const currentPage = ref(props.page)
+const currentPage = ref(props.page);
 
-watch(() => props.page, (newValue) => {
-  currentPage.value = newValue
-})
+watch(
+  () => props.page,
+  (newValue) => {
+    currentPage.value = newValue;
+  },
+);
 
 function onPageChange(page: number) {
-  emit('update:page', page)
+  emit('update:page', page);
 }
 </script>
 

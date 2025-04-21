@@ -2,45 +2,56 @@
 
 :root {
   /* Material Design 3 调色板 */
-  --md-primary: #6750A4;
-  --md-on-primary: #FFFFFF;
-  --md-primary-container: #EADDFF;
-  --md-on-primary-container: #21005E;
-  --md-secondary: #625B71;
-  --md-on-secondary: #FFFFFF;
-  --md-secondary-container: #E8DEF8;
-  --md-on-secondary-container: #1E192B;
-  --md-tertiary: #7D5260;
-  --md-on-tertiary: #FFFFFF;
-  --md-tertiary-container: #FFD8E4;
-  --md-on-tertiary-container: #370B1E;
-  --md-error: #B3261E;
-  --md-on-error: #FFFFFF;
-  --md-error-container: #F9DEDC;
-  --md-on-error-container: #410E0B;
-  --md-background: #FFFBFE;
-  --md-on-background: #1C1B1F;
-  --md-surface: #FFFBFE;
-  --md-on-surface: #1C1B1F;
-  --md-surface-variant: #E7E0EC;
-  --md-on-surface-variant: #49454F;
-  --md-outline: #79747E;
-  --md-outline-variant: #C4C7C5;
+  --md-primary: #6750a4;
+  --md-on-primary: #ffffff;
+  --md-primary-container: #eaddff;
+  --md-on-primary-container: #21005e;
+  --md-secondary: #625b71;
+  --md-on-secondary: #ffffff;
+  --md-secondary-container: #e8def8;
+  --md-on-secondary-container: #1e192b;
+  --md-tertiary: #7d5260;
+  --md-on-tertiary: #ffffff;
+  --md-tertiary-container: #ffd8e4;
+  --md-on-tertiary-container: #370b1e;
+  --md-error: #b3261e;
+  --md-on-error: #ffffff;
+  --md-error-container: #f9dedc;
+  --md-on-error-container: #410e0b;
+  --md-background: #fffbfe;
+  --md-on-background: #1c1b1f;
+  --md-surface: #fffbfe;
+  --md-on-surface: #1c1b1f;
+  --md-surface-variant: #e7e0ec;
+  --md-on-surface-variant: #49454f;
+  --md-outline: #79747e;
+  --md-outline-variant: #c4c7c5;
   --md-shadow: #000000;
   --md-scrim: #000000;
   --md-inverse-surface: #313033;
-  --md-inverse-on-surface: #F4EFF4;
-  --md-inverse-primary: #D0BCFF;
-  
+  --md-inverse-on-surface: #f4eff4;
+  --md-inverse-primary: #d0bcff;
+
   /* 为了向后兼容，保留旧变量名但使用 MD3 颜色 */
   --primary-color: var(--md-primary);
   --secondary-color: var(--md-secondary);
   --accent-color: var(--md-tertiary);
   --background-color: var(--md-background);
   --text-color: var(--md-on-background);
-  
+
   /* MD3 字体设置 */
-  font-family: Roboto, MiSans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family:
+    Roboto,
+    MiSans,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
 }
 
 body {
@@ -77,14 +88,18 @@ body {
 .card {
   background: var(--md-surface);
   border-radius: 12px; /* MD3 使用更大的圆角 */
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* 更柔和的阴影 */
+  box-shadow:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px 0 rgba(0, 0, 0, 0.06); /* 更柔和的阴影 */
   padding: 16px;
   margin-bottom: 16px;
   transition: box-shadow 0.2s ease-in-out;
 }
 
 .card:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .card-title {
