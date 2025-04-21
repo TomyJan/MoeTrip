@@ -9,9 +9,9 @@
     "start": "node dist/index.js",
     "test": "jest --runInBand",
     "test:coverage": "jest --coverage --runInBand",
-    "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts",
-    "format": "prettier --write \"**/*.ts\""
+    "lint": "eslint src --ext .ts .js .json",
+    "lint:fix": "eslint src --ext .ts .js .json",
+    "format": "prettier --write \"**/*.ts\" \"**/*.js\" \"**/*.json\""
   },
   "dependencies": {
     "@types/node": "^20.11.24",
