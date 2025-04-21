@@ -8,7 +8,7 @@
 
 MoeTrip 采用三层架构（前端、后端、数据层），通过 Fetch 进行非 RESTful API 通信。
 
-- **前端**：Vue3 构建交互界面，Vuetify 3 提供 Material Design 风格（备选 Element Plus），ECharts 渲染数据图表。
+- **前端**：Vue3 构建交互界面，Vuetify 3 提供 Material Design 风格，ECharts 渲染数据图表。
 - **后端**：Node.js + Express 处理业务逻辑，Sequelize 操作数据库。
 - **数据层**：PostgreSQL / MySQL 存储景点、用户、票务等数据。
 

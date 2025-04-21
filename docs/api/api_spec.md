@@ -43,9 +43,10 @@ POST /attraction/query
 
 ```json
 {
+  "id": 1,
+  "keyword": "",
   "page": 1,
-  "pageSize": 10,
-  "keyword": ""
+  "pageSize": 10
 }
 ```
 
@@ -54,9 +55,10 @@ POST /attraction/query
 |名称|位置|类型|必选|中文名|说明|
 |---|---|---|---|---|---|
 |body|body|object| 否 ||none|
+|» id|body|number| 是 | 景点ID|none|
+|» keyword|body|string¦null| 否 | 搜索关键字|none|
 |» page|body|number¦null| 否 | 页码|none|
 |» pageSize|body|number¦null| 否 | 每页数量|none|
-|» keyword|body|string¦null| 否 | 搜索关键字|none|
 
 > 返回示例
 
@@ -65,18 +67,22 @@ POST /attraction/query
 ```json
 {
   "code": 0,
-  "message": "成功",
+  "message": null,
   "data": {
-    "total": 3,
+    "total": 1,
     "attractions": [
       {
         "id": "1",
         "name": "樱花谷",
-        "description": "春季赏樱胜地",
-        "open_time": "09:00-18:00",
-        "image_url": "/images/sakura.jpg"
+        "description": "春季赏樱胜地，风景优美",
+        "open_time": "08:00-18:00",
+        "image_url": "/images/sakura.jpg",
+        "created_at": "2025-04-19T20:23:00.602Z",
+        "updated_at": "2025-04-19T20:23:00.602Z"
       }
-    ]
+    ],
+    "page": 1,
+    "pageSize": 10
   }
 }
 ```
@@ -477,8 +483,12 @@ POST /order/query
         "id": "1",
         "order_id": "1",
         "ticket_id": "1",
+        "ticket_name": "单人票",
         "quantity": 1,
+        "attraction_id": "1",
+        "attraction_name": "樱花谷",
         "date": "2025-07-15",
+        "total_price": 0,
         "user_id": "1",
         "status": "success",
         "created_at": "2025-07-15T10:00:00Z",
@@ -509,8 +519,12 @@ POST /order/query
 |»»» id|string|true|none|记录ID|ID 编号|
 |»»» order_id|string|true|none|订单ID|none|
 |»»» ticket_id|string|true|none|票种ID|none|
+|»»» ticket_name|string|true|none|票种名称|none|
 |»»» quantity|number|true|none|门票数量|none|
+|»»» attraction_id|string|true|none|景点ID|none|
+|»»» attraction_name|string|true|none|景点名称|none|
 |»»» date|string(date)|true|none|门票日期|none|
+|»»» total_price|number|true|none|总价格|none|
 |»»» user_id|string|true|none|用户ID|none|
 |»»» status|string|true|none|订单状态|none|
 |»»» created_at|string(date-time)|true|none|创建时间|none|
@@ -554,8 +568,12 @@ POST /order/create
       "id": "1",
       "order_id": "1",
       "ticket_id": "1",
+      "ticket_name": "单人票",
       "quantity": 1,
+      "attraction_id": "1",
+      "attraction_name": "樱花谷",
       "date": "2025-07-15",
+      "total_price": 0,
       "user_id": "1",
       "status": "success",
       "created_at": "2025-07-15T10:00:00Z",
@@ -584,8 +602,12 @@ POST /order/create
 |»»» id|string|true|none|记录ID|ID 编号|
 |»»» order_id|string|true|none|订单ID|none|
 |»»» ticket_id|string|true|none|票种ID|none|
+|»»» ticket_name|string|true|none|票种名称|none|
 |»»» quantity|number|true|none|门票数量|none|
+|»»» attraction_id|string|true|none|景点ID|none|
+|»»» attraction_name|string|true|none|景点名称|none|
 |»»» date|string(date)|true|none|门票日期|none|
+|»»» total_price|number|true|none|总价格|none|
 |»»» user_id|string|true|none|用户ID|none|
 |»»» status|string|true|none|订单状态|none|
 |»»» created_at|string(date-time)|true|none|创建时间|none|
@@ -761,8 +783,12 @@ POST /order/update
       "id": "1",
       "order_id": "1",
       "ticket_id": "1",
+      "ticket_name": "单人票",
       "quantity": 1,
+      "attraction_id": "1",
+      "attraction_name": "樱花谷",
       "date": "2025-07-15",
+      "total_price": 0,
       "user_id": "1",
       "status": "success",
       "created_at": "2025-07-15T10:00:00Z",
@@ -791,8 +817,12 @@ POST /order/update
 |»»» id|string|true|none|记录ID|ID 编号|
 |»»» order_id|string|true|none|订单ID|none|
 |»»» ticket_id|string|true|none|票种ID|none|
+|»»» ticket_name|string|true|none|票种名称|none|
 |»»» quantity|number|true|none|门票数量|none|
+|»»» attraction_id|string|true|none|景点ID|none|
+|»»» attraction_name|string|true|none|景点名称|none|
 |»»» date|string(date)|true|none|门票日期|none|
+|»»» total_price|number|true|none|总价格|none|
 |»»» user_id|string|true|none|用户ID|none|
 |»»» status|string|true|none|订单状态|none|
 |»»» created_at|string(date-time)|true|none|创建时间|none|
@@ -867,6 +897,7 @@ POST /feedback/add
 |»»» id|string|true|none|反馈ID|反馈记录的ID|
 |»»» user_id|string|true|none|用户ID|提交反馈的用户ID|
 |»»» attraction_id|number|true|none|景点ID|被评价的景点ID|
+|»»» attraction_name|string|true|none|景点名称|none|
 |»»» score|number|true|none|评分|用户评分（1-5）|
 |»»» comment|string|false|none|评论内容|用户评论，可以为null|
 |»»» status|string|true|none|状态|反馈状态，public或deleted|
@@ -959,6 +990,7 @@ POST /feedback/query
 |»»» id|string|true|none|反馈ID|反馈记录的ID|
 |»»» user_id|string|true|none|用户ID|提交反馈的用户ID|
 |»»» attraction_id|number|true|none|景点ID|被评价的景点ID|
+|»»» attraction_name|string|true|none|景点名称|none|
 |»»» score|number|true|none|评分|用户评分（1-5）|
 |»»» comment|string|false|none|评论内容|用户评论，可以为null|
 |»»» status|string|true|none|状态|反馈状态，public或deleted|
@@ -1004,6 +1036,7 @@ POST /feedback/update
       "id": "1",
       "user_id": "1",
       "attraction_id": 1,
+      "attraction_name": "樱花谷",
       "score": 5,
       "comment": "很好",
       "status": "public",
@@ -1033,6 +1066,7 @@ POST /feedback/update
 |»»» id|string|true|none|反馈ID|反馈记录的ID|
 |»»» user_id|string|true|none|用户ID|提交反馈的用户ID|
 |»»» attraction_id|number|true|none|景点ID|被评价的景点ID|
+|»»» attraction_name|string|true|none|景点名称|none|
 |»»» score|number|true|none|评分|用户评分（1-5）|
 |»»» comment|string|false|none|评论内容|用户评论，可以为null|
 |»»» status|string|true|none|状态|反馈状态，public或deleted|
@@ -1202,8 +1236,12 @@ POST /feedback/stats
   "id": "1",
   "order_id": "1",
   "ticket_id": "1",
+  "ticket_name": "单人票",
   "quantity": 1,
+  "attraction_id": "1",
+  "attraction_name": "樱花谷",
   "date": "2025-07-15",
+  "total_price": 0,
   "user_id": "1",
   "status": "success",
   "created_at": "2025-07-15T10:00:00Z",
@@ -1219,8 +1257,12 @@ POST /feedback/stats
 |id|string|true|none|记录ID|ID 编号|
 |order_id|string|true|none|订单ID|none|
 |ticket_id|string|true|none|票种ID|none|
+|ticket_name|string|true|none|票种名称|none|
 |quantity|number|true|none|门票数量|none|
+|attraction_id|string|true|none|景点ID|none|
+|attraction_name|string|true|none|景点名称|none|
 |date|string(date)|true|none|门票日期|none|
+|total_price|number|true|none|总价格|none|
 |user_id|string|true|none|用户ID|none|
 |status|string|true|none|订单状态|none|
 |created_at|string(date-time)|true|none|创建时间|none|
@@ -1292,6 +1334,7 @@ POST /feedback/stats
   "id": "1",
   "user_id": "1",
   "attraction_id": 1,
+  "attraction_name": "樱花谷",
   "score": 5,
   "comment": "很好",
   "status": "public",
@@ -1308,6 +1351,7 @@ POST /feedback/stats
 |id|string|true|none|反馈ID|反馈记录的ID|
 |user_id|string|true|none|用户ID|提交反馈的用户ID|
 |attraction_id|number|true|none|景点ID|被评价的景点ID|
+|attraction_name|string|true|none|景点名称|none|
 |score|number|true|none|评分|用户评分（1-5）|
 |comment|string|false|none|评论内容|用户评论，可以为null|
 |status|string|true|none|状态|反馈状态，public或deleted|

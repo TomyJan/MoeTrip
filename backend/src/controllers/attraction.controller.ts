@@ -5,13 +5,14 @@ import logger from '../utils/logger';
 
 /**
  * 查询景点列表
+ * @param req.body.id 景点ID（可选）
  * @param req.body.keyword 搜索关键词（可选）
  * @param req.body.page 页码，默认1
  * @param req.body.pageSize 每页数量，默认10
  */
 export const queryAttractions = async (req: Request, res: Response) => {
   try {
-    const { keyword = '', page = 1, pageSize = 10 } = req.body;
+    const { id, keyword = '', page = 1, pageSize = 10 } = req.body;
 
     // 验证参数
     if (page < 1 || pageSize < 1) {
@@ -23,14 +24,16 @@ export const queryAttractions = async (req: Request, res: Response) => {
     }
 
     // 构建查询条件
-    const where = keyword
-      ? {
-          [Op.or]: [
-            { name: { [Op.iLike]: `%${keyword}%` } },
-            { description: { [Op.iLike]: `%${keyword}%` } },
-          ],
-        }
-      : {};
+    const where = id
+                    ? { id }
+                    : keyword
+                      ? {
+                          [Op.or]: [
+                            { name: { [Op.iLike]: `%${keyword}%` } },
+                            { description: { [Op.iLike]: `%${keyword}%` } },
+                          ],
+                        }
+                      : {};
 
     // 查询总数
     const total = await Attraction.count({ where });

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Op, Model, DataTypes } from 'sequelize';
 import Ticket from '../models/ticket.model';
+import Attraction from '../models/attraction.model';
 import Order from '../models/order.model';
 import logger from '../utils/logger';
 
@@ -120,6 +121,10 @@ export const createOrder = async (req: Request, res: Response) => {
       `用户 ${user_id} 预订票种 ${ticket_id} ${quantity} 张，日期: ${date}`,
     );
 
+    // 取出该票种和景点的信息
+    const ticketInfo = await Ticket.findByPk(ticket_id);
+    const attractionInfo = await Attraction.findByPk(ticketInfo?.attraction_id);
+
     return res.json({
       code: 0,
       message: null,
@@ -128,8 +133,12 @@ export const createOrder = async (req: Request, res: Response) => {
           id: order.id,
           order_id: order.id,
           ticket_id: order.ticket_id,
+          ticket_name: ticketInfo?.name,
           quantity: order.quantity,
+          attraction_id: attractionInfo?.id,
+          attraction_name: attractionInfo?.name,
           date: order.date,
+          total_price: 0, // TODO: 价格系统
           user_id: order.user_id,
           status: order.status,
           created_at: order.created_at,
@@ -166,7 +175,7 @@ export const queryOrders = async (req: Request, res: Response) => {
     }
 
     // 如果非管理员尝试查询其他用户的记录，返回错误
-    if (!isAdmin && user_id && user_id !== currentUserId) {
+    if (!isAdmin && user_id && user_id !== Number(currentUserId)) {
       return res.json({
         code: 2001,
         message: '无权查询其他用户的记录',
@@ -180,18 +189,30 @@ export const queryOrders = async (req: Request, res: Response) => {
       order: [['created_at', 'DESC']],
     });
 
-    // 格式化响应数据，只包含API文档中指定的字段
-    const formattedOrders = orders.map((order) => ({
-      id: order.id,
-      order_id: order.id,
-      ticket_id: order.ticket_id,
-      quantity: order.quantity,
-      date: order.date,
-      user_id: order.user_id,
-      status: order.status,
-      created_at: order.created_at,
-      updated_at: order.updated_at,
-    }));
+    // 收集所有相关票种和景点信息
+    const formattedOrders = await Promise.all(
+      orders.map(async (order) => {
+        // 查询票种和景点信息
+        const ticketInfo = await Ticket.findByPk(order.ticket_id);
+        const attractionInfo = await Attraction.findByPk(ticketInfo?.attraction_id);
+
+        return {
+          id: order.id,
+          order_id: order.id,
+          ticket_id: order.ticket_id,
+          ticket_name: ticketInfo?.name,
+          quantity: order.quantity,
+          attraction_id: attractionInfo?.id,
+          attraction_name: attractionInfo?.name,
+          date: order.date,
+          total_price: 0, // TODO: 价格系统
+          user_id: order.user_id,
+          status: order.status,
+          created_at: order.created_at,
+          updated_at: order.updated_at,
+        };
+      })
+    );
 
     return res.json({
       code: 0,
@@ -377,6 +398,10 @@ export const updateOrder = async (req: Request, res: Response) => {
       });
     }
 
+    // 获取票种和景点信息
+    const ticketInfo = await Ticket.findByPk(updatedOrder.ticket_id);
+    const attractionInfo = await Attraction.findByPk(ticketInfo?.attraction_id);
+
     logger.info(`订单已更新: ID=${order_id}, 用户ID=${order.user_id}`);
 
     return res.json({
@@ -387,8 +412,12 @@ export const updateOrder = async (req: Request, res: Response) => {
           id: updatedOrder.id,
           order_id: updatedOrder.id,
           ticket_id: updatedOrder.ticket_id,
+          ticket_name: ticketInfo?.name,
           quantity: updatedOrder.quantity,
+          attraction_id: attractionInfo?.id,
+          attraction_name: attractionInfo?.name,
           date: updatedOrder.date,
+          total_price: 0, // TODO: 价格系统
           user_id: updatedOrder.user_id,
           status: updatedOrder.status,
           created_at: updatedOrder.created_at,

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Op } from 'sequelize';
 import Feedback from '../models/feedback.model';
+import Attraction from '../models/attraction.model';
 import logger from '../utils/logger';
 
 /**
@@ -63,10 +64,17 @@ export const addFeedback = async (req: Request, res: Response) => {
           `用户(${userId})恢复了对景点(${attraction_id})的反馈，评分: ${score}`,
         );
 
+        // 获取景点名称
+        const attraction = await Attraction.findByPk(attraction_id);
+        const feedbackWithAttraction = {
+          ...updatedFeedback.get({ plain: true }),
+          attraction_name: attraction ? attraction.name : null
+        };
+
         return res.json({
           code: 0,
           message: null,
-          data: { feedback: updatedFeedback },
+          data: { feedback: feedbackWithAttraction },
         });
       } else {
         return res.json({
@@ -90,10 +98,17 @@ export const addFeedback = async (req: Request, res: Response) => {
       `用户(${userId})对景点(${attraction_id})提交了新反馈，评分: ${score}`,
     );
 
+    // 获取景点名称
+    const attraction = await Attraction.findByPk(attraction_id);
+    const feedbackWithAttraction = {
+      ...feedback.get({ plain: true }),
+      attraction_name: attraction ? attraction.name : null
+    };
+
     return res.json({
       code: 0,
       message: null,
-      data: { feedback },
+      data: { feedback: feedbackWithAttraction },
     });
   } catch (error) {
     logger.error('提交反馈失败:', error);
@@ -213,24 +228,31 @@ export const updateFeedback = async (req: Request, res: Response) => {
     // 更新反馈
     const updatedFeedback = await feedback.update(updateData);
 
+    // 获取景点名称
+    const attraction = await Attraction.findByPk(updatedFeedback.attraction_id);
+    const feedbackWithAttraction = {
+      ...updatedFeedback.get({ plain: true }),
+      attraction_name: attraction ? attraction.name : null
+    };
+
     // 根据状态更新日志内容
     if (updateData.status === 'deleted') {
       logger.info(
-        `反馈(ID:${feedback.id}, 景点:${feedback.attraction_id})已被${userRole === 'admin' ? '管理员' : '用户'}标记为删除`,
+        `反馈(ID:${updatedFeedback.id}, 景点:${updatedFeedback.attraction_id})已被${userRole === 'admin' ? '管理员' : '用户'}标记为删除`,
       );
       return res.json({
         code: 0,
         message: '反馈已标记为删除',
-        data: { feedback: updatedFeedback },
+        data: { feedback: feedbackWithAttraction },
       });
     } else {
       logger.info(
-        `反馈(ID:${feedback.id}, 景点:${feedback.attraction_id})已被${userRole === 'admin' ? '管理员' : '用户'}更新`,
+        `反馈(ID:${updatedFeedback.id}, 景点:${updatedFeedback.attraction_id})已被${userRole === 'admin' ? '管理员' : '用户'}更新`,
       );
       return res.json({
         code: 0,
         message: '反馈已更新',
-        data: { feedback: updatedFeedback },
+        data: { feedback: feedbackWithAttraction },
       });
     }
   } catch (error) {
@@ -310,12 +332,19 @@ export const queryFeedback = async (req: Request, res: Response) => {
         });
       }
 
+      // 获取景点信息
+      const attraction = await Attraction.findByPk(feedback.attraction_id);
+      const feedbackWithAttraction = {
+        ...feedback.get({ plain: true }),
+        attraction_name: attraction ? attraction.name : null
+      };
+
       return res.json({
         code: 0,
         message: null,
         data: {
           total: feedback ? 1 : 0,
-          feedback: feedback ? [feedback] : [],
+          feedback: feedback ? [feedbackWithAttraction] : [],
           avgScore: feedback ? feedback.score : 0,
           page: 1,
           pageSize: 1,
@@ -333,12 +362,22 @@ export const queryFeedback = async (req: Request, res: Response) => {
         },
       });
 
+      // 如果找到了反馈，获取景点信息
+      let feedbackWithAttraction = null;
+      if (feedback) {
+        const attraction = await Attraction.findByPk(attraction_id);
+        feedbackWithAttraction = {
+          ...feedback.get({ plain: true }),
+          attraction_name: attraction ? attraction.name : null
+        };
+      }
+
       return res.json({
         code: 0,
         message: null,
         data: {
           total: feedback ? 1 : 0,
-          feedback: feedback ? [feedback] : [],
+          feedback: feedback ? [feedbackWithAttraction] : [],
           avgScore: feedback ? feedback.score : 0,
           page: 1,
           pageSize: 1,
@@ -387,6 +426,13 @@ export const queryFeedback = async (req: Request, res: Response) => {
 
     // 评分范围过滤
     if (min_score !== undefined && max_score !== undefined) {
+      if (min_score > max_score) {
+        return res.json({
+          code: 1001,
+          message: '最小评分不能大于最大评分',
+          data: null,
+        });
+      }
       where.score = { [Op.between]: [min_score, max_score] };
     } else if (min_score !== undefined) {
       where.score = { [Op.gte]: min_score };
@@ -410,18 +456,29 @@ export const queryFeedback = async (req: Request, res: Response) => {
     const total = await Feedback.count({ where });
 
     // 查询反馈数据
-    const feedback = await Feedback.findAll({
+    const feedbacks = await Feedback.findAll({
       where,
       order: [['created_at', 'DESC']],
       offset: (page - 1) * pageSize,
       limit: pageSize,
     });
 
+    // 为每个反馈添加景点名称
+    const feedbacksWithAttraction = await Promise.all(
+      feedbacks.map(async (feedback) => {
+        const attraction = await Attraction.findByPk(feedback.attraction_id);
+        return {
+          ...feedback.get({ plain: true }),
+          attraction_name: attraction ? attraction.name : null
+        };
+      })
+    );
+
     // 计算特定景点的平均评分
     let avgScore = 0;
-    if (attraction_id && feedback.length > 0) {
-      const sum = feedback.reduce((acc, item) => acc + item.score, 0);
-      avgScore = Math.round((sum / feedback.length) * 10) / 10; // 保留一位小数
+    if (attraction_id && feedbacks.length > 0) {
+      const sum = feedbacks.reduce((acc, item) => acc + item.score, 0);
+      avgScore = Math.round((sum / feedbacks.length) * 10) / 10; // 保留一位小数
     }
 
     return res.json({
@@ -429,7 +486,7 @@ export const queryFeedback = async (req: Request, res: Response) => {
       message: null,
       data: {
         total,
-        feedback: [...feedback],
+        feedback: feedbacksWithAttraction,
         avgScore,
         page,
         pageSize,

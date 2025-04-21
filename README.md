@@ -12,7 +12,7 @@ MoeTrip 是一个旅游景区信息管理系统，采用前后端分离架构，
   - 框架：Vue3
   - 语言：TypeScript
   - HTTP 请求：Fetch
-  - UI 组件库：Vuetify 3（备选 Element Plus）
+  - UI 组件库：Vuetify 3
   - 数据可视化：ECharts
 - **后端**:
   - 运行环境：Node.js

@@ -1,0 +1,80 @@
+<template>
+  <v-card class="mb-4 attraction-card" @click="$emit('view')">
+    <v-img
+      :src="attraction.image_url || '/placeholder-image.jpg'"
+      height="200px"
+      cover
+    ></v-img>
+    
+    <v-card-title>{{ attraction.name }}</v-card-title>
+    
+    <v-card-text>
+      <p>{{ attraction.description }}</p>
+      <p class="mt-2">
+        <v-icon icon="mdi-clock-outline" size="small"></v-icon>
+        <span class="ml-1">开放时间: {{ attraction.open_time }}</span>
+      </p>
+    </v-card-text>
+    
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-icon
+        :icon="expanded ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+        @click.stop="expanded = !expanded"
+      ></v-icon>
+    </v-card-actions>
+    
+    <v-expand-transition>
+      <div v-if="expanded">
+        <v-divider></v-divider>
+        <v-card-text>
+          <p class="text-subtitle-1 mb-2">设施信息:</p>
+          <v-chip-group>
+            <v-chip v-for="facility in facilities || ['休息区', '卫生间', '售票处']" :key="facility">
+              {{ facility }}
+            </v-chip>
+          </v-chip-group>
+        </v-card-text>
+      </div>
+    </v-expand-transition>
+  </v-card>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+interface Attraction {
+  id: number
+  name: string
+  description: string
+  open_time: string
+  image_url: string
+  created_at?: string
+  updated_at?: string
+}
+
+interface Props {
+  attraction: Attraction
+  facilities?: string[]
+}
+
+defineProps<Props>()
+
+defineEmits<{
+  (e: 'view'): void
+}>()
+
+const expanded = ref(false)
+</script>
+
+<style scoped>
+.attraction-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.attraction-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+</style>
