@@ -1,43 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
 :root {
-  /* Material Design 3 调色板 */
-  --md-primary: #6750a4;
-  --md-on-primary: #ffffff;
-  --md-primary-container: #eaddff;
-  --md-on-primary-container: #21005e;
-  --md-secondary: #625b71;
-  --md-on-secondary: #ffffff;
-  --md-secondary-container: #e8def8;
-  --md-on-secondary-container: #1e192b;
-  --md-tertiary: #7d5260;
-  --md-on-tertiary: #ffffff;
-  --md-tertiary-container: #ffd8e4;
-  --md-on-tertiary-container: #370b1e;
-  --md-error: #b3261e;
-  --md-on-error: #ffffff;
-  --md-error-container: #f9dedc;
-  --md-on-error-container: #410e0b;
-  --md-background: #fffbfe;
-  --md-on-background: #1c1b1f;
-  --md-surface: #fffbfe;
-  --md-on-surface: #1c1b1f;
-  --md-surface-variant: #e7e0ec;
-  --md-on-surface-variant: #49454f;
-  --md-outline: #79747e;
-  --md-outline-variant: #c4c7c5;
-  --md-shadow: #000000;
-  --md-scrim: #000000;
-  --md-inverse-surface: #313033;
-  --md-inverse-on-surface: #f4eff4;
-  --md-inverse-primary: #d0bcff;
+  /* 浅色模式变量 */
+  --surface-color: #FFFBFE;
+  --background-color: #F6F2FA;
+  --text-color: rgba(0, 0, 0, 0.87);
+  --secondary-text-color: rgba(0, 0, 0, 0.6);
+  --disabled-text-color: rgba(0, 0, 0, 0.38);
+  --divider-color: rgba(0, 0, 0, 0.12);
+  
+  /* MD3 浅色主题颜色 */
+  --md-primary: #6750A4;
+  --md-secondary: #625B71;
+  --md-tertiary: #7D5260;
+  --md-error: #B3261E;
+  --md-surface: #FFFFFF;
+  --md-background: #F6F2FA;
+  --md-surface-variant: #E7E0EC;
+  --md-on-surface-variant: #49454F;
+  --md-on-primary: #FFFFFF;
+  --md-on-secondary: #FFFFFF;
+  --md-on-tertiary: #FFFFFF;
+  --md-on-error: #FFFFFF;
+  --card-border: rgba(103, 80, 164, 0.1);
+  --card-shadow-light: 0 2px 4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.08), 0 3px 6px rgba(0, 0, 0, 0.06);
 
   /* 为了向后兼容，保留旧变量名但使用 MD3 颜色 */
   --primary-color: var(--md-primary);
   --secondary-color: var(--md-secondary);
   --accent-color: var(--md-tertiary);
-  --background-color: var(--md-background);
-  --text-color: var(--md-on-background);
 
   /* MD3 字体设置 */
   font-family:
@@ -54,12 +46,42 @@
     sans-serif;
 }
 
+/* 深色模式变量 */
+[data-theme="dark"] {
+  --surface-color: #1C1B1F;
+  --background-color: #131216;
+  --text-color: rgba(255, 255, 255, 0.87);
+  --secondary-text-color: rgba(255, 255, 255, 0.6);
+  --disabled-text-color: rgba(255, 255, 255, 0.38);
+  --divider-color: rgba(255, 255, 255, 0.12);
+  
+  /* MD3 深色主题颜色 */
+  --md-primary: #D0BCFF;
+  --md-secondary: #CCC2DC;
+  --md-tertiary: #EFB8C8;
+  --md-error: #F2B8B5;
+  --md-surface: #2C2B30;
+  --md-background: #131216;
+  --md-surface-variant: #49454F;
+  --md-on-surface-variant: #CAC4D0;
+  --md-on-primary: #381E72;
+  --md-on-secondary: #332D41;
+  --md-on-tertiary: #492532;
+  --md-on-error: #601410;
+
+  /* 深色模式下卡片边框和阴影 */
+  --card-border: rgba(208, 188, 255, 0.15);
+  --card-shadow-light: 0 2px 4px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --card-shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.45), 0 3px 6px rgba(0, 0, 0, 0.35);
+}
+
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--md-background);
-  color: var(--md-on-background);
+  background-color: var(--background-color);
+  color: var(--text-color);
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .page-container {
@@ -87,19 +109,17 @@ body {
 /* MD3 卡片样式 */
 .card {
   background: var(--md-surface);
-  border-radius: 12px; /* MD3 使用更大的圆角 */
-  box-shadow:
-    0 1px 3px 0 rgba(0, 0, 0, 0.1),
-    0 1px 2px 0 rgba(0, 0, 0, 0.06); /* 更柔和的阴影 */
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow-light);
   padding: 16px;
   margin-bottom: 16px;
-  transition: box-shadow 0.2s ease-in-out;
+  transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
 .card:hover {
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
 }
 
 .card-title {
@@ -194,4 +214,11 @@ body {
   font-size: 11px;
   line-height: 16px;
   font-weight: 500;
+}
+
+/* 平滑过渡效果 */
+*,
+*::before,
+*::after {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }

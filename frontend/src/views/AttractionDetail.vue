@@ -142,23 +142,6 @@ async function submitFeedback() {
   }
 }
 
-// 计算平均评分
-const averageScore = computed(() => {
-  if (
-    !userStore.isLoggedIn ||
-    !feedbacks.value ||
-    feedbacks.value.length === 0
-  ) {
-    return '0';
-  }
-
-  const total = feedbacks.value.reduce(
-    (sum, item) => sum + Number(item.score),
-    0,
-  );
-  return (total / feedbacks.value.length).toFixed(1);
-});
-
 onMounted(() => {
   loadAttractionDetail();
 });

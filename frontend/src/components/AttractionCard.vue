@@ -94,17 +94,23 @@ const expanded = ref(false);
     transform 0.2s,
     box-shadow 0.2s;
   cursor: pointer;
-  /* MD3 采用较大的阴影半径和较低的阴影不透明度 */
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.08),
-    0 2px 4px rgba(0, 0, 0, 0.08);
+  /* 使用全局定义的阴影和边框变量 */
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow-light);
+  background: var(--md-surface);
 }
 
 .attraction-card:hover {
   transform: translateY(-4px);
-  /* 升高时使用更大的阴影 */
-  box-shadow:
-    0 4px 8px rgba(0, 0, 0, 0.08),
-    0 8px 16px rgba(0, 0, 0, 0.08);
+  /* 使用全局定义的悬停阴影 */
+  box-shadow: var(--card-shadow-hover);
+}
+
+:deep(.v-card-title) {
+  color: var(--md-primary);
+}
+
+:deep(.v-card-text) {
+  color: var(--text-color);
 }
 </style>

@@ -107,7 +107,7 @@
                   <v-col cols="12">
                     <h3 class="text-subtitle-1 mb-2">评分分布</h3>
                     <v-chart
-                      :option="chartOption"
+                      :option="scoreDistributionOption"
                       style="height: 200px"
                       autoresize
                     />
@@ -280,53 +280,169 @@ const snackbarText = ref('');
 const snackbarColor = ref('success');
 const loading = ref(false);
 
-// ECharts 图表配置
-const chartOption = computed(() => {
-  if (!stats.value) return {};
+// 添加主题配置辅助函数
+const getChartThemeConfig = () => {
+  // 检测是否为深色模式
+  const isDarkMode = document.body.getAttribute('data-theme') === 'dark';
+  
+  return {
+    // 文本颜色配置
+    textStyle: {
+      color: `var(--chart-text-color)`
+    },
+    // 标题颜色配置
+    title: {
+      textStyle: {
+        color: `var(--chart-title-color)`
+      }
+    },
+    // 图例颜色配置
+    legend: {
+      textStyle: {
+        color: `var(--chart-text-color)`
+      }
+    },
+    // 坐标轴配置
+    xAxis: {
+      axisLine: {
+        lineStyle: {
+          color: `var(--chart-axis-color)`
+        }
+      },
+      axisLabel: {
+        color: `var(--chart-axis-color)`
+      },
+      splitLine: {
+        lineStyle: {
+          color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+        }
+      }
+    },
+    yAxis: {
+      axisLine: {
+        lineStyle: {
+          color: `var(--chart-axis-color)`
+        }
+      },
+      axisLabel: {
+        color: `var(--chart-axis-color)`
+      },
+      splitLine: {
+        lineStyle: {
+          color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+        }
+      }
+    },
+    // 提示框配置
+    tooltip: {
+      backgroundColor: isDarkMode ? 'rgba(50, 50, 50, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+      borderColor: isDarkMode ? 'rgba(70, 70, 70, 0.9)' : 'rgba(200, 200, 200, 0.9)',
+      textStyle: {
+        color: isDarkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)'
+      }
+    }
+  };
+};
 
-  const scoreData = [];
-  for (let i = 1; i <= 5; i++) {
-    const item = stats.value.scoreDistribution.find((s: any) => s.score === i);
-    scoreData.push({
-      value: item?.count || 0,
-      name: `${i}分`,
-    });
+// 评分分布图表配置
+const scoreDistributionOption = computed(() => {
+  const themeConfig = getChartThemeConfig();
+  
+  if (!stats.value || !stats.value.scoreDistribution) {
+    return {
+      ...themeConfig,
+      title: {
+        ...themeConfig.title,
+        text: '评分分布',
+        left: 'center',
+      },
+      tooltip: {
+        ...themeConfig.tooltip,
+        trigger: 'item',
+      },
+      grid: {
+        show: false
+      },
+      xAxis: {
+        show: false,
+        type: 'category'
+      },
+      yAxis: {
+        show: false,
+        type: 'value'
+      },
+      series: [
+        {
+          type: 'pie',
+          radius: ['40%', '70%'],
+          itemStyle: {
+            borderRadius: 10,
+            borderColor: document.body.getAttribute('data-theme') === 'dark' ? '#2C2B30' : '#fff',
+            borderWidth: 2,
+          },
+          label: {
+            color: 'var(--chart-label-color)'
+          },
+          data: [
+            { value: 0, name: '1星' },
+            { value: 0, name: '2星' },
+            { value: 0, name: '3星' },
+            { value: 0, name: '4星' },
+            { value: 0, name: '5星' },
+          ],
+        },
+      ],
+    };
   }
 
+  const distribution = stats.value.scoreDistribution;
   return {
-    tooltip: {
-      trigger: 'item',
-      formatter: '{b}: {c} ({d}%)',
-    },
-    legend: {
-      top: '5%',
+    ...themeConfig,
+    title: {
+      ...themeConfig.title,
+      text: '评分分布',
       left: 'center',
+    },
+    tooltip: {
+      ...themeConfig.tooltip,
+      trigger: 'item',
+    },
+    grid: {
+      show: false
+    },
+    xAxis: {
+      show: false,
+      type: 'category'
+    },
+    yAxis: {
+      show: false,
+      type: 'value'
     },
     series: [
       {
         type: 'pie',
         radius: ['40%', '70%'],
-        avoidLabelOverlap: false,
         itemStyle: {
           borderRadius: 10,
-          borderColor: '#fff',
+          borderColor: document.body.getAttribute('data-theme') === 'dark' ? '#2C2B30' : '#fff',
           borderWidth: 2,
         },
         label: {
-          show: false,
-          position: 'center',
+          color: 'var(--chart-label-color)'
         },
         emphasis: {
           label: {
-            show: true,
-            fontSize: '18',
-            fontWeight: 'bold',
-          },
+            color: 'var(--chart-label-color)',
+            fontWeight: 'bold'
+          }
         },
-        labelLine: {
-          show: false,
-        },
-        data: scoreData,
+        data: [
+          { value: distribution['1'] || 0, name: '1星' },
+          { value: distribution['2'] || 0, name: '2星' },
+          { value: distribution['3'] || 0, name: '3星' },
+          { value: distribution['4'] || 0, name: '4星' },
+          { value: distribution['5'] || 0, name: '5星' },
+        ],
       },
     ],
   };

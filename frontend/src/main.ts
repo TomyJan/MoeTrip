@@ -36,12 +36,25 @@ import App from './App.vue';
 import router from './router';
 import './assets/main.css';
 
+// 获取初始主题
+let initialTheme = 'light';
+if (typeof window !== 'undefined') {
+  const savedTheme = localStorage.getItem('themeMode');
+  if (savedTheme === 'dark') {
+    initialTheme = 'dark';
+  } else if (savedTheme === 'system') {
+    initialTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches 
+      ? 'dark' 
+      : 'light';
+  }
+}
+
 const vuetify = createVuetify({
   components,
   directives,
   // 启用 Material Design 3
   theme: {
-    defaultTheme: 'light',
+    defaultTheme: initialTheme, // 使用确定的初始主题
     // 配置 MD3 主题
     themes: {
       light: {
@@ -52,8 +65,8 @@ const vuetify = createVuetify({
           secondary: '#625B71', // MD3 次要色
           tertiary: '#7D5260', // MD3 第三色
           error: '#B3261E',
-          surface: '#FFFBFE',
-          background: '#FFFBFE',
+          surface: '#FFFFFF',
+          background: '#F6F2FA',
           'on-primary': '#FFFFFF',
           'on-secondary': '#FFFFFF',
           'on-tertiary': '#FFFFFF',
@@ -69,8 +82,8 @@ const vuetify = createVuetify({
           secondary: '#CCC2DC', // MD3 暗色主题次要色
           tertiary: '#EFB8C8', // MD3 暗色主题第三色
           error: '#F2B8B5',
-          surface: '#1C1B1F',
-          background: '#1C1B1F',
+          surface: '#2C2B30',
+          background: '#131216',
           'on-primary': '#381E72',
           'on-secondary': '#332D41',
           'on-tertiary': '#492532',
@@ -84,8 +97,9 @@ const vuetify = createVuetify({
 });
 
 const app = createApp(App);
+const pinia = createPinia();
 
-app.use(createPinia());
+app.use(pinia);
 app.use(router);
 app.use(vuetify);
 

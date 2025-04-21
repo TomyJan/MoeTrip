@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
-import { useUserStore } from './stores';
+import { useUserStore, useThemeStore } from './stores';
 import { useRouter, useRoute } from 'vue-router';
 
 const userStore = useUserStore();
+const themeStore = useThemeStore();
 const router = useRouter();
 const route = useRoute();
 
@@ -12,26 +13,57 @@ const isAuthPage = computed(() => {
   return route.path === '/login' || route.path === '/register';
 });
 
+// 当前是否为深色模式
+const isDarkMode = computed(() => themeStore.isDarkMode);
+
 const handleLogout = () => {
   userStore.logout();
   router.push('/');
 };
 
+// 主题模式文本映射
+const themeModeText = {
+  system: '跟随系统',
+  dark: '深色模式',
+  light: '浅色模式'
+};
+
+// 获取当前主题模式的文本
+const currentThemeModeText = computed(() => themeModeText[themeStore.mode as keyof typeof themeModeText]);
+
+// 切换主题模式
+const setThemeMode = (mode: 'system' | 'dark' | 'light') => {
+  themeStore.setThemeMode(mode);
+};
+
 onMounted(() => {
   userStore.restoreFromStorage();
+  themeStore.initTheme();
 });
 </script>
 
 <template>
-  <v-app>
+  <v-app :theme="isDarkMode ? 'dark' : 'light'">
     <!-- 在登录或注册页面不显示导航栏 -->
     <v-app-bar app v-if="!isAuthPage" elevation="2">
       <v-app-bar-title class="text-md-h6">萌游旅行</v-app-bar-title>
       <v-spacer></v-spacer>
 
-      <v-btn to="/attractions" variant="text" rounded="pill" class="ml-2"
+      <v-btn to="/attractions" variant="text" rounded="pill" class="ml-2 d-none d-sm-flex"
         >景点</v-btn
       >
+
+      <!-- 移动设备上显示的景点菜单 -->
+      <v-btn
+        to="/attractions"
+        variant="text"
+        icon
+        rounded="pill"
+        class="ml-2 d-flex d-sm-none"
+      >
+        <v-icon>mdi-map-marker</v-icon>
+        <v-tooltip activator="parent" location="bottom">景点</v-tooltip>
+      </v-btn>
 
       <!-- 未登录状态 -->
       <template v-if="!userStore.isLoggedIn">
@@ -98,6 +130,56 @@ onMounted(() => {
           </v-card>
         </v-menu>
       </template>
+
+            <!-- 主题切换按钮 -->
+            <v-menu location="bottom end" transition="scale-transition" min-width="200">
+        <template v-slot:activator="{ props }">
+          <v-btn
+            variant="text"
+            v-bind="props"
+            class="ml-2"
+            icon
+            rounded="pill"
+            min-width="36"
+          >
+            <v-icon>
+              {{ themeStore.isDarkMode ? 'mdi-weather-night' : 'mdi-weather-sunny' }}
+            </v-icon>
+            <v-tooltip activator="parent" location="bottom">
+              主题设置 (当前: {{ currentThemeModeText }})
+            </v-tooltip>
+          </v-btn>
+        </template>
+        <v-card rounded="lg" elevation="3" class="mt-1">
+          <v-list bg-color="surface">
+            <v-list-item
+              @click="setThemeMode('system')"
+              :active="themeStore.mode === 'system'"
+              rounded="lg"
+              prepend-icon="mdi-theme-light-dark"
+            >
+              <v-list-item-title>跟随系统</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="setThemeMode('light')"
+              :active="themeStore.mode === 'light'"
+              rounded="lg"
+              prepend-icon="mdi-weather-sunny"
+            >
+              <v-list-item-title>浅色模式</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="setThemeMode('dark')"
+              :active="themeStore.mode === 'dark'"
+              rounded="lg"
+              prepend-icon="mdi-weather-night"
+            >
+              <v-list-item-title>深色模式</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-menu>
+
     </v-app-bar>
 
     <v-main :class="{ 'auth-main': isAuthPage }">

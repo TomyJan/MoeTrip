@@ -451,12 +451,79 @@ const generateMockData = () => {
   return { dates, scores, counts };
 };
 
+// 添加主题配置辅助函数
+const getChartThemeConfig = () => {
+  // 检测是否为深色模式
+  const isDarkMode = document.body.getAttribute('data-theme') === 'dark';
+  
+  return {
+    // 文本颜色配置
+    textStyle: {
+      color: `var(--chart-text-color)`
+    },
+    // 标题颜色配置
+    title: {
+      textStyle: {
+        color: `var(--chart-title-color)`
+      }
+    },
+    // 图例颜色配置
+    legend: {
+      textStyle: {
+        color: `var(--chart-text-color)`
+      }
+    },
+    // 坐标轴配置
+    xAxis: {
+      axisLine: {
+        lineStyle: {
+          color: `var(--chart-axis-color)`
+        }
+      },
+      axisLabel: {
+        color: `var(--chart-axis-color)`
+      },
+      splitLine: {
+        lineStyle: {
+          color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+        }
+      }
+    },
+    yAxis: {
+      axisLine: {
+        lineStyle: {
+          color: `var(--chart-axis-color)`
+        }
+      },
+      axisLabel: {
+        color: `var(--chart-axis-color)`
+      },
+      splitLine: {
+        lineStyle: {
+          color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+        }
+      }
+    },
+    // 提示框配置
+    tooltip: {
+      backgroundColor: isDarkMode ? 'rgba(50, 50, 50, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+      borderColor: isDarkMode ? 'rgba(70, 70, 70, 0.9)' : 'rgba(200, 200, 200, 0.9)',
+      textStyle: {
+        color: isDarkMode ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)'
+      }
+    }
+  };
+};
+
 // 反馈趋势图表配置
 const feedbackTrendOption = computed(() => {
   const { dates, scores, counts } = generateMockData();
+  const themeConfig = getChartThemeConfig();
 
   return {
+    ...themeConfig,
     tooltip: {
+      ...themeConfig.tooltip,
       trigger: 'axis',
       axisPointer: {
         type: 'cross',
@@ -466,6 +533,7 @@ const feedbackTrendOption = computed(() => {
       },
     },
     legend: {
+      ...themeConfig.legend,
       data: ['平均评分', '反馈数量'],
     },
     toolbox: {
@@ -481,6 +549,7 @@ const feedbackTrendOption = computed(() => {
     },
     xAxis: [
       {
+        ...themeConfig.xAxis,
         type: 'category',
         boundaryGap: false,
         data: dates,
@@ -488,16 +557,24 @@ const feedbackTrendOption = computed(() => {
     ],
     yAxis: [
       {
+        ...themeConfig.yAxis,
         type: 'value',
         name: '平均评分',
         min: 1,
         max: 5,
         position: 'left',
+        nameTextStyle: {
+          color: 'var(--chart-text-color)'
+        }
       },
       {
+        ...themeConfig.yAxis,
         type: 'value',
         name: '反馈数量',
         position: 'right',
+        nameTextStyle: {
+          color: 'var(--chart-text-color)'
+        }
       },
     ],
     series: [
@@ -521,7 +598,7 @@ const feedbackTrendOption = computed(() => {
         yAxisIndex: 1,
         data: counts,
         itemStyle: {
-          color: '#35495e',
+          color: document.body.getAttribute('data-theme') === 'dark' ? '#546E7A' : '#35495e',
         },
       },
     ],
@@ -546,42 +623,76 @@ function generateRandomData(length: number, min: number, max: number) {
 }
 
 // 访问量图表配置
-const visitorsChartOption = computed(() => ({
-  title: {
-    text: '最近一周访问量',
-    left: 'center',
-  },
-  tooltip: {
-    trigger: 'axis',
-  },
-  xAxis: {
-    type: 'category',
-    data: getLast7Days(),
-  },
-  yAxis: {
-    type: 'value',
-  },
-  series: [
-    {
-      data: generateRandomData(7, 50, 200),
-      type: 'line',
-      smooth: true,
-      name: '访问量',
-      areaStyle: {},
+const visitorsChartOption = computed(() => {
+  const themeConfig = getChartThemeConfig();
+  
+  return {
+    ...themeConfig,
+    title: {
+      ...themeConfig.title,
+      text: '最近一周访问量',
+      left: 'center',
     },
-  ],
-}));
+    tooltip: {
+      ...themeConfig.tooltip,
+      trigger: 'axis',
+    },
+    xAxis: {
+      ...themeConfig.xAxis,
+      type: 'category',
+      data: getLast7Days(),
+    },
+    yAxis: {
+      ...themeConfig.yAxis,
+      type: 'value',
+    },
+    series: [
+      {
+        data: generateRandomData(7, 50, 200),
+        type: 'line',
+        smooth: true,
+        name: '访问量',
+        areaStyle: {
+          opacity: 0.6,
+          color: document.body.getAttribute('data-theme') === 'dark' ? '#4B7BEC' : '#4B7BEC'
+        },
+        itemStyle: {
+          color: document.body.getAttribute('data-theme') === 'dark' ? '#4B7BEC' : '#4B7BEC'
+        },
+        lineStyle: {
+          color: document.body.getAttribute('data-theme') === 'dark' ? '#4B7BEC' : '#4B7BEC'
+        }
+      },
+    ],
+  };
+});
 
 // 评分分布图表配置
 const scoreDistributionOption = computed(() => {
+  const themeConfig = getChartThemeConfig();
+  
   if (!feedbackStats.value || !feedbackStats.value.scoreDistribution) {
     return {
+      ...themeConfig,
       title: {
+        ...themeConfig.title,
         text: '评分分布',
         left: 'center',
       },
       tooltip: {
+        ...themeConfig.tooltip,
         trigger: 'item',
+      },
+      grid: {
+        show: false
+      },
+      xAxis: {
+        show: false,
+        type: 'category'
+      },
+      yAxis: {
+        show: false,
+        type: 'value'
       },
       series: [
         {
@@ -589,8 +700,11 @@ const scoreDistributionOption = computed(() => {
           radius: ['40%', '70%'],
           itemStyle: {
             borderRadius: 10,
-            borderColor: '#fff',
+            borderColor: document.body.getAttribute('data-theme') === 'dark' ? '#2C2B30' : '#fff',
             borderWidth: 2,
+          },
+          label: {
+            color: 'var(--chart-label-color)'
           },
           data: [
             { value: 0, name: '1星' },
@@ -606,12 +720,26 @@ const scoreDistributionOption = computed(() => {
 
   const distribution = feedbackStats.value.scoreDistribution;
   return {
+    ...themeConfig,
     title: {
+      ...themeConfig.title,
       text: '评分分布',
       left: 'center',
     },
     tooltip: {
+      ...themeConfig.tooltip,
       trigger: 'item',
+    },
+    grid: {
+      show: false
+    },
+    xAxis: {
+      show: false,
+      type: 'category'
+    },
+    yAxis: {
+      show: false,
+      type: 'value'
     },
     series: [
       {
@@ -619,8 +747,17 @@ const scoreDistributionOption = computed(() => {
         radius: ['40%', '70%'],
         itemStyle: {
           borderRadius: 10,
-          borderColor: '#fff',
+          borderColor: document.body.getAttribute('data-theme') === 'dark' ? '#2C2B30' : '#fff',
           borderWidth: 2,
+        },
+        label: {
+          color: 'var(--chart-label-color)'
+        },
+        emphasis: {
+          label: {
+            color: 'var(--chart-label-color)',
+            fontWeight: 'bold'
+          }
         },
         data: [
           { value: distribution['1'] || 0, name: '1星' },
@@ -636,6 +773,8 @@ const scoreDistributionOption = computed(() => {
 
 // 热门景点图表配置
 const topAttractionsOption = computed(() => {
+  const themeConfig = getChartThemeConfig();
+  
   // 确保attractions是数组并且有数据
   const attractions = Array.isArray(attractionStats.value.attractions)
     ? attractionStats.value.attractions.slice(0, 5)
@@ -650,20 +789,25 @@ const topAttractionsOption = computed(() => {
   );
 
   return {
+    ...themeConfig,
     title: {
+      ...themeConfig.title,
       text: '热门景点',
       left: 'center',
     },
     tooltip: {
+      ...themeConfig.tooltip,
       trigger: 'axis',
       axisPointer: {
         type: 'shadow',
       },
     },
     xAxis: {
+      ...themeConfig.xAxis,
       type: 'value',
     },
     yAxis: {
+      ...themeConfig.yAxis,
       type: 'category',
       data: names.length > 0 ? names : ['暂无数据'],
     },
@@ -671,6 +815,9 @@ const topAttractionsOption = computed(() => {
       {
         type: 'bar',
         data: counts.length > 0 ? counts : [0],
+        itemStyle: {
+          color: document.body.getAttribute('data-theme') === 'dark' ? '#5C6BC0' : '#3949AB'
+        }
       },
     ],
   };
@@ -680,13 +827,31 @@ const topAttractionsOption = computed(() => {
 <style scoped>
 .v-card {
   overflow: hidden;
-  transition: box-shadow 0.2s ease;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  border: 1px solid var(--card-border);
+  background: var(--md-surface);
 }
 
 .v-card:hover {
-  box-shadow:
-    0 4px 8px rgba(0, 0, 0, 0.08),
-    0 2px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* 嵌套卡片样式 */
+.v-card .v-card {
+  /* 内部卡片使用略微不同的背景色，增强对比度 */
+  background: var(--md-surface-variant);
+  border: 1px solid var(--card-border);
+}
+
+.v-card[variant="outlined"] {
+  background: var(--md-background);
+  border: 1px dashed var(--card-border);
+}
+
+.v-card[variant="outlined"]:hover {
+  background: var(--md-surface-variant);
+  border: 1px solid var(--card-border);
 }
 
 .select-md3 :deep(.v-field__outline) {
