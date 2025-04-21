@@ -26,15 +26,15 @@ export const queryAttractions = async (req: Request, res: Response) => {
 
     // 构建查询条件
     const where = id
-                    ? { id }
-                    : keyword
-                      ? {
-                          [Op.or]: [
-                            { name: { [Op.iLike]: `%${keyword}%` } },
-                            { description: { [Op.iLike]: `%${keyword}%` } },
-                          ],
-                        }
-                      : {};
+      ? { id }
+      : keyword
+        ? {
+            [Op.or]: [
+              { name: { [Op.iLike]: `%${keyword}%` } },
+              { description: { [Op.iLike]: `%${keyword}%` } },
+            ],
+          }
+        : {};
 
     // 查询总数
     const total = await Attraction.count({ where });
@@ -51,16 +51,16 @@ export const queryAttractions = async (req: Request, res: Response) => {
     const enhancedAttractions = await Promise.all(
       attractions.map(async (attraction) => {
         const plainAttraction = attraction.get({ plain: true });
-        
+
         // 参考feedback.controller.ts中的方法查询每个景点的评分统计
         const where = {
           attraction_id: plainAttraction.id,
-          status: 'public'
+          status: 'public',
         };
-        
+
         // 查询该景点的评价总数
         const feedback_total = await Feedback.count({ where });
-        
+
         // 计算平均评分
         let feedback_avg = '0.0';
         if (feedback_total > 0) {
@@ -74,25 +74,27 @@ export const queryAttractions = async (req: Request, res: Response) => {
                 },
               });
               return { score, count };
-            })
+            }),
           );
-          
+
           // 计算总分和平均分
           const sumScore = scoreDistribution.reduce(
             (sum, item) => sum + item.score * item.count,
-            0
+            0,
           );
-          
-          feedback_avg = (Math.round((sumScore / feedback_total) * 10) / 10).toFixed(1);
+
+          feedback_avg = (
+            Math.round((sumScore / feedback_total) * 10) / 10
+          ).toFixed(1);
         }
-        
+
         // 将评分信息添加到景点数据中
         return {
           ...plainAttraction,
           feedback_avg,
-          feedback_total
+          feedback_total,
         };
-      })
+      }),
     );
 
     return res.json({
@@ -184,7 +186,7 @@ export const addAttraction = async (req: Request, res: Response) => {
     const attractionWithFeedback = {
       ...attraction.get({ plain: true }),
       feedback_avg: '0.0',
-      feedback_total: 0
+      feedback_total: 0,
     };
 
     return res.json({

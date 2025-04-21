@@ -194,7 +194,9 @@ export const queryOrders = async (req: Request, res: Response) => {
       orders.map(async (order) => {
         // 查询票种和景点信息
         const ticketInfo = await Ticket.findByPk(order.ticket_id);
-        const attractionInfo = await Attraction.findByPk(ticketInfo?.attraction_id);
+        const attractionInfo = await Attraction.findByPk(
+          ticketInfo?.attraction_id,
+        );
 
         return {
           id: order.id,
@@ -211,7 +213,7 @@ export const queryOrders = async (req: Request, res: Response) => {
           created_at: order.created_at,
           updated_at: order.updated_at,
         };
-      })
+      }),
     );
 
     return res.json({

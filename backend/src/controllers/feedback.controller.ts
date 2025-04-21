@@ -68,7 +68,7 @@ export const addFeedback = async (req: Request, res: Response) => {
         const attraction = await Attraction.findByPk(attraction_id);
         const feedbackWithAttraction = {
           ...updatedFeedback.get({ plain: true }),
-          attraction_name: attraction ? attraction.name : null
+          attraction_name: attraction ? attraction.name : null,
         };
 
         return res.json({
@@ -102,7 +102,7 @@ export const addFeedback = async (req: Request, res: Response) => {
     const attraction = await Attraction.findByPk(attraction_id);
     const feedbackWithAttraction = {
       ...feedback.get({ plain: true }),
-      attraction_name: attraction ? attraction.name : null
+      attraction_name: attraction ? attraction.name : null,
     };
 
     return res.json({
@@ -232,7 +232,7 @@ export const updateFeedback = async (req: Request, res: Response) => {
     const attraction = await Attraction.findByPk(updatedFeedback.attraction_id);
     const feedbackWithAttraction = {
       ...updatedFeedback.get({ plain: true }),
-      attraction_name: attraction ? attraction.name : null
+      attraction_name: attraction ? attraction.name : null,
     };
 
     // 根据状态更新日志内容
@@ -336,7 +336,7 @@ export const queryFeedback = async (req: Request, res: Response) => {
       const attraction = await Attraction.findByPk(feedback.attraction_id);
       const feedbackWithAttraction = {
         ...feedback.get({ plain: true }),
-        attraction_name: attraction ? attraction.name : null
+        attraction_name: attraction ? attraction.name : null,
       };
 
       return res.json({
@@ -368,7 +368,7 @@ export const queryFeedback = async (req: Request, res: Response) => {
         const attraction = await Attraction.findByPk(attraction_id);
         feedbackWithAttraction = {
           ...feedback.get({ plain: true }),
-          attraction_name: attraction ? attraction.name : null
+          attraction_name: attraction ? attraction.name : null,
         };
       }
 
@@ -469,9 +469,9 @@ export const queryFeedback = async (req: Request, res: Response) => {
         const attraction = await Attraction.findByPk(feedback.attraction_id);
         return {
           ...feedback.get({ plain: true }),
-          attraction_name: attraction ? attraction.name : null
+          attraction_name: attraction ? attraction.name : null,
         };
-      })
+      }),
     );
 
     // 计算特定景点的平均评分
