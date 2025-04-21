@@ -23,14 +23,18 @@ jobs:
           node-version: 20
       - name: Install pnpm
         run: npm install -g pnpm
-      - name: Install backend dependencies # TODO: 暂时只有后端的代码格式化, 前端项目初始化后在加格式化工作流
+      - name: Install backend dependencies
         run: cd backend && pnpm install
+      - name: Install frontend dependencies
+        run: cd frontend && pnpm install
       - name: Extract branch name
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
       - name: Format backend code
         run: cd backend && pnpm prettier --write "**/*.ts"
+      - name: Format frontend code
+        run: cd frontend && pnpm prettier --write "**/*.ts"
       - run: git config --global user.name "github-actions"
       - run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - run: git checkout -- backend/pnpm-lock.yaml
