@@ -91,7 +91,7 @@ onMounted(() => {
     </v-main>
 
     <!-- 页脚：在登录和注册页面固定在底部，其他页面随页面滚动 -->
-    <v-footer app class="d-flex flex-column bg-surface">
+    <v-footer class="d-flex flex-column bg-surface" :class="{ 'auth-footer': isAuthPage }">
       <div class="text-center w-100">
         © 2025 MoeTrip
       </div>
@@ -128,5 +128,13 @@ onMounted(() => {
   justify-content: center;
   min-height: calc(100vh - 56px); /* 减去页脚和可能的其他元素高度 */
   background-color: var(--md-surface);
+}
+
+.auth-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
 }
 </style>
