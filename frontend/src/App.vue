@@ -29,21 +29,21 @@ onMounted(() => {
       <v-app-bar-title class="text-md-h6">萌游旅行</v-app-bar-title>
       <v-spacer></v-spacer>
       
-      <v-btn to="/attractions" variant="text" rounded="pill">景点</v-btn>
+      <v-btn to="/attractions" variant="text" rounded="pill" class="ml-2">景点</v-btn>
 
       <!-- 未登录状态 -->
       <template v-if="!userStore.isLoggedIn">
-        <v-btn to="/login" variant="text" rounded="pill">登录</v-btn>
-        <v-btn to="/register" variant="tonal" rounded="pill" class="ml-2">注册</v-btn>
+        <v-btn to="/login" variant="text" rounded="pill" class="ml-2">登录</v-btn>
+        <v-btn to="/register" variant="text" rounded="pill" class="ml-2">注册</v-btn>
       </template>
       
       <!-- 已登录状态 -->
-      <template v-else>        
+      <template v-if="userStore.isLoggedIn">        
         <!-- 管理员专属 -->
         <v-btn 
           v-if="userStore.isAdmin" 
           to="/admin" 
-          variant="tonal"
+          variant="text"
           rounded="pill"
           color="error"
           class="ml-2"
@@ -52,7 +52,11 @@ onMounted(() => {
         </v-btn>
         
         <!-- 用户菜单 -->
-        <v-menu>
+        <v-menu
+          location="bottom end"
+          transition="scale-transition"
+          min-width="180"
+        >
           <template v-slot:activator="{ props }">
             <v-btn 
               variant="text" 
@@ -62,17 +66,20 @@ onMounted(() => {
               prepend-icon="mdi-account-circle"
             >
               {{ userStore.username }}
+              <v-icon end icon="mdi-chevron-down" size="small"></v-icon>
             </v-btn>
           </template>
-          <v-list>
-            <v-list-item to="/profile" rounded="lg">
-              <v-list-item-title>个人中心</v-list-item-title>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item @click="handleLogout" rounded="lg">
-              <v-list-item-title>退出登录</v-list-item-title>
-            </v-list-item>
-          </v-list>
+          <v-card rounded="lg" elevation="3" class="mt-1">
+            <v-list bg-color="surface">
+              <v-list-item prepend-icon="mdi-account" to="/profile" rounded="lg" density="comfortable">
+                <v-list-item-title>个人中心</v-list-item-title>
+              </v-list-item>
+              <v-divider></v-divider>
+              <v-list-item prepend-icon="mdi-logout" @click="handleLogout" rounded="lg" density="comfortable">
+                <v-list-item-title>退出登录</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-card>
         </v-menu>
       </template>
     </v-app-bar>
