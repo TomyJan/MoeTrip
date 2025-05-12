@@ -828,6 +828,71 @@ POST /order/update
 |»»» created_at|string(date-time)|true|none|创建时间|none|
 |»»» updated_at|string(date-time)|true|none|更新时间|none|
 
+## POST 查询票种列表
+
+POST /ticket/query
+
+> Body 请求参数
+
+```json
+{
+  "attraction_id": 1
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» attraction_id|body|number| 是 | 景点ID|none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "data": {
+    "tickets": [
+      {
+        "id": "1",
+        "attraction_id": "1",
+        "name": "单人票",
+        "available": 100,
+        "created_at": "2025-07-15",
+        "updated_at": "2025-07-15"
+      }
+    ]
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，1001 表示参数错误, 非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» tickets|[object]|true|none|票种信息|none|
+|»»» id|string|true|none|票种ID|ID 编号|
+|»»» attraction_id|string|true|none|所在景点ID|none|
+|»»» name|string|true|none|票种名称|名称|
+|»»» available|number|true|none|当日票种余量|none|
+|»»» created_at|string(date)|true|none|票种创建日期|none|
+|»»» updated_at|string(date)|true|none|票种更新日期|none|
+
 # 用户反馈
 
 ## POST 添加反馈
@@ -1357,4 +1422,34 @@ POST /feedback/stats
 |status|string|true|none|状态|反馈状态，public或deleted|
 |created_at|string(date-time)|true|none|创建时间|反馈创建时间|
 |updated_at|string(date-time)|true|none|更新时间|反馈更新时间|
+
+<h2 id="tocS_单条票种信息1">单条票种信息1</h2>
+
+<a id="schema单条票种信息1"></a>
+<a id="schema_单条票种信息1"></a>
+<a id="tocS单条票种信息1"></a>
+<a id="tocs单条票种信息1"></a>
+
+```json
+{
+  "id": "1",
+  "attraction_id": "1",
+  "name": "单人票",
+  "available": 100,
+  "created_at": "2025-07-15",
+  "updated_at": "2025-07-15"
+}
+
+```
+
+### 属性
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|id|string|true|none|票种ID|ID 编号|
+|attraction_id|string|true|none|所在景点ID|none|
+|name|string|true|none|票种名称|名称|
+|available|number|true|none|当日票种余量|none|
+|created_at|string(date)|true|none|票种创建日期|none|
+|updated_at|string(date)|true|none|票种更新日期|none|
 

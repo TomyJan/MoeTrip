@@ -7,6 +7,9 @@ import {
 
 const router = Router();
 
+// 查询票种列表
+router.post('/query', ticketController.queryTickets);
+
 // 检查票种余量
 router.post('/check', ticketController.checkTicket);
 

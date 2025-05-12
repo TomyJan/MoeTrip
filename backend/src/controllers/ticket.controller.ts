@@ -201,3 +201,53 @@ export const addTicket = async (req: Request, res: Response) => {
     });
   }
 };
+
+/**
+ * 查询票种列表
+ * @param req.body.attraction_id 景点ID
+ */
+export const queryTickets = async (req: Request, res: Response) => {
+  try {
+    const { attraction_id } = req.body;
+
+    // 验证必填参数
+    if (!attraction_id) {
+      return res.json({
+        code: 1001,
+        message: '缺少必需的字段',
+        data: null,
+      });
+    }
+
+    // 检查景点是否存在
+    const attraction = await Attraction.findByPk(attraction_id);
+    if (!attraction) {
+      return res.json({
+        code: 1001,
+        message: '景点不存在',
+        data: null,
+      });
+    }
+
+    // 查询该景点的所有票种
+    const tickets = await Ticket.findAll({
+      where: { attraction_id },
+      order: [['created_at', 'DESC']],
+    });
+
+    return res.json({
+      code: 0,
+      message: null,
+      data: {
+        tickets,
+      },
+    });
+  } catch (error) {
+    logger.error('查询票种列表失败:', error);
+    return res.json({
+      code: 500,
+      message: '服务器内部错误',
+      data: null,
+    });
+  }
+};
