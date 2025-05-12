@@ -208,7 +208,7 @@ export const adminApi = {
 // 订单相关API
 export const orderApi = {
   // 查询用户的订单
-  query: async (params: { user_id?: number }) => {
+  query: async (params: { user_id?: number; order_id?: number }) => {
     return apiRequest('/order/query', {
       method: 'POST',
       body: JSON.stringify(params),

@@ -397,11 +397,12 @@ async function cancelOrder(orderId: number) {
 // 格式化订单状态
 function formatOrderStatus(status: string): { text: string; color: string } {
   switch (status) {
-    case '已完成':
-      return { text: '已完成', color: 'success' };
-    case '待支付':
+    case 'success':
+      return { text: '已确认', color: 'success' };
+    case 'pending':
       return { text: '待支付', color: 'warning' };
-    case '已取消':
+    case 'cancelled':
+    case 'canceled':
       return { text: '已取消', color: 'error' };
     default:
       return { text: status, color: 'primary' };
@@ -691,6 +692,7 @@ onMounted(() => {
                     :key="order.id"
                     class="mb-3"
                     rounded="lg"
+                    @click="router.push(`/orders/${order.id}`)"
                   >
                     <template v-slot:prepend>
                       <v-avatar color="primary" class="mr-3">
@@ -730,41 +732,6 @@ onMounted(() => {
                         {{ formatDateTime(order.created_at) }}
                       </div>
                     </v-list-item-subtitle>
-
-                    <template v-slot:append>
-                      <v-btn
-                        v-if="order.status === '待支付'"
-                        variant="text"
-                        color="primary"
-                        size="small"
-                        rounded="pill"
-                        class="text-none"
-                        @click="payOrder(order.id)"
-                      >
-                        支付
-                      </v-btn>
-                      <v-btn
-                        v-if="order.status === '待支付'"
-                        variant="text"
-                        color="error"
-                        size="small"
-                        @click="cancelOrder(order.id)"
-                      >
-                        取消
-                      </v-btn>
-                      <v-btn
-                        v-if="
-                          order.status !== '已取消' &&
-                          order.status !== 'canceled'
-                        "
-                        variant="text"
-                        color="info"
-                        size="small"
-                        @click="editOrder(order)"
-                      >
-                        修改
-                      </v-btn>
-                    </template>
                   </v-list-item>
                 </v-list>
 

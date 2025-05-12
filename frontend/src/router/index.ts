@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import type { RouteRecordRaw } from 'vue-router';
+import OrderDetail from '../views/OrderDetail.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -50,6 +51,14 @@ const routes: RouteRecordRaw[] = [
     name: 'Admin',
     component: () => import('../views/Admin.vue'),
     meta: { requiresAdmin: true },
+  },
+  {
+    path: '/orders/:id',
+    name: 'OrderDetail',
+    component: OrderDetail,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 
