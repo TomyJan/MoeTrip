@@ -28,6 +28,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/AttractionDetail.vue'),
   },
   {
+    path: '/ticket/buy',
+    name: 'TicketBuy',
+    component: () => import('../views/TicketBuy.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/profile',
     name: 'UserProfile',
     component: () => import('../views/UserProfile.vue'),

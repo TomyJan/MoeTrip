@@ -240,3 +240,22 @@ export const orderApi = {
     });
   },
 };
+
+// 票务相关API
+export const ticketApi = {
+  // 查询票种
+  query: async (params: { attraction_id: number }) => {
+    return apiRequest('/ticket/query', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+  },
+
+  // 检查票种余量
+  check: async (params: { ticket_id: number; date: string }) => {
+    return apiRequest('/ticket/check', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+  },
+};
