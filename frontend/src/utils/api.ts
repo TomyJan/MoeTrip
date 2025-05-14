@@ -1,6 +1,8 @@
 import { useUserStore } from '../stores';
+import { useRouter } from 'vue-router';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const router = useRouter();
 
 // 定义API结果接口
 export interface ApiResult<T = any> {
@@ -40,6 +42,31 @@ export async function apiRequest<T = any>(
 
     // 检查HTTP错误
     if (!response.ok) {
+      // 处理用户凭据过期的情况
+      if (response.status === 401 || 
+          (response.status === 200 && await response.text().then(text => {
+            try {
+              const data = JSON.parse(text);
+              return data.message?.includes('token') || 
+                     data.message?.includes('认证') || 
+                     data.message?.includes('登录');
+            } catch {
+              return false;
+            }
+          }))) {
+        // 清除用户凭据
+        userStore.$reset();
+        // 跳转到登录页面，并携带当前路径作为 redirect 参数
+        router.push({
+          path: '/login',
+          query: { redirect: router.currentRoute.value.fullPath }
+        });
+        return {
+          success: false,
+          error: '用户凭据已过期，请重新登录',
+        };
+      }
+
       return {
         success: false,
         error: `HTTP错误: ${response.status} ${response.statusText}`,
@@ -59,6 +86,23 @@ export async function apiRequest<T = any>(
 
     // 检查API错误
     if (data.code !== 0) {
+      // 处理用户凭据过期的情况
+      if (data.message?.includes('token') || 
+          data.message?.includes('认证') || 
+          data.message?.includes('登录')) {
+        // 清除用户凭据
+        userStore.$reset();
+        // 跳转到登录页面，并携带当前路径作为 redirect 参数
+        router.push({
+          path: '/login',
+          query: { redirect: router.currentRoute.value.fullPath }
+        });
+        return {
+          success: false,
+          error: '用户凭据已过期，请重新登录',
+        };
+      }
+
       return {
         success: false,
         error: data.message || '请求失败',
