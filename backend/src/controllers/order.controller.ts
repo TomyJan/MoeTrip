@@ -162,34 +162,48 @@ export const createOrder = async (req: Request, res: Response) => {
  */
 export const queryOrders = async (req: Request, res: Response) => {
   try {
-    const { user_id } = req.body;
+    const { user_id, order_id } = req.body;
     const currentUserId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
 
-    // 确定要查询的用户ID
-    let targetUserId = currentUserId;
+    let orders = [];
 
-    // 如果是管理员且指定了用户ID，则查询指定用户
-    if (isAdmin && user_id) {
-      targetUserId = user_id;
-    }
-
-    // 如果非管理员尝试查询其他用户的记录，返回错误
-    if (!isAdmin && user_id && user_id !== Number(currentUserId)) {
-      return res.json({
-        code: 2001,
-        message: '无权查询其他用户的记录',
-        data: null,
+    if (order_id) {
+      // 查单个订单
+      const order = await Order.findByPk(order_id);
+      if (!order) {
+        return res.json({
+          code: 1006,
+          message: '订单不存在',
+          data: null,
+        });
+      }
+      // 权限校验
+      if (!isAdmin && order.user_id !== currentUserId) {
+        return res.json({
+          code: 2001,
+          message: '无权查询此订单',
+          data: null,
+        });
+      }
+      orders = [order];
+    } else {
+      // user_id 查询
+      const targetUserId = isAdmin && user_id ? user_id : currentUserId;
+      if (!isAdmin && user_id && user_id !== Number(currentUserId)) {
+        return res.json({
+          code: 2001,
+          message: '无权查询其他用户的记录',
+          data: null,
+        });
+      }
+      orders = await Order.findAll({
+        where: { user_id: targetUserId },
+        order: [['created_at', 'DESC']],
       });
     }
 
-    // 查询订单记录
-    const orders = await Order.findAll({
-      where: { user_id: targetUserId },
-      order: [['created_at', 'DESC']],
-    });
-
-    // 收集所有相关票种和景点信息
+    // 格式化订单
     const formattedOrders = await Promise.all(
       orders.map(async (order) => {
         // 查询票种和景点信息
@@ -220,7 +234,7 @@ export const queryOrders = async (req: Request, res: Response) => {
       code: 0,
       message: null,
       data: {
-        total: orders.length,
+        total: formattedOrders.length,
         orders: formattedOrders,
       },
     });
