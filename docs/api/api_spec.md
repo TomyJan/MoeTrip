@@ -457,7 +457,8 @@ POST /order/query
 
 ```json
 {
-  "user_id": 1
+  "user_id": 1,
+  "order_id": 1
 }
 ```
 
@@ -467,6 +468,7 @@ POST /order/query
 |---|---|---|---|---|---|
 |body|body|object| 否 ||none|
 |» user_id|body|number| 否 | 目标用户ID|none|
+|» order_id|body|number| 否 | 订单ID|none|
 
 > 返回示例
 
