@@ -292,7 +292,9 @@ onMounted(() => {
                 rounded="pill"
                 prepend-icon="mdi-ticket"
                 class="text-none mr-2"
-                @click="router.push(`/ticket/buy?attraction_id=${attraction.id}`)"
+                @click="
+                  router.push(`/ticket/buy?attraction_id=${attraction.id}`)
+                "
               >
                 立即购票
               </v-btn>

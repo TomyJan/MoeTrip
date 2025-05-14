@@ -5,7 +5,12 @@
         <h1 class="text-h4 mb-4">在线购票</h1>
 
         <!-- 景点信息 -->
-        <v-card v-if="selectedAttraction" class="mb-6" rounded="lg" elevation="1">
+        <v-card
+          v-if="selectedAttraction"
+          class="mb-6"
+          rounded="lg"
+          elevation="1"
+        >
           <v-card-title class="text-md-h6">景点信息</v-card-title>
           <v-card-text>
             <v-row>
@@ -17,8 +22,15 @@
                   class="bg-grey-lighten-2 rounded-lg"
                 >
                   <template v-slot:placeholder>
-                    <v-row class="fill-height ma-0" align="center" justify="center">
-                      <v-progress-circular indeterminate color="grey-lighten-4"></v-progress-circular>
+                    <v-row
+                      class="fill-height ma-0"
+                      align="center"
+                      justify="center"
+                    >
+                      <v-progress-circular
+                        indeterminate
+                        color="grey-lighten-4"
+                      ></v-progress-circular>
                     </v-row>
                   </template>
                 </v-img>
@@ -34,7 +46,10 @@
                 </div>
                 <div class="d-flex align-center">
                   <v-icon size="small" class="mr-1">mdi-star</v-icon>
-                  <span>评分: {{ selectedAttraction.feedback_avg || '暂无评分' }}</span>
+                  <span
+                    >评分:
+                    {{ selectedAttraction.feedback_avg || '暂无评分' }}</span
+                  >
                 </div>
               </v-col>
             </v-row>
@@ -42,7 +57,12 @@
         </v-card>
 
         <!-- 票种选择 -->
-        <v-card v-if="selectedAttraction" class="mb-6" rounded="lg" elevation="1">
+        <v-card
+          v-if="selectedAttraction"
+          class="mb-6"
+          rounded="lg"
+          elevation="1"
+        >
           <v-card-title class="text-md-h6">选择票种</v-card-title>
           <v-card-text>
             <v-row>
@@ -210,7 +230,8 @@ const loadAttractionDetail = async (attractionId: number) => {
   } catch (error) {
     console.error('加载景点详情失败:', error);
     showSnackbar.value = true;
-    snackbarText.value = error instanceof Error ? error.message : '加载景点详情失败';
+    snackbarText.value =
+      error instanceof Error ? error.message : '加载景点详情失败';
     snackbarColor.value = 'error';
   }
 };
@@ -228,7 +249,8 @@ const loadTickets = async (attractionId: number) => {
   } catch (error) {
     console.error('加载票种列表失败:', error);
     showSnackbar.value = true;
-    snackbarText.value = error instanceof Error ? error.message : '加载票种列表失败';
+    snackbarText.value =
+      error instanceof Error ? error.message : '加载票种列表失败';
     snackbarColor.value = 'error';
   } finally {
     loadingTickets.value = false;
@@ -283,7 +305,8 @@ const submitOrder = async () => {
   } catch (error) {
     console.error('提交订单失败:', error);
     showSnackbar.value = true;
-    snackbarText.value = error instanceof Error ? error.message : '提交订单失败';
+    snackbarText.value =
+      error instanceof Error ? error.message : '提交订单失败';
     snackbarColor.value = 'error';
   } finally {
     submitting.value = false;
@@ -332,7 +355,9 @@ onMounted(async () => {
 <style scoped>
 .v-card {
   overflow: hidden;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
   border: 1px solid var(--card-border);
   background: var(--md-surface);
 }

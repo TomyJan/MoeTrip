@@ -35,7 +35,9 @@
                 </div>
                 <div class="d-flex justify-space-between mb-2">
                   <span class="text-medium-emphasis">订单状态:</span>
-                  <span>{{ order.status === 'success' ? '已确认' : '已取消' }}</span>
+                  <span>{{
+                    order.status === 'success' ? '已确认' : '已取消'
+                  }}</span>
                 </div>
               </v-col>
               <v-col cols="12" md="6">
@@ -58,7 +60,9 @@
                 </div>
                 <div class="d-flex justify-space-between mb-2">
                   <span class="text-medium-emphasis">总价:</span>
-                  <span class="text-primary">¥{{ order.total_price || 0 }}</span>
+                  <span class="text-primary"
+                    >¥{{ order.total_price || 0 }}</span
+                  >
                 </div>
               </v-col>
             </v-row>
@@ -89,7 +93,10 @@
         <!-- 加载中状态 -->
         <v-card v-else-if="loading" class="mb-6" rounded="lg" elevation="1">
           <v-card-text class="d-flex justify-center align-center py-8">
-            <v-progress-circular indeterminate color="primary"></v-progress-circular>
+            <v-progress-circular
+              indeterminate
+              color="primary"
+            ></v-progress-circular>
           </v-card-text>
         </v-card>
 
@@ -97,7 +104,9 @@
         <v-card v-else class="mb-6" rounded="lg" elevation="1">
           <v-card-text class="text-center py-8">
             <div class="text-h6 text-error mb-2">加载失败</div>
-            <div class="text-body-1 text-medium-emphasis mb-4">{{ errorMessage }}</div>
+            <div class="text-body-1 text-medium-emphasis mb-4">
+              {{ errorMessage }}
+            </div>
             <v-btn color="primary" @click="loadOrderDetail">重试</v-btn>
           </v-card-text>
         </v-card>
@@ -166,9 +175,7 @@
       <v-card rounded="lg">
         <v-card-title class="text-md-h6">确认取消订单</v-card-title>
         <v-card-text>
-          <p class="text-body-1">
-            确定要取消该订单吗？此操作不可撤销。
-          </p>
+          <p class="text-body-1">确定要取消该订单吗？此操作不可撤销。</p>
         </v-card-text>
         <v-card-actions class="d-flex justify-end">
           <v-btn
@@ -304,7 +311,8 @@ const loadOrderDetail = async () => {
     }
   } catch (error) {
     console.error('加载订单详情失败:', error);
-    errorMessage.value = error instanceof Error ? error.message : '加载订单详情失败';
+    errorMessage.value =
+      error instanceof Error ? error.message : '加载订单详情失败';
   } finally {
     loading.value = false;
   }
@@ -362,7 +370,8 @@ const updateOrder = async () => {
   } catch (error) {
     console.error('更新订单失败:', error);
     showSnackbar.value = true;
-    snackbarText.value = error instanceof Error ? error.message : '更新订单失败';
+    snackbarText.value =
+      error instanceof Error ? error.message : '更新订单失败';
     snackbarColor.value = 'error';
   } finally {
     editing.value = false;
@@ -392,7 +401,8 @@ const cancelOrder = async () => {
   } catch (error) {
     console.error('取消订单失败:', error);
     showSnackbar.value = true;
-    snackbarText.value = error instanceof Error ? error.message : '取消订单失败';
+    snackbarText.value =
+      error instanceof Error ? error.message : '取消订单失败';
     snackbarColor.value = 'error';
   } finally {
     cancelling.value = false;
@@ -414,7 +424,9 @@ onMounted(async () => {
 <style scoped>
 .v-card {
   overflow: hidden;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
   border: 1px solid var(--card-border);
   background: var(--md-surface);
 }

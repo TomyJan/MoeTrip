@@ -43,23 +43,28 @@ export async function apiRequest<T = any>(
     // 检查HTTP错误
     if (!response.ok) {
       // 处理用户凭据过期的情况
-      if (response.status === 401 || 
-          (response.status === 200 && await response.text().then(text => {
+      if (
+        response.status === 401 ||
+        (response.status === 200 &&
+          (await response.text().then((text) => {
             try {
               const data = JSON.parse(text);
-              return data.message?.includes('token') || 
-                     data.message?.includes('认证') || 
-                     data.message?.includes('登录');
+              return (
+                data.message?.includes('token') ||
+                data.message?.includes('认证') ||
+                data.message?.includes('登录')
+              );
             } catch {
               return false;
             }
-          }))) {
+          })))
+      ) {
         // 清除用户凭据
         userStore.$reset();
         // 跳转到登录页面，并携带当前路径作为 redirect 参数
         router.push({
           path: '/login',
-          query: { redirect: router.currentRoute.value.fullPath }
+          query: { redirect: router.currentRoute.value.fullPath },
         });
         return {
           success: false,
@@ -87,15 +92,17 @@ export async function apiRequest<T = any>(
     // 检查API错误
     if (data.code !== 0) {
       // 处理用户凭据过期的情况
-      if (data.message?.includes('token') || 
-          data.message?.includes('认证') || 
-          data.message?.includes('登录')) {
+      if (
+        data.message?.includes('token') ||
+        data.message?.includes('认证') ||
+        data.message?.includes('登录')
+      ) {
         // 清除用户凭据
         userStore.$reset();
         // 跳转到登录页面，并携带当前路径作为 redirect 参数
         router.push({
           path: '/login',
-          query: { redirect: router.currentRoute.value.fullPath }
+          query: { redirect: router.currentRoute.value.fullPath },
         });
         return {
           success: false,
