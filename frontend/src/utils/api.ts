@@ -284,6 +284,7 @@ export const orderApi = {
     quantity?: number;
     date?: string;
     status?: string;
+    ticket_id?: number;
   }) => {
     return apiRequest('/order/update', {
       method: 'POST',

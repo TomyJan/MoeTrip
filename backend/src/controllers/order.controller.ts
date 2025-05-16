@@ -253,15 +253,53 @@ export const queryOrders = async (req: Request, res: Response) => {
 };
 
 /**
+ * 计算退款金额
+ * @param orderDate 门票使用日期 (YYYY-MM-DD格式)
+ * @param originalPrice 原订单总价
+ * @returns 退款金额
+ */
+function calculateRefund(orderDate: string, originalPrice: string): string {
+  // 计算距离使用日期的天数
+  const useDate = new Date(orderDate);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  useDate.setHours(0, 0, 0, 0);
+
+  const diffTime = useDate.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  // 退款策略
+  // 7天以上全额退款
+  // 3-7天退款50%
+  // 3天内不予退款
+  // 使用日期当天或已过期不予退款
+  let refundRate = 0;
+  if (diffDays > 7) {
+    refundRate = 1; // 100%退款
+  } else if (diffDays >= 3) {
+    refundRate = 0.5; // 50%退款
+  } else {
+    refundRate = 0; // 不退款
+  }
+
+  // 计算退款金额
+  const originalAmount = parseFloat(originalPrice);
+  const refundAmount = (originalAmount * refundRate).toFixed(2);
+
+  return refundAmount;
+}
+
+/**
  * 修改门票订单
  * @param req.body.order_id 要修改的订单ID
  * @param req.body.quantity 修改后的数量（可选）
  * @param req.body.date 修改后的日期（可选）
  * @param req.body.status 修改后的状态（可选）
+ * @param req.body.ticket_id 修改后的票种ID（可选，用于改签到不同票种）
  */
 export const updateOrder = async (req: Request, res: Response) => {
   try {
-    const { order_id, quantity, date, status } = req.body;
+    const { order_id, quantity, date, status, ticket_id } = req.body;
     const currentUserId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
 
@@ -274,11 +312,11 @@ export const updateOrder = async (req: Request, res: Response) => {
       });
     }
 
-    // 如果既没有提供新数量也没有提供新日期也没有提供新状态，则无需修改
-    if (quantity === undefined && !date && !status) {
+    // 如果既没有提供新数量也没有提供新日期也没有提供新状态也没有提供新票种，则无需修改
+    if (quantity === undefined && !date && !status && !ticket_id) {
       return res.json({
         code: 1001,
-        message: '至少需要提供新的数量或日期或状态',
+        message: '至少需要提供新的数量、日期、状态或票种',
         data: null,
       });
     }
@@ -317,6 +355,7 @@ export const updateOrder = async (req: Request, res: Response) => {
       date?: string;
       status?: string;
       total_price?: string;
+      ticket_id?: number;
     } = {};
 
     // 如果提供了新数量，验证并添加到更新数据
@@ -371,8 +410,11 @@ export const updateOrder = async (req: Request, res: Response) => {
       updateData.status = status;
     }
 
-    // 获取票种信息
-    const ticket = await Ticket.findByPk(order.ticket_id);
+    // 确定使用哪个票种ID（原票种或新票种）
+    const targetTicketId = ticket_id || order.ticket_id;
+
+    // 获取票种信息（如果提供了新票种ID，则获取新票种信息）
+    const ticket = await Ticket.findByPk(targetTicketId);
     if (!ticket) {
       return res.json({
         code: 1001,
@@ -381,52 +423,87 @@ export const updateOrder = async (req: Request, res: Response) => {
       });
     }
 
-    // 检查新的数量是否可用（如果要修改数量或日期）
-    const newQuantity = quantity || order.quantity;
-    const newDate = date || order.date;
-
-    // 查询该日期已售票数（不包括当前订单）
-    const soldCount = await Order.sum('quantity', {
-      where: {
-        ticket_id: order.ticket_id,
-        date: newDate,
-        id: { [Op.ne]: order_id }, // 排除当前订单
-        status: 'success', // 只计算成功的订单
-      },
-    });
-
-    // 计算剩余可用数量
-    const available = ticket.available - (soldCount || 0);
-
-    // 检查余量是否充足
-    if (available < newQuantity) {
-      return res.json({
-        code: 1005,
-        message: '票种余量不足',
-        data: null,
-      });
+    // 如果提供了新票种ID，验证并添加到更新数据
+    if (ticket_id && ticket_id !== order.ticket_id) {
+      // 验证新票种是否可用
+      updateData.ticket_id = ticket_id;
+      
+      // 获取新票种所属的景点，确保与原票种属于同一景点
+      const originalTicket = await Ticket.findByPk(order.ticket_id);
+      if (originalTicket && ticket.attraction_id !== originalTicket.attraction_id) {
+        logger.info(`改签跨景点: 从票种${order.ticket_id}(景点${originalTicket.attraction_id})到票种${ticket_id}(景点${ticket.attraction_id})`);
+      }
     }
 
-    // 如果更新数量或状态，重新计算总价
-    if (quantity !== undefined || status) {
-      // 计算新的总价
+    // 检查新的数量是否可用（如果要修改数量、日期或票种）
+    const newQuantity = quantity || order.quantity;
+    const newDate = date || order.date;
+    const newTicketId = ticket_id || order.ticket_id;
+
+    // 如果是改签到新票种，或修改数量/日期，需要检查余量
+    if (ticket_id !== order.ticket_id || quantity !== undefined || date) {
+      // 查询该日期已售票数（不包括当前订单）
+      const soldCount = await Order.sum('quantity', {
+        where: {
+          ticket_id: newTicketId,
+          date: newDate,
+          id: { [Op.ne]: order_id }, // 排除当前订单
+          status: 'success', // 只计算成功的订单
+        },
+      });
+
+      // 计算剩余可用数量
+      const available = ticket.available - (soldCount || 0);
+
+      // 检查余量是否充足
+      if (available < newQuantity) {
+        return res.json({
+          code: 1005,
+          message: '票种余量不足',
+          data: null,
+        });
+      }
+    }
+
+    // 如果订单状态变更为cancelled，处理退款和票量返还
+    if (status === 'cancelled' && order.status !== 'cancelled') {
+      // 计算退款金额
+      const orderDateString = order.date.toString();
+      const refundAmount = calculateRefund(orderDateString, order.total_price);
+      
+      // 设置订单总价为0（已支付金额保留在退款记录中）
+      updateData.total_price = '0.00';
+
+      // 记录退款信息
+      logger.info(
+        `订单${order_id}已取消，用户${order.user_id}，原价${order.total_price}，退款${refundAmount}元`,
+      );
+    } else if (quantity !== undefined || status || ticket_id) {
+      // 如果更新数量、票种或状态，重新计算总价
       const newStatus = status || order.status;
-      // 如果订单被取消，总价为0
+      // 如果订单状态变为cancelled，总价为0
       if (newStatus === 'cancelled') {
         updateData.total_price = '0.00';
-      } else if (quantity !== undefined) {
-        // 获取票种价格
+      } else {
+        // 获取票种价格（如果改签则使用新票种价格）
         const ticketPrice = parseFloat(ticket.price);
         // 计算新的总价
-        updateData.total_price = (ticketPrice * quantity).toFixed(2);
+        const newQuantityValue = quantity || order.quantity;
+        updateData.total_price = (ticketPrice * newQuantityValue).toFixed(2);
       }
     }
 
     // 更新订单
     await order.update(updateData);
 
-    // 重新获取更新后的订单
+    // 更新后，如果订单被取消，返还票量
     const updatedOrder = await Order.findByPk(order_id);
+    if (updatedOrder?.status === 'cancelled' && order.status !== 'cancelled') {
+      // 记录日志
+      logger.info(
+        `订单${order_id}已取消，返还${order.quantity}张票到票种${order.ticket_id}`,
+      );
+    }
 
     // 检查订单是否存在
     if (!updatedOrder) {

@@ -114,12 +114,46 @@
     </v-row>
 
     <!-- 修改订单对话框 -->
-    <v-dialog v-model="showEditDialog" max-width="500px">
+    <v-dialog 
+      v-model="showEditDialog" 
+      max-width="600px"
+      :persistent="false"
+      :retain-focus="false"
+      :scrim="true"
+      @click:outside="closeEditDialog"
+    >
       <v-card rounded="lg">
         <v-card-title class="text-md-h6">修改订单</v-card-title>
         <v-card-text>
           <v-form ref="editForm" @submit.prevent="updateOrder">
             <v-row>
+              <!-- 票种选择 -->
+              <v-col cols="12">
+                <v-select
+                  v-model="currentOrder.ticket_id"
+                  :items="availableTickets"
+                  item-title="name"
+                  item-value="id"
+                  label="选择票种"
+                  variant="outlined"
+                  :loading="loadingTickets"
+                  return-object
+                  @update:model-value="handleTicketChange"
+                >
+                  <template v-slot:item="{ item, props }">
+                    <v-list-item v-bind="props">
+                      <v-list-item-subtitle>
+                        价格: ¥{{ item.raw.price }} | 余量: {{ item.raw.available }}
+                      </v-list-item-subtitle>
+                    </v-list-item>
+                  </template>
+                  <template v-slot:selection="{ item }">
+                    <span>{{ item?.raw?.name || getSelectedTicketName() }}</span>
+                  </template>
+                </v-select>
+              </v-col>
+              
+              <!-- 数量选择 -->
               <v-col cols="12">
                 <v-text-field
                   v-model.number="currentOrder.quantity"
@@ -133,6 +167,8 @@
                   @input="checkAvailability"
                 ></v-text-field>
               </v-col>
+
+              <!-- 日期选择 -->
               <v-col cols="12">
                 <v-date-picker
                   v-model="currentOrder.date"
@@ -145,10 +181,48 @@
                   @update:model-value="checkAvailability"
                 ></v-date-picker>
               </v-col>
+
+              <!-- 订单价格预览 -->
+              <v-col cols="12">
+                <v-card variant="outlined" class="pa-3">
+                  <div class="d-flex justify-space-between mb-2">
+                    <span class="text-medium-emphasis">票种:</span>
+                    <span>{{ getSelectedTicketName() }}</span>
+                  </div>
+                  <div class="d-flex justify-space-between mb-2">
+                    <span class="text-medium-emphasis">单价:</span>
+                    <span>¥{{ getSelectedTicketPrice() }}</span>
+                  </div>
+                  <div class="d-flex justify-space-between mb-2">
+                    <span class="text-medium-emphasis">数量:</span>
+                    <span>{{ currentOrder.quantity }}张</span>
+                  </div>
+                  <div class="d-flex justify-space-between mb-2">
+                    <span class="text-medium-emphasis">日期:</span>
+                    <span>{{ formatDateOnly(currentOrder.date) }}</span>
+                  </div>
+                  <v-divider class="my-2"></v-divider>
+                  <div class="d-flex justify-space-between mt-2">
+                    <span class="text-subtitle-1 font-weight-bold">总价:</span>
+                    <span class="text-subtitle-1 text-primary font-weight-bold">
+                      ¥{{ calculateTotalPrice() }}
+                    </span>
+                  </div>
+                </v-card>
+              </v-col>
             </v-row>
           </v-form>
         </v-card-text>
-        <v-card-actions class="d-flex justify-end">
+        <v-card-actions class="d-flex justify-end pa-4">
+          <v-btn
+            color="error"
+            variant="text"
+            :disabled="editing"
+            @click="closeEditDialog"
+            class="mr-2"
+          >
+            取消
+          </v-btn>
           <v-btn
             color="primary"
             variant="elevated"
@@ -158,20 +232,19 @@
           >
             确认修改
           </v-btn>
-          <v-btn
-            color="error"
-            variant="elevated"
-            :disabled="editing"
-            @click="closeEditDialog"
-          >
-            取消
-          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <!-- 取消订单确认对话框 -->
-    <v-dialog v-model="showCancelDialog" max-width="400px">
+    <v-dialog 
+      v-model="showCancelDialog" 
+      max-width="400px"
+      :persistent="false"
+      :retain-focus="false"
+      :scrim="true"
+      @click:outside="closeCancelDialog"
+    >
       <v-card rounded="lg">
         <v-card-title class="text-md-h6">确认取消订单</v-card-title>
         <v-card-text>
@@ -190,7 +263,7 @@
             color="primary"
             variant="elevated"
             :disabled="cancelling"
-            @click="showCancelDialog = false"
+            @click="closeCancelDialog"
           >
             返回
           </v-btn>
@@ -208,7 +281,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, watch, nextTick, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '../stores';
 import { orderApi, ticketApi } from '../utils/api';
@@ -227,6 +300,8 @@ const editing = ref(false);
 const cancelling = ref(false);
 const checkingAvailability = ref(false);
 const quantityError = ref('');
+const loadingTickets = ref(false);
+const availableTickets = ref<any[]>([]);
 
 // 对话框状态
 const showEditDialog = ref(false);
@@ -243,22 +318,130 @@ const minDate = computed(() => dayjs().format('YYYY-MM-DD'));
 const maxDate = computed(() => dayjs().add(30, 'day').format('YYYY-MM-DD'));
 const disabledDates = ref<string[]>([]);
 
+// 获取所选票种名称
+const getSelectedTicketName = () => {
+  if (!currentOrder.value || !currentOrder.value.ticket_id) return '';
+  
+  // 如果是使用的对象，直接获取名称
+  if (typeof currentOrder.value.ticket_id === 'object' && currentOrder.value.ticket_id.name) {
+    return currentOrder.value.ticket_id.name;
+  }
+  
+  // 如果是ID，从票种列表中查找
+  const ticket = availableTickets.value.find(
+    (t) => t.id === currentOrder.value.ticket_id
+  );
+  return ticket ? ticket.name : (order.value?.ticket_name || '');
+};
+
+// 获取所选票种价格
+const getSelectedTicketPrice = () => {
+  if (!currentOrder.value || !currentOrder.value.ticket_id) return 0;
+  
+  // 如果是使用的对象，直接获取价格
+  if (typeof currentOrder.value.ticket_id === 'object' && currentOrder.value.ticket_id.price) {
+    return currentOrder.value.ticket_id.price;
+  }
+  
+  // 如果是ID，从票种列表中查找
+  const ticket = availableTickets.value.find(
+    (t) => t.id === currentOrder.value.ticket_id
+  );
+  return ticket ? ticket.price : 0;
+};
+
+// 计算总价
+const calculateTotalPrice = () => {
+  if (!currentOrder.value) return 0;
+  const price = getSelectedTicketPrice();
+  const quantity = currentOrder.value.quantity || 1;
+  return (price * quantity).toFixed(2);
+};
+
+// 加载同一景点的其他票种
+const loadAvailableTickets = async () => {
+  if (!order.value || !order.value.attraction_id) return;
+  
+  loadingTickets.value = true;
+  try {
+    const result = await ticketApi.query({
+      attraction_id: order.value.attraction_id
+    });
+    
+    if (result.success && result.data?.data?.tickets) {
+      availableTickets.value = result.data.data.tickets;
+    } else {
+      throw new Error(result.error || '获取票种列表失败');
+    }
+  } catch (error) {
+    console.error('加载票种列表失败:', error);
+    showSnackbar.value = true;
+    snackbarText.value = '获取可用票种失败，请重试';
+    snackbarColor.value = 'error';
+  } finally {
+    loadingTickets.value = false;
+  }
+};
+
+// 处理票种变更
+const handleTicketChange = () => {
+  checkAvailability();
+};
+
 // 打开编辑对话框
-const openEditDialog = () => {
-  if (order.value) {
+const openEditDialog = async () => {
+  if (!order.value) return;
+  
+  try {
+    // 1. 先加载票种列表
+    await loadAvailableTickets();
+    
+    // 2. 查找当前票种对象
+    let currentTicketObj = null;
+    
+    if (availableTickets.value.length > 0) {
+      currentTicketObj = availableTickets.value.find(
+        t => t.id === order.value.ticket_id
+      );
+    }
+    
+    // 3. 如果没找到, 创建一个临时对象
+    if (!currentTicketObj) {
+      currentTicketObj = {
+        id: order.value.ticket_id,
+        name: order.value.ticket_name,
+        price: order.value.total_price / order.value.quantity,
+        available: order.value.available || 1,
+        attraction_id: order.value.attraction_id
+      };
+    }
+    
+    // 4. 设置当前订单数据
     currentOrder.value = {
       ...order.value,
       quantity: order.value.quantity,
       date: order.value.date,
+      ticket_id: currentTicketObj // 直接设置为对象
     };
+    
+    console.log('设置当前票种:', currentTicketObj);
+    
+    // 5. 打开对话框
     showEditDialog.value = true;
+    
+    // 6. 检查余量
+    checkAvailability();
+  } catch (error) {
+    console.error('打开编辑对话框失败:', error);
+    showSnackbar.value = true;
+    snackbarText.value = '加载票种信息失败，请重试';
+    snackbarColor.value = 'error';
   }
 };
 
 // 关闭编辑对话框
 const closeEditDialog = () => {
   showEditDialog.value = false;
-  currentOrder.value = null;
 };
 
 // 是否可以更新订单
@@ -267,8 +450,10 @@ const canUpdate = computed(() => {
   return (
     order.value.status === 'success' &&
     (currentOrder.value.quantity !== order.value.quantity ||
-      currentOrder.value.date !== order.value.date) &&
-    !quantityError.value
+     currentOrder.value.date !== order.value.date ||
+     currentOrder.value.ticket_id !== order.value.ticket_id) &&
+    !quantityError.value &&
+    !editing.value
   );
 });
 
@@ -320,22 +505,33 @@ const loadOrderDetail = async () => {
 
 // 检查余量
 const checkAvailability = async () => {
-  if (!order.value) return;
+  if (!currentOrder.value || !currentOrder.value.ticket_id) return;
 
   checkingAvailability.value = true;
   quantityError.value = '';
 
   try {
+    // 获取当前选择的票种ID
+    const ticketId = typeof currentOrder.value.ticket_id === 'object'
+      ? currentOrder.value.ticket_id.id
+      : currentOrder.value.ticket_id;
+      
     const result = await ticketApi.check({
-      ticket_id: order.value.ticket_id,
+      ticket_id: ticketId,
       date: dayjs(currentOrder.value.date).format('YYYY-MM-DD'),
     });
 
     if (result.success && result.data?.data?.ticket) {
       const available = result.data.data.ticket.available;
+      
+      // 更新当前选择的票种的可用数量（如果是对象形式）
+      if (typeof currentOrder.value.ticket_id === 'object') {
+        currentOrder.value.ticket_id.available = available;
+      }
+      
       if (available < currentOrder.value.quantity) {
         quantityError.value = `当前日期余量不足，仅剩${available}张`;
-        currentOrder.value.quantity = available;
+        currentOrder.value.quantity = available > 0 ? available : 1;
       }
     }
   } catch (error) {
@@ -352,10 +548,16 @@ const updateOrder = async () => {
 
   editing.value = true;
   try {
+    // 获取当前选择的票种ID
+    const ticketId = typeof currentOrder.value.ticket_id === 'object'
+      ? currentOrder.value.ticket_id.id
+      : currentOrder.value.ticket_id;
+      
     const result = await orderApi.update({
       order_id: currentOrder.value.id,
       quantity: currentOrder.value.quantity,
       date: dayjs(currentOrder.value.date).format('YYYY-MM-DD'),
+      ticket_id: ticketId,
     });
 
     if (result.success) {
@@ -409,7 +611,46 @@ const cancelOrder = async () => {
   }
 };
 
-// 页面加载
+// 监听票种ID变化
+watch(
+  () => currentOrder.value?.ticket_id,
+  (newVal) => {
+    if (newVal) {
+      console.log('票种ID变化:', typeof newVal, newVal);
+      if (typeof newVal === 'object') {
+        console.log('票种名称:', newVal.name);
+      } else {
+        // 如果是ID，尝试找到对应的票种对象
+        const ticket = availableTickets.value.find(t => t.id === newVal);
+        if (ticket) {
+          console.log('找到票种对象:', ticket.name);
+          // 使用setTimeout避免循环更新
+          setTimeout(() => {
+            currentOrder.value.ticket_id = ticket;
+          }, 0);
+        }
+      }
+    }
+  },
+  { immediate: true, deep: true }
+);
+
+// 关闭取消订单对话框
+const closeCancelDialog = () => {
+  showCancelDialog.value = false;
+};
+
+// 监听编辑对话框关闭，清空数据
+watch(showEditDialog, (newVal) => {
+  if (!newVal) {
+    // 对话框关闭后，等待动画完成再清空数据
+    setTimeout(() => {
+      currentOrder.value = null;
+    }, 300);
+  }
+});
+
+// 页面加载和卸载
 onMounted(async () => {
   // 检查用户是否登录
   if (!userStore.isLoggedIn) {
@@ -418,6 +659,11 @@ onMounted(async () => {
   }
 
   await loadOrderDetail();
+});
+
+// 组件卸载时清理事件监听器
+onUnmounted(() => {
+  // 无需清理事件监听器，因为我们使用了Vuetify内置的点击外部关闭功能
 });
 </script>
 
@@ -434,5 +680,17 @@ onMounted(async () => {
 .v-card:hover {
   box-shadow: var(--card-shadow-hover);
   transform: translateY(-2px);
+}
+
+/* 对话框过渡动画 */
+:deep(.v-dialog-transition-enter-active),
+:deep(.v-dialog-transition-leave-active) {
+  transition: all 0.3s ease;
+}
+
+:deep(.v-dialog-transition-enter-from),
+:deep(.v-dialog-transition-leave-to) {
+  opacity: 0;
+  transform: scale(0.95);
 }
 </style>
