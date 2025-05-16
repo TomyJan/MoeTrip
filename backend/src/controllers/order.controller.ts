@@ -427,11 +427,16 @@ export const updateOrder = async (req: Request, res: Response) => {
     if (ticket_id && ticket_id !== order.ticket_id) {
       // 验证新票种是否可用
       updateData.ticket_id = ticket_id;
-      
+
       // 获取新票种所属的景点，确保与原票种属于同一景点
       const originalTicket = await Ticket.findByPk(order.ticket_id);
-      if (originalTicket && ticket.attraction_id !== originalTicket.attraction_id) {
-        logger.info(`改签跨景点: 从票种${order.ticket_id}(景点${originalTicket.attraction_id})到票种${ticket_id}(景点${ticket.attraction_id})`);
+      if (
+        originalTicket &&
+        ticket.attraction_id !== originalTicket.attraction_id
+      ) {
+        logger.info(
+          `改签跨景点: 从票种${order.ticket_id}(景点${originalTicket.attraction_id})到票种${ticket_id}(景点${ticket.attraction_id})`,
+        );
       }
     }
 
@@ -470,7 +475,7 @@ export const updateOrder = async (req: Request, res: Response) => {
       // 计算退款金额
       const orderDateString = order.date.toString();
       const refundAmount = calculateRefund(orderDateString, order.total_price);
-      
+
       // 设置订单总价为0（已支付金额保留在退款记录中）
       updateData.total_price = '0.00';
 

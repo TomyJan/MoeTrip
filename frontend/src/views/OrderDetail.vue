@@ -114,8 +114,8 @@
     </v-row>
 
     <!-- 修改订单对话框 -->
-    <v-dialog 
-      v-model="showEditDialog" 
+    <v-dialog
+      v-model="showEditDialog"
       max-width="600px"
       :persistent="false"
       :retain-focus="false"
@@ -143,16 +143,19 @@
                   <template v-slot:item="{ item, props }">
                     <v-list-item v-bind="props">
                       <v-list-item-subtitle>
-                        价格: ¥{{ item.raw.price }} | 余量: {{ item.raw.available }}
+                        价格: ¥{{ item.raw.price }} | 余量:
+                        {{ item.raw.available }}
                       </v-list-item-subtitle>
                     </v-list-item>
                   </template>
                   <template v-slot:selection="{ item }">
-                    <span>{{ item?.raw?.name || getSelectedTicketName() }}</span>
+                    <span>{{
+                      item?.raw?.name || getSelectedTicketName()
+                    }}</span>
                   </template>
                 </v-select>
               </v-col>
-              
+
               <!-- 数量选择 -->
               <v-col cols="12">
                 <v-text-field
@@ -237,8 +240,8 @@
     </v-dialog>
 
     <!-- 取消订单确认对话框 -->
-    <v-dialog 
-      v-model="showCancelDialog" 
+    <v-dialog
+      v-model="showCancelDialog"
       max-width="400px"
       :persistent="false"
       :retain-focus="false"
@@ -321,31 +324,37 @@ const disabledDates = ref<string[]>([]);
 // 获取所选票种名称
 const getSelectedTicketName = () => {
   if (!currentOrder.value || !currentOrder.value.ticket_id) return '';
-  
+
   // 如果是使用的对象，直接获取名称
-  if (typeof currentOrder.value.ticket_id === 'object' && currentOrder.value.ticket_id.name) {
+  if (
+    typeof currentOrder.value.ticket_id === 'object' &&
+    currentOrder.value.ticket_id.name
+  ) {
     return currentOrder.value.ticket_id.name;
   }
-  
+
   // 如果是ID，从票种列表中查找
   const ticket = availableTickets.value.find(
-    (t) => t.id === currentOrder.value.ticket_id
+    (t) => t.id === currentOrder.value.ticket_id,
   );
-  return ticket ? ticket.name : (order.value?.ticket_name || '');
+  return ticket ? ticket.name : order.value?.ticket_name || '';
 };
 
 // 获取所选票种价格
 const getSelectedTicketPrice = () => {
   if (!currentOrder.value || !currentOrder.value.ticket_id) return 0;
-  
+
   // 如果是使用的对象，直接获取价格
-  if (typeof currentOrder.value.ticket_id === 'object' && currentOrder.value.ticket_id.price) {
+  if (
+    typeof currentOrder.value.ticket_id === 'object' &&
+    currentOrder.value.ticket_id.price
+  ) {
     return currentOrder.value.ticket_id.price;
   }
-  
+
   // 如果是ID，从票种列表中查找
   const ticket = availableTickets.value.find(
-    (t) => t.id === currentOrder.value.ticket_id
+    (t) => t.id === currentOrder.value.ticket_id,
   );
   return ticket ? ticket.price : 0;
 };
@@ -361,13 +370,13 @@ const calculateTotalPrice = () => {
 // 加载同一景点的其他票种
 const loadAvailableTickets = async () => {
   if (!order.value || !order.value.attraction_id) return;
-  
+
   loadingTickets.value = true;
   try {
     const result = await ticketApi.query({
-      attraction_id: order.value.attraction_id
+      attraction_id: order.value.attraction_id,
     });
-    
+
     if (result.success && result.data?.data?.tickets) {
       availableTickets.value = result.data.data.tickets;
     } else {
@@ -391,20 +400,20 @@ const handleTicketChange = () => {
 // 打开编辑对话框
 const openEditDialog = async () => {
   if (!order.value) return;
-  
+
   try {
     // 1. 先加载票种列表
     await loadAvailableTickets();
-    
+
     // 2. 查找当前票种对象
     let currentTicketObj = null;
-    
+
     if (availableTickets.value.length > 0) {
       currentTicketObj = availableTickets.value.find(
-        t => t.id === order.value.ticket_id
+        (t) => t.id === order.value.ticket_id,
       );
     }
-    
+
     // 3. 如果没找到, 创建一个临时对象
     if (!currentTicketObj) {
       currentTicketObj = {
@@ -412,23 +421,23 @@ const openEditDialog = async () => {
         name: order.value.ticket_name,
         price: order.value.total_price / order.value.quantity,
         available: order.value.available || 1,
-        attraction_id: order.value.attraction_id
+        attraction_id: order.value.attraction_id,
       };
     }
-    
+
     // 4. 设置当前订单数据
     currentOrder.value = {
       ...order.value,
       quantity: order.value.quantity,
       date: order.value.date,
-      ticket_id: currentTicketObj // 直接设置为对象
+      ticket_id: currentTicketObj, // 直接设置为对象
     };
-    
+
     console.log('设置当前票种:', currentTicketObj);
-    
+
     // 5. 打开对话框
     showEditDialog.value = true;
-    
+
     // 6. 检查余量
     checkAvailability();
   } catch (error) {
@@ -450,8 +459,8 @@ const canUpdate = computed(() => {
   return (
     order.value.status === 'success' &&
     (currentOrder.value.quantity !== order.value.quantity ||
-     currentOrder.value.date !== order.value.date ||
-     currentOrder.value.ticket_id !== order.value.ticket_id) &&
+      currentOrder.value.date !== order.value.date ||
+      currentOrder.value.ticket_id !== order.value.ticket_id) &&
     !quantityError.value &&
     !editing.value
   );
@@ -512,10 +521,11 @@ const checkAvailability = async () => {
 
   try {
     // 获取当前选择的票种ID
-    const ticketId = typeof currentOrder.value.ticket_id === 'object'
-      ? currentOrder.value.ticket_id.id
-      : currentOrder.value.ticket_id;
-      
+    const ticketId =
+      typeof currentOrder.value.ticket_id === 'object'
+        ? currentOrder.value.ticket_id.id
+        : currentOrder.value.ticket_id;
+
     const result = await ticketApi.check({
       ticket_id: ticketId,
       date: dayjs(currentOrder.value.date).format('YYYY-MM-DD'),
@@ -523,12 +533,12 @@ const checkAvailability = async () => {
 
     if (result.success && result.data?.data?.ticket) {
       const available = result.data.data.ticket.available;
-      
+
       // 更新当前选择的票种的可用数量（如果是对象形式）
       if (typeof currentOrder.value.ticket_id === 'object') {
         currentOrder.value.ticket_id.available = available;
       }
-      
+
       if (available < currentOrder.value.quantity) {
         quantityError.value = `当前日期余量不足，仅剩${available}张`;
         currentOrder.value.quantity = available > 0 ? available : 1;
@@ -549,10 +559,11 @@ const updateOrder = async () => {
   editing.value = true;
   try {
     // 获取当前选择的票种ID
-    const ticketId = typeof currentOrder.value.ticket_id === 'object'
-      ? currentOrder.value.ticket_id.id
-      : currentOrder.value.ticket_id;
-      
+    const ticketId =
+      typeof currentOrder.value.ticket_id === 'object'
+        ? currentOrder.value.ticket_id.id
+        : currentOrder.value.ticket_id;
+
     const result = await orderApi.update({
       order_id: currentOrder.value.id,
       quantity: currentOrder.value.quantity,
@@ -621,7 +632,7 @@ watch(
         console.log('票种名称:', newVal.name);
       } else {
         // 如果是ID，尝试找到对应的票种对象
-        const ticket = availableTickets.value.find(t => t.id === newVal);
+        const ticket = availableTickets.value.find((t) => t.id === newVal);
         if (ticket) {
           console.log('找到票种对象:', ticket.name);
           // 使用setTimeout避免循环更新
@@ -632,7 +643,7 @@ watch(
       }
     }
   },
-  { immediate: true, deep: true }
+  { immediate: true, deep: true },
 );
 
 // 关闭取消订单对话框
