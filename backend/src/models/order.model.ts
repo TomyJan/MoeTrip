@@ -10,6 +10,7 @@ class Order extends Model {
   public quantity!: number;
   public date!: Date;
   public status!: string;
+  public total_price!: string;
 
   // 时间戳
   public readonly created_at!: Date;
@@ -78,6 +79,14 @@ Order.init(
       defaultValue: 'success',
       validate: {
         isIn: [['success', 'cancelled']],
+      },
+    },
+    total_price: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        min: 0,
       },
     },
   },

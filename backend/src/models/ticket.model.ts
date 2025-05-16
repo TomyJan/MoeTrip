@@ -7,6 +7,7 @@ class Ticket extends Model {
   public attraction_id!: number;
   public name!: string;
   public available!: number;
+  public price!: string;
 
   // 时间戳
   public readonly created_at!: Date;
@@ -37,6 +38,14 @@ Ticket.init(
     },
     available: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        min: 0,
+      },
+    },
+    price: {
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
       defaultValue: 0,
       validate: {

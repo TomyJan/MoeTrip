@@ -108,6 +108,9 @@ export const createOrder = async (req: Request, res: Response) => {
       });
     }
 
+    // 计算订单总价
+    const total_price = (parseFloat(ticket.price) * quantity).toFixed(2);
+
     // 创建订单
     const order = await Order.create({
       user_id,
@@ -115,10 +118,11 @@ export const createOrder = async (req: Request, res: Response) => {
       quantity,
       date,
       status: 'success', // 添加默认状态值
+      total_price, // 字符串形式的总价
     });
 
     logger.info(
-      `用户 ${user_id} 预订票种 ${ticket_id} ${quantity} 张，日期: ${date}`,
+      `用户 ${user_id} 预订票种 ${ticket_id} ${quantity} 张，日期: ${date}，总价: ${total_price}`,
     );
 
     // 取出该票种和景点的信息
@@ -138,7 +142,7 @@ export const createOrder = async (req: Request, res: Response) => {
           attraction_id: attractionInfo?.id,
           attraction_name: attractionInfo?.name,
           date: order.date,
-          total_price: 0, // TODO: 价格系统
+          total_price: order.total_price, // 使用计算后的总价
           user_id: order.user_id,
           status: order.status,
           created_at: order.created_at,
@@ -221,7 +225,7 @@ export const queryOrders = async (req: Request, res: Response) => {
           attraction_id: attractionInfo?.id,
           attraction_name: attractionInfo?.name,
           date: order.date,
-          total_price: 0, // TODO: 价格系统
+          total_price: order.total_price, // 使用数据库中的总价
           user_id: order.user_id,
           status: order.status,
           created_at: order.created_at,
@@ -308,8 +312,7 @@ export const updateOrder = async (req: Request, res: Response) => {
     }
 
     // 准备更新数据
-    const updateData: { quantity?: number; date?: string; status?: string } =
-      {};
+    const updateData: { quantity?: number; date?: string; status?: string; total_price?: string } = {};
 
     // 如果提供了新数量，验证并添加到更新数据
     if (quantity !== undefined) {
@@ -399,6 +402,21 @@ export const updateOrder = async (req: Request, res: Response) => {
       });
     }
 
+    // 如果更新数量或状态，重新计算总价
+    if (quantity !== undefined || status) {
+      // 计算新的总价
+      const newStatus = status || order.status;
+      // 如果订单被取消，总价为0
+      if (newStatus === 'cancelled') {
+        updateData.total_price = '0.00';
+      } else if (quantity !== undefined) {
+        // 获取票种价格
+        const ticketPrice = parseFloat(ticket.price);
+        // 计算新的总价
+        updateData.total_price = (ticketPrice * quantity).toFixed(2);
+      }
+    }
+
     // 更新订单
     await order.update(updateData);
 
@@ -433,7 +451,7 @@ export const updateOrder = async (req: Request, res: Response) => {
           attraction_id: attractionInfo?.id,
           attraction_name: attractionInfo?.name,
           date: updatedOrder.date,
-          total_price: 0, // TODO: 价格系统
+          total_price: updatedOrder.total_price, // 使用数据库中的总价
           user_id: updatedOrder.user_id,
           status: updatedOrder.status,
           created_at: updatedOrder.created_at,

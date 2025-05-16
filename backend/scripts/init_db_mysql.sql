@@ -46,6 +46,7 @@ CREATE TABLE tickets (
     attraction_id BIGINT UNSIGNED NOT NULL,
     name VARCHAR(100) NOT NULL,
     available INT NOT NULL DEFAULT 0 CHECK (available >= 0),
+    price DECIMAL(10, 2) NOT NULL DEFAULT 0 CHECK (price >= 0),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (attraction_id) REFERENCES attractions(id) ON DELETE CASCADE
@@ -59,6 +60,7 @@ CREATE TABLE orders (
     quantity INT NOT NULL CHECK (quantity > 0),
     date DATE NOT NULL,
     status ENUM('success', 'cancelled') NOT NULL DEFAULT 'success',
+    total_price DECIMAL(10, 2) NOT NULL DEFAULT 0 CHECK (total_price >= 0),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT,
@@ -111,14 +113,14 @@ INSERT INTO facilities (name, location, status, attraction_id) VALUES
 ('观景台', '湖边', 'normal', 2);
 
 -- 门票
-INSERT INTO tickets (attraction_id, name, available) VALUES
-(1, '成人票', 100),
-(1, '儿童票', 50),
-(2, '夜游票', 30);
+INSERT INTO tickets (attraction_id, name, available, price) VALUES
+(1, '成人票', 100, 80.00),
+(1, '儿童票', 50, 40.00),
+(2, '夜游票', 30, 120.00);
 
 -- 订单
-INSERT INTO orders (user_id, ticket_id, quantity, date, status) VALUES
-(2, 1, 2, '2025-07-15', 'success');
+INSERT INTO orders (user_id, ticket_id, quantity, date, status, total_price) VALUES
+(2, 1, 2, '2025-07-15', 'success', 160.00);
 
 -- 反馈
 INSERT INTO feedback (user_id, attraction_id, score, comment, status) VALUES

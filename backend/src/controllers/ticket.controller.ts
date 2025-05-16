@@ -100,6 +100,7 @@ export const checkTicket = async (req: Request, res: Response) => {
           name: ticket.name,
           available: available > 0 ? available : 0,
           date,
+          price: ticket.price,
         },
       },
     });
@@ -118,10 +119,11 @@ export const checkTicket = async (req: Request, res: Response) => {
  * @param req.body.attraction_id 所属景点ID
  * @param req.body.name 票种名称
  * @param req.body.available 每日可用数量
+ * @param req.body.price 票种价格
  */
 export const addTicket = async (req: Request, res: Response) => {
   try {
-    const { attraction_id, name, available } = req.body;
+    const { attraction_id, name, available, price = 0 } = req.body;
 
     // 验证必填字段
     if (!attraction_id || !name || available === undefined) {
@@ -137,6 +139,15 @@ export const addTicket = async (req: Request, res: Response) => {
       return res.json({
         code: 1001,
         message: '每日可用数量必须是非负数',
+        data: null,
+      });
+    }
+
+    // 验证价格
+    if (isNaN(price) || price < 0) {
+      return res.json({
+        code: 1001,
+        message: '价格必须是非负数',
         data: null,
       });
     }
@@ -181,9 +192,10 @@ export const addTicket = async (req: Request, res: Response) => {
       attraction_id,
       name,
       available,
+      price: price.toFixed(2),
     });
 
-    logger.info(`新票种已添加: ${name}, 景点ID: ${attraction_id}`);
+    logger.info(`新票种已添加: ${name}, 景点ID: ${attraction_id}, 价格: ${price}`);
 
     return res.json({
       code: 0,
