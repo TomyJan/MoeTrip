@@ -195,7 +195,9 @@ export const addTicket = async (req: Request, res: Response) => {
       price: price.toFixed(2),
     });
 
-    logger.info(`新票种已添加: ${name}, 景点ID: ${attraction_id}, 价格: ${price}`);
+    logger.info(
+      `新票种已添加: ${name}, 景点ID: ${attraction_id}, 价格: ${price}`,
+    );
 
     return res.json({
       code: 0,

@@ -312,7 +312,12 @@ export const updateOrder = async (req: Request, res: Response) => {
     }
 
     // 准备更新数据
-    const updateData: { quantity?: number; date?: string; status?: string; total_price?: string } = {};
+    const updateData: {
+      quantity?: number;
+      date?: string;
+      status?: string;
+      total_price?: string;
+    } = {};
 
     // 如果提供了新数量，验证并添加到更新数据
     if (quantity !== undefined) {
