@@ -25,17 +25,17 @@ export const getStats = async (req: Request, res: Response) => {
 
     // 查询平均评分
     const avgScoreResultData = await Feedback.findOne({
-      attributes: [
-        [Sequelize.fn('AVG', Sequelize.col('score')), 'avgScore'],
-      ],
+      attributes: [[Sequelize.fn('AVG', Sequelize.col('score')), 'avgScore']],
       where: {
         status: 'public', // 只统计公开的反馈
       },
       raw: true,
     });
-    
+
     // 使用类型断言转换结果
-    const avgScoreResult = avgScoreResultData as unknown as { avgScore?: string | number } | null;
+    const avgScoreResult = avgScoreResultData as unknown as {
+      avgScore?: string | number;
+    } | null;
 
     // 计算平均分，保留一位小数
     const avgScore = avgScoreResult?.avgScore
@@ -61,4 +61,4 @@ export const getStats = async (req: Request, res: Response) => {
       data: null,
     });
   }
-}; 
+};

@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import { getStats } from '../controllers/admin.controller';
-import { authMiddleware, adminMiddleware } from '../middlewares/auth.middleware';
+import {
+  authMiddleware,
+  adminMiddleware,
+} from '../middlewares/auth.middleware';
 
 const router = Router();
 
@@ -11,4 +14,4 @@ const router = Router();
  */
 router.post('/stats', authMiddleware, adminMiddleware, getStats);
 
-export default router; 
+export default router;

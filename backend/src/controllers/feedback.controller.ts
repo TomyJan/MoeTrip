@@ -513,12 +513,12 @@ export const getStats = async (req: Request, res: Response) => {
 
     // 构建查询条件
     const whereCondition: any = {};
-    
+
     // 如果指定了景点ID，则只统计该景点的反馈
     if (attraction_id) {
       whereCondition.attraction_id = attraction_id;
     }
-    
+
     // 默认只统计公开状态的反馈，除非明确要求包含已删除的
     if (!include_deleted) {
       whereCondition.status = 'public';
@@ -531,15 +531,15 @@ export const getStats = async (req: Request, res: Response) => {
 
     // 查询平均评分
     const avgScoreResultData = await Feedback.findOne({
-      attributes: [
-        [Sequelize.fn('AVG', Sequelize.col('score')), 'avgScore'],
-      ],
+      attributes: [[Sequelize.fn('AVG', Sequelize.col('score')), 'avgScore']],
       where: whereCondition,
       raw: true,
     });
-    
+
     // 使用类型断言转换结果
-    const avgScoreResult = avgScoreResultData as unknown as { avgScore?: string | number } | null;
+    const avgScoreResult = avgScoreResultData as unknown as {
+      avgScore?: string | number;
+    } | null;
 
     // 计算平均分，保留一位小数
     const avgScore = avgScoreResult?.avgScore
@@ -557,7 +557,7 @@ export const getStats = async (req: Request, res: Response) => {
       order: [[Sequelize.col('score'), 'ASC']],
       raw: true,
     });
-    
+
     // 使用类型断言转换结果
     const scoreDistribution = scoreDistributionData as unknown as Array<{
       score: number;
@@ -588,9 +588,10 @@ export const getStats = async (req: Request, res: Response) => {
     });
 
     // 计算带评论的反馈百分比，保留一位小数
-    const withCommentPercent = totalCount > 0
-      ? parseFloat(((withCommentCount / totalCount) * 100).toFixed(1))
-      : 0;
+    const withCommentPercent =
+      totalCount > 0
+        ? parseFloat(((withCommentCount / totalCount) * 100).toFixed(1))
+        : 0;
 
     return res.json({
       code: 0,

@@ -501,7 +501,7 @@ const feedbackTrendOption = computed(() => {
     legend: {
       ...themeConfig.legend,
       data: ['平均评分', '反馈数量'],
-      bottom: 0
+      bottom: 0,
     },
     grid: {
       left: '3%',
@@ -551,17 +551,17 @@ const feedbackTrendOption = computed(() => {
         markLine: {
           silent: true,
           lineStyle: {
-            color: '#42b883'
+            color: '#42b883',
           },
           data: [
             {
               yAxis: avgScore,
-              name: '当前平均分'
-            }
+              name: '当前平均分',
+            },
           ],
           label: {
-            formatter: `当前平均: ${avgScore}`
-          }
+            formatter: `当前平均: ${avgScore}`,
+          },
         },
         lineStyle: {
           width: 3,
@@ -593,7 +593,9 @@ function getLast7Days() {
   for (let i = 6; i >= 0; i--) {
     const date = new Date();
     date.setDate(date.getDate() - i);
-    result.push(date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }));
+    result.push(
+      date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }),
+    );
   }
   return result;
 }
@@ -621,11 +623,11 @@ const visitorsChartOption = computed(() => {
     tooltip: {
       ...themeConfig.tooltip,
       trigger: 'axis',
-      formatter: function(params: any) {
+      formatter: function (params: any) {
         const date = params[0].name;
         const value = params[0].value;
         return `${date}: ${value} 人次`;
-      }
+      },
     },
     xAxis: {
       ...themeConfig.xAxis,
@@ -684,7 +686,7 @@ const scoreDistributionOption = computed(() => {
       tooltip: {
         ...themeConfig.tooltip,
         trigger: 'item',
-        formatter: '{b}: {c} ({d}%)'
+        formatter: '{b}: {c} ({d}%)',
       },
       legend: {
         ...themeConfig.legend,
@@ -721,14 +723,49 @@ const scoreDistributionOption = computed(() => {
 
   const distribution = feedbackStats.value.scoreDistribution;
   const totalCount = feedbackStats.value.totalCount || 0;
-  
+
   // 转换数据格式为饼图需要的格式
   const pieData = [
-    { value: distribution['1'] || 0, name: '1星', percent: totalCount > 0 ? ((distribution['1'] || 0) / totalCount * 100).toFixed(1) : '0.0' },
-    { value: distribution['2'] || 0, name: '2星', percent: totalCount > 0 ? ((distribution['2'] || 0) / totalCount * 100).toFixed(1) : '0.0' },
-    { value: distribution['3'] || 0, name: '3星', percent: totalCount > 0 ? ((distribution['3'] || 0) / totalCount * 100).toFixed(1) : '0.0' },
-    { value: distribution['4'] || 0, name: '4星', percent: totalCount > 0 ? ((distribution['4'] || 0) / totalCount * 100).toFixed(1) : '0.0' },
-    { value: distribution['5'] || 0, name: '5星', percent: totalCount > 0 ? ((distribution['5'] || 0) / totalCount * 100).toFixed(1) : '0.0' },
+    {
+      value: distribution['1'] || 0,
+      name: '1星',
+      percent:
+        totalCount > 0
+          ? (((distribution['1'] || 0) / totalCount) * 100).toFixed(1)
+          : '0.0',
+    },
+    {
+      value: distribution['2'] || 0,
+      name: '2星',
+      percent:
+        totalCount > 0
+          ? (((distribution['2'] || 0) / totalCount) * 100).toFixed(1)
+          : '0.0',
+    },
+    {
+      value: distribution['3'] || 0,
+      name: '3星',
+      percent:
+        totalCount > 0
+          ? (((distribution['3'] || 0) / totalCount) * 100).toFixed(1)
+          : '0.0',
+    },
+    {
+      value: distribution['4'] || 0,
+      name: '4星',
+      percent:
+        totalCount > 0
+          ? (((distribution['4'] || 0) / totalCount) * 100).toFixed(1)
+          : '0.0',
+    },
+    {
+      value: distribution['5'] || 0,
+      name: '5星',
+      percent:
+        totalCount > 0
+          ? (((distribution['5'] || 0) / totalCount) * 100).toFixed(1)
+          : '0.0',
+    },
   ];
 
   return {
@@ -741,7 +778,7 @@ const scoreDistributionOption = computed(() => {
     tooltip: {
       ...themeConfig.tooltip,
       trigger: 'item',
-      formatter: '{b}: {c} ({d}%)'
+      formatter: '{b}: {c} ({d}%)',
     },
     legend: {
       ...themeConfig.legend,
@@ -769,7 +806,7 @@ const scoreDistributionOption = computed(() => {
           label: {
             color: 'var(--chart-label-color)',
             fontWeight: 'bold',
-            fontSize: 14
+            fontSize: 14,
           },
         },
         data: pieData,
@@ -846,16 +883,16 @@ const topAttractionsOption = computed(() => {
       axisPointer: {
         type: 'shadow',
       },
-      formatter: function(params: any) {
+      formatter: function (params: any) {
         const name = params[0].name;
         const value = params[0].value;
-        const attraction = attractions.find(a => a.name === name);
+        const attraction = attractions.find((a) => a.name === name);
         let tooltipText = `${name}: ${value} 条反馈`;
         if (attraction && attraction.description) {
           tooltipText += `<br/>${attraction.description}`;
         }
         return tooltipText;
-      }
+      },
     },
     xAxis: {
       ...themeConfig.xAxis,
@@ -870,14 +907,14 @@ const topAttractionsOption = computed(() => {
       data: names,
       axisLabel: {
         ...themeConfig.yAxis.axisLabel,
-        formatter: function(value: string) {
+        formatter: function (value: string) {
           // 景点名称可能很长，截断显示
           if (value.length > 10) {
             return value.substring(0, 10) + '...';
           }
           return value;
-        }
-      }
+        },
+      },
     },
     series: [
       {
