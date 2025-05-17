@@ -526,7 +526,7 @@ POST /order/query
 |»»» attraction_id|string|true|none|景点ID|none|
 |»»» attraction_name|string|true|none|景点名称|none|
 |»»» date|string(date)|true|none|门票日期|none|
-|»»» total_price|number|true|none|总价格|none|
+|»»» total_price|string|true|none|总价格|none|
 |»»» user_id|string|true|none|用户ID|none|
 |»»» status|string|true|none|订单状态|none|
 |»»» created_at|string(date-time)|true|none|创建时间|none|
@@ -609,7 +609,7 @@ POST /order/create
 |»»» attraction_id|string|true|none|景点ID|none|
 |»»» attraction_name|string|true|none|景点名称|none|
 |»»» date|string(date)|true|none|门票日期|none|
-|»»» total_price|number|true|none|总价格|none|
+|»»» total_price|string|true|none|总价格|none|
 |»»» user_id|string|true|none|用户ID|none|
 |»»» status|string|true|none|订单状态|none|
 |»»» created_at|string(date-time)|true|none|创建时间|none|
@@ -758,7 +758,8 @@ POST /order/update
   "order_id": 1,
   "quantity": 1,
   "date": "2025-07-15",
-  "status": "success"
+  "status": "success",
+  "ticket_id": "1"
 }
 ```
 
@@ -771,6 +772,7 @@ POST /order/update
 |» quantity|body|number| 否 | 门票数量|修改后的数量，不填则保持原数量|
 |» date|body|string(date)| 否 | 门票日期|修改后的日期，不填则保持原日期|
 |» status|body|string| 否 | 订单状态|none|
+|» ticket_id|body|string| 否 | 票种ID|none|
 
 > 返回示例
 
@@ -824,7 +826,7 @@ POST /order/update
 |»»» attraction_id|string|true|none|景点ID|none|
 |»»» attraction_name|string|true|none|景点名称|none|
 |»»» date|string(date)|true|none|门票日期|none|
-|»»» total_price|number|true|none|总价格|none|
+|»»» total_price|string|true|none|总价格|none|
 |»»» user_id|string|true|none|用户ID|none|
 |»»» status|string|true|none|订单状态|none|
 |»»» created_at|string(date-time)|true|none|创建时间|none|
@@ -1140,11 +1142,11 @@ POST /feedback/update
 |»»» created_at|string(date-time)|true|none|创建时间|反馈创建时间|
 |»»» updated_at|string(date-time)|true|none|更新时间|反馈更新时间|
 
+# 数据分析
+
 ## POST 反馈统计
 
 POST /feedback/stats
-
-获取反馈统计信息（管理员专用）
 
 > Body 请求参数
 
@@ -1160,8 +1162,8 @@ POST /feedback/stats
 |名称|位置|类型|必选|中文名|说明|
 |---|---|---|---|---|---|
 |body|body|object| 否 ||none|
-|» attraction_id|body|number| 否 | 景点ID|指定景点ID获取该景点统计|
-|» include_deleted|body|boolean| 否 | 包含已删除|是否包含已删除反馈，默认false|
+|» attraction_id|body|number| 否 | 指定景点ID|none|
+|» include_deleted|body|boolean| 否 | 包含删除的反馈|none|
 
 > 返回示例
 
@@ -1172,14 +1174,15 @@ POST /feedback/stats
   "code": 0,
   "message": null,
   "data": {
-    "totalCount": 1,
-    "avgScore": 4.9,
-    "scoreDistribution": [
-      {
-        "score": 5,
-        "count": 1
-      }
-    ],
+    "totalCount": 2,
+    "avgScore": 5,
+    "scoreDistribution": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 2
+    },
     "withCommentCount": 1,
     "withCommentPercent": 50
   }
@@ -1201,13 +1204,129 @@ POST /feedback/stats
 |» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
 |» data|object¦null|true|none|数据|none|
-|»» totalCount|number|true|none|反馈总数|符合条件的反馈总数|
-|»» avgScore|number|true|none|平均分|平均评分，保留一位小数|
-|»» scoreDistribution|[object]|true|none|评分分布|各评分的数量统计|
-|»»» score|number|true|none|评分|评分值（1-5）|
-|»»» count|number|true|none|数量|该评分的反馈数量|
-|»» withCommentCount|number|true|none|有评论数|有评论的反馈数量|
-|»» withCommentPercent|number|true|none|评论百分比|有评论的反馈占比（%）|
+|»» totalCount|number|true|none|反馈数量|none|
+|»» avgScore|number|true|none|平均分|none|
+|»» scoreDistribution|object|true|none|评分分布|none|
+|»»» 1|number|true|none||none|
+|»»» 2|number|true|none||none|
+|»»» 3|number|true|none||none|
+|»»» 4|number|true|none||none|
+|»»» 5|number|true|none||none|
+|»» withCommentCount|number|true|none|带评论反馈|none|
+|»» withCommentPercent|number|true|none|带评论占比|none|
+
+## POST 管理员统计
+
+POST /admin/stats
+
+> Body 请求参数
+
+```json
+{}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": null,
+  "data": {
+    "attractions": 2,
+    "users": 2,
+    "feedback": 1,
+    "avgScore": 5
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» attractions|number|true|none|景点数量|none|
+|»» users|number|true|none|用户数量|none|
+|»» feedback|number|true|none|反馈数量|none|
+|»» avgScore|number|true|none|平均评分|none|
+
+## POST 景点统计
+
+POST /attraction/stats
+
+> Body 请求参数
+
+```json
+{}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "data": {
+    "total": "1",
+    "attractions": [
+      {
+        "id": 1,
+        "name": "星空湖",
+        "description": "夜间观星，湖光山色",
+        "feedbackCount": 2
+      }
+    ]
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» total|string|true|none|景点总数|none|
+|»» attractions|[object]|true|none|景点信息|none|
+|»»» id|number|true|none|景点ID|ID 编号|
+|»»» name|string|true|none|景点名称|名称|
+|»»» description|string|true|none|景点描述|none|
+|»»» feedbackCount|number|true|none|反馈数量|none|
 
 # 数据模型
 
@@ -1308,7 +1427,7 @@ POST /feedback/stats
   "attraction_id": "1",
   "attraction_name": "樱花谷",
   "date": "2025-07-15",
-  "total_price": 0,
+  "total_price": "0.00",
   "user_id": "1",
   "status": "success",
   "created_at": "2025-07-15T10:00:00Z",
@@ -1329,7 +1448,7 @@ POST /feedback/stats
 |attraction_id|string|true|none|景点ID|none|
 |attraction_name|string|true|none|景点名称|none|
 |date|string(date)|true|none|门票日期|none|
-|total_price|number|true|none|总价格|none|
+|total_price|string|true|none|总价格|none|
 |user_id|string|true|none|用户ID|none|
 |status|string|true|none|订单状态|none|
 |created_at|string(date-time)|true|none|创建时间|none|
@@ -1454,4 +1573,30 @@ POST /feedback/stats
 |available|number|true|none|当日票种余量|none|
 |created_at|string(date)|true|none|票种创建日期|none|
 |updated_at|string(date)|true|none|票种更新日期|none|
+
+<h2 id="tocS_单个景点统计信息">单个景点统计信息</h2>
+
+<a id="schema单个景点统计信息"></a>
+<a id="schema_单个景点统计信息"></a>
+<a id="tocS单个景点统计信息"></a>
+<a id="tocs单个景点统计信息"></a>
+
+```json
+{
+  "id": 1,
+  "name": "星空湖",
+  "description": "夜间观星，湖光山色",
+  "feedbackCount": 2
+}
+
+```
+
+### 属性
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|id|number|true|none|景点ID|ID 编号|
+|name|string|true|none|景点名称|名称|
+|description|string|true|none|景点描述|none|
+|feedbackCount|number|true|none|反馈数量|none|
 
