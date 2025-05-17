@@ -275,12 +275,8 @@ const loadStats = async () => {
       console.error('获取系统统计数据失败:', statsResult.error);
       // 显示错误消息
       snackbarText.value = `获取系统统计数据失败: ${statsResult.error}`;
+      snackbarColor.value = 'error';
       showSnackbar.value = true;
-      // 使用模拟数据作为后备
-      stats.attractions = 15;
-      stats.users = 120;
-      stats.feedback = 68;
-      stats.avgScore = 4.2;
     }
 
     // 加载景点统计数据
@@ -294,18 +290,8 @@ const loadStats = async () => {
       console.error('获取景点统计数据失败:', attractionResult.error);
       // 显示错误消息
       snackbarText.value = `获取景点统计数据失败: ${attractionResult.error}`;
+      snackbarColor.value = 'error';
       showSnackbar.value = true;
-      // 使用模拟数据作为后备
-      attractionStats.value = {
-        total: 15,
-        attractions: [
-          { id: 1, name: '故宫博物院', feedbackCount: 125 },
-          { id: 2, name: '长城', feedbackCount: 98 },
-          { id: 3, name: '西湖', feedbackCount: 86 },
-          { id: 4, name: '兵马俑', feedbackCount: 72 },
-          { id: 5, name: '黄山', feedbackCount: 65 },
-        ],
-      };
     }
 
     // 加载反馈统计数据
@@ -319,58 +305,16 @@ const loadStats = async () => {
       console.error('获取反馈统计数据失败:', feedbackResult.error);
       // 显示错误消息
       snackbarText.value = `获取反馈统计数据失败: ${feedbackResult.error}`;
+      snackbarColor.value = 'error';
       showSnackbar.value = true;
-      // 使用模拟数据作为后备
-      feedbackStats.value = {
-        totalCount: 446,
-        avgScore: 4.2,
-        scoreDistribution: {
-          '1': 15,
-          '2': 28,
-          '3': 76,
-          '4': 152,
-          '5': 175,
-        },
-        withCommentCount: 320,
-        withCommentPercent: 71.7,
-      };
     }
   } catch (error) {
     console.error('获取统计数据失败:', error);
     // 显示错误消息
     snackbarText.value =
       error instanceof Error ? error.message : '获取统计数据失败，请稍后再试';
+    snackbarColor.value = 'error';
     showSnackbar.value = true;
-    // 使用模拟数据作为后备
-    stats.attractions = 15;
-    stats.users = 120;
-    stats.feedback = 68;
-    stats.avgScore = 4.2;
-
-    attractionStats.value = {
-      total: 15,
-      attractions: [
-        { id: 1, name: '故宫博物院', feedbackCount: 125 },
-        { id: 2, name: '长城', feedbackCount: 98 },
-        { id: 3, name: '西湖', feedbackCount: 86 },
-        { id: 4, name: '兵马俑', feedbackCount: 72 },
-        { id: 5, name: '黄山', feedbackCount: 65 },
-      ],
-    };
-
-    feedbackStats.value = {
-      totalCount: 446,
-      avgScore: 4.2,
-      scoreDistribution: {
-        '1': 15,
-        '2': 28,
-        '3': 76,
-        '4': 152,
-        '5': 175,
-      },
-      withCommentCount: 320,
-      withCommentPercent: 71.7,
-    };
   }
 };
 
@@ -427,14 +371,14 @@ const adminMenus = [
 ];
 
 // 模拟反馈趋势数据
-const generateMockData = () => {
+const generateMockData = (days = 30) => {
   const dates = [];
   const scores = [];
   const counts = [];
 
-  // 生成最近30天的数据
+  // 生成指定天数的数据
   const now = new Date();
-  for (let i = 29; i >= 0; i--) {
+  for (let i = days - 1; i >= 0; i--) {
     const date = new Date(now);
     date.setDate(date.getDate() - i);
     dates.push(
@@ -521,8 +465,26 @@ const getChartThemeConfig = () => {
 
 // 反馈趋势图表配置
 const feedbackTrendOption = computed(() => {
-  const { dates, scores, counts } = generateMockData();
+  // 根据选择的时间范围获取对应天数
+  let days = 7;
+  switch (timeRange.value) {
+    case '最近7天':
+      days = 7;
+      break;
+    case '最近30天':
+      days = 30;
+      break;
+    case '最近90天':
+      days = 90;
+      break;
+    case '全部':
+      days = 180; // 默认最多显示半年数据
+      break;
+  }
+
+  const { dates, scores, counts } = generateMockData(days);
   const themeConfig = getChartThemeConfig();
+  const avgScore = feedbackStats.value?.avgScore || 0;
 
   return {
     ...themeConfig,
@@ -539,16 +501,13 @@ const feedbackTrendOption = computed(() => {
     legend: {
       ...themeConfig.legend,
       data: ['平均评分', '反馈数量'],
-    },
-    toolbox: {
-      feature: {
-        saveAsImage: {},
-      },
+      bottom: 0
     },
     grid: {
       left: '3%',
       right: '4%',
-      bottom: '3%',
+      bottom: '10%',
+      top: '10%',
       containLabel: true,
     },
     xAxis: [
@@ -566,6 +525,7 @@ const feedbackTrendOption = computed(() => {
         name: '平均评分',
         min: 1,
         max: 5,
+        interval: 1,
         position: 'left',
         nameTextStyle: {
           color: 'var(--chart-text-color)',
@@ -588,6 +548,21 @@ const feedbackTrendOption = computed(() => {
         yAxisIndex: 0,
         data: scores,
         smooth: true,
+        markLine: {
+          silent: true,
+          lineStyle: {
+            color: '#42b883'
+          },
+          data: [
+            {
+              yAxis: avgScore,
+              name: '当前平均分'
+            }
+          ],
+          label: {
+            formatter: `当前平均: ${avgScore}`
+          }
+        },
         lineStyle: {
           width: 3,
           color: '#42b883',
@@ -616,7 +591,9 @@ const feedbackTrendOption = computed(() => {
 function getLast7Days() {
   const result = [];
   for (let i = 6; i >= 0; i--) {
-    result.push(dayjs().subtract(i, 'day').format('MM-DD'));
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    result.push(date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }));
   }
   return result;
 }
@@ -632,6 +609,7 @@ function generateRandomData(length: number, min: number, max: number) {
 // 访问量图表配置
 const visitorsChartOption = computed(() => {
   const themeConfig = getChartThemeConfig();
+  const days = getLast7Days();
 
   return {
     ...themeConfig,
@@ -643,15 +621,23 @@ const visitorsChartOption = computed(() => {
     tooltip: {
       ...themeConfig.tooltip,
       trigger: 'axis',
+      formatter: function(params: any) {
+        const date = params[0].name;
+        const value = params[0].value;
+        return `${date}: ${value} 人次`;
+      }
     },
     xAxis: {
       ...themeConfig.xAxis,
       type: 'category',
-      data: getLast7Days(),
+      data: days,
     },
     yAxis: {
       ...themeConfig.yAxis,
       type: 'value',
+      name: '访问量',
+      nameLocation: 'end',
+      nameGap: 15,
     },
     series: [
       {
@@ -698,17 +684,13 @@ const scoreDistributionOption = computed(() => {
       tooltip: {
         ...themeConfig.tooltip,
         trigger: 'item',
+        formatter: '{b}: {c} ({d}%)'
       },
-      grid: {
-        show: false,
-      },
-      xAxis: {
-        show: false,
-        type: 'category',
-      },
-      yAxis: {
-        show: false,
-        type: 'value',
+      legend: {
+        ...themeConfig.legend,
+        orient: 'horizontal',
+        bottom: 10,
+        data: ['1星', '2星', '3星', '4星', '5星'],
       },
       series: [
         {
@@ -738,6 +720,17 @@ const scoreDistributionOption = computed(() => {
   }
 
   const distribution = feedbackStats.value.scoreDistribution;
+  const totalCount = feedbackStats.value.totalCount || 0;
+  
+  // 转换数据格式为饼图需要的格式
+  const pieData = [
+    { value: distribution['1'] || 0, name: '1星', percent: totalCount > 0 ? ((distribution['1'] || 0) / totalCount * 100).toFixed(1) : '0.0' },
+    { value: distribution['2'] || 0, name: '2星', percent: totalCount > 0 ? ((distribution['2'] || 0) / totalCount * 100).toFixed(1) : '0.0' },
+    { value: distribution['3'] || 0, name: '3星', percent: totalCount > 0 ? ((distribution['3'] || 0) / totalCount * 100).toFixed(1) : '0.0' },
+    { value: distribution['4'] || 0, name: '4星', percent: totalCount > 0 ? ((distribution['4'] || 0) / totalCount * 100).toFixed(1) : '0.0' },
+    { value: distribution['5'] || 0, name: '5星', percent: totalCount > 0 ? ((distribution['5'] || 0) / totalCount * 100).toFixed(1) : '0.0' },
+  ];
+
   return {
     ...themeConfig,
     title: {
@@ -748,17 +741,13 @@ const scoreDistributionOption = computed(() => {
     tooltip: {
       ...themeConfig.tooltip,
       trigger: 'item',
+      formatter: '{b}: {c} ({d}%)'
     },
-    grid: {
-      show: false,
-    },
-    xAxis: {
-      show: false,
-      type: 'category',
-    },
-    yAxis: {
-      show: false,
-      type: 'value',
+    legend: {
+      ...themeConfig.legend,
+      orient: 'horizontal',
+      bottom: 10,
+      data: ['1星', '2星', '3星', '4星', '5星'],
     },
     series: [
       {
@@ -773,21 +762,17 @@ const scoreDistributionOption = computed(() => {
           borderWidth: 2,
         },
         label: {
+          formatter: '{b}: {c} ({d}%)',
           color: 'var(--chart-label-color)',
         },
         emphasis: {
           label: {
             color: 'var(--chart-label-color)',
             fontWeight: 'bold',
+            fontSize: 14
           },
         },
-        data: [
-          { value: distribution['1'] || 0, name: '1星' },
-          { value: distribution['2'] || 0, name: '2星' },
-          { value: distribution['3'] || 0, name: '3星' },
-          { value: distribution['4'] || 0, name: '4星' },
-          { value: distribution['5'] || 0, name: '5星' },
-        ],
+        data: pieData,
       },
     ],
   };
@@ -798,17 +783,55 @@ const topAttractionsOption = computed(() => {
   const themeConfig = getChartThemeConfig();
 
   // 确保attractions是数组并且有数据
-  const attractions = Array.isArray(attractionStats.value.attractions)
+  const attractions = Array.isArray(attractionStats.value?.attractions)
     ? attractionStats.value.attractions.slice(0, 5)
     : [];
+
+  // 如果没有数据，显示提示信息
+  if (attractions.length === 0) {
+    return {
+      ...themeConfig,
+      title: {
+        ...themeConfig.title,
+        text: '热门景点',
+        left: 'center',
+      },
+      tooltip: {
+        ...themeConfig.tooltip,
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow',
+        },
+      },
+      xAxis: {
+        ...themeConfig.xAxis,
+        type: 'value',
+      },
+      yAxis: {
+        ...themeConfig.yAxis,
+        type: 'category',
+        data: ['暂无数据'],
+      },
+      series: [
+        {
+          type: 'bar',
+          data: [0],
+          itemStyle: {
+            color:
+              document.body.getAttribute('data-theme') === 'dark'
+                ? '#5C6BC0'
+                : '#3949AB',
+          },
+        },
+      ],
+    };
+  }
 
   // 安全地获取景点名称
   const names = attractions.map((a) => a?.name || `景点${a?.id || '未知'}`);
 
   // 安全地获取反馈数量
-  const counts = attractions.map(
-    (a) => a?.feedbackCount || Math.floor(Math.random() * 100) + 20,
-  );
+  const counts = attractions.map((a) => Number(a?.feedbackCount) || 0);
 
   return {
     ...themeConfig,
@@ -823,26 +846,51 @@ const topAttractionsOption = computed(() => {
       axisPointer: {
         type: 'shadow',
       },
+      formatter: function(params: any) {
+        const name = params[0].name;
+        const value = params[0].value;
+        const attraction = attractions.find(a => a.name === name);
+        let tooltipText = `${name}: ${value} 条反馈`;
+        if (attraction && attraction.description) {
+          tooltipText += `<br/>${attraction.description}`;
+        }
+        return tooltipText;
+      }
     },
     xAxis: {
       ...themeConfig.xAxis,
       type: 'value',
+      name: '反馈数量',
+      nameLocation: 'end',
+      nameGap: 15,
     },
     yAxis: {
       ...themeConfig.yAxis,
       type: 'category',
-      data: names.length > 0 ? names : ['暂无数据'],
+      data: names,
+      axisLabel: {
+        ...themeConfig.yAxis.axisLabel,
+        formatter: function(value: string) {
+          // 景点名称可能很长，截断显示
+          if (value.length > 10) {
+            return value.substring(0, 10) + '...';
+          }
+          return value;
+        }
+      }
     },
     series: [
       {
         type: 'bar',
-        data: counts.length > 0 ? counts : [0],
+        data: counts,
         itemStyle: {
           color:
             document.body.getAttribute('data-theme') === 'dark'
               ? '#5C6BC0'
               : '#3949AB',
         },
+        // 设置最小宽度，避免数据太少时条形过窄
+        barWidth: '40%',
       },
     ],
   };
