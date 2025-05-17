@@ -254,6 +254,49 @@ export const adminApi = {
       body: JSON.stringify(params),
     });
   },
+
+  // 用户管理API
+  queryUsers: async (params: {
+    page?: number;
+    pageSize?: number;
+    keyword?: string;
+    role?: string;
+  }) => {
+    return apiRequest('/admin/users/query', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+  },
+
+  addUser: async (userData: {
+    username: string;
+    password: string;
+    role: string;
+  }) => {
+    return apiRequest('/admin/users/add', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    });
+  },
+
+  updateUser: async (userData: {
+    id: number;
+    role?: string;
+  }) => {
+    return apiRequest('/admin/users/update', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    });
+  },
+
+  deleteUser: async (params: {
+    id: number;
+  }) => {
+    return apiRequest('/admin/users/delete', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+  },
 };
 
 // 订单相关API

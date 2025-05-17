@@ -445,6 +445,243 @@ POST /user/login
 |»»» role|string|true|none|用户组|none|
 |»» token|string|true|none|JWT|none|
 
+## POST 查询用户列表
+
+POST /admin/users/query
+
+> Body 请求参数
+
+```json
+{
+  "page": 1,
+  "pageSize": 10,
+  "keyword": null,
+  "role": "user"
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» page|body|number¦null| 否 | 页码|none|
+|» pageSize|body|number¦null| 否 | 每页数量|none|
+|» keyword|body|string¦null| 否 | 搜索关键词|none|
+|» role|body|string¦null| 否 | 角色组|none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": null,
+  "data": {
+    "total": 1,
+    "users": [
+      {
+        "id": "1",
+        "username": "TomyJan",
+        "role": "user"
+      }
+    ]
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» total|number|true|none|总数量|none|
+|»» users|[object]|true|none|用户信息|none|
+|»»» id|string|true|none|用户ID|ID 编号|
+|»»» username|string|true|none|用户名|none|
+|»»» role|string|true|none|用户组|none|
+
+## POST 添加用户
+
+POST /admin/users/add
+
+> Body 请求参数
+
+```json
+{
+  "username": "test1",
+  "password": "b444ac06613fc8d63795be9ad0beaf55011936ac",
+  "role": "user"
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» username|body|string| 是 | 用户名|none|
+|» password|body|string| 是 | SHA1的密码|none|
+|» role|body|string| 是 | 角色组|none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": null,
+  "data": {
+    "user": {
+      "id": "1",
+      "username": "TomyJan",
+      "role": "user"
+    }
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» user|object|true|none|用户信息|none|
+|»»» id|string|true|none|用户ID|ID 编号|
+|»»» username|string|true|none|用户名|none|
+|»»» role|string|true|none|用户组|none|
+
+## POST 更新用户
+
+POST /admin/users/update
+
+> Body 请求参数
+
+```json
+{
+  "id": 2,
+  "role": "user"
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» id|body|number| 是 | 用户ID|ID 编号|
+|» role|body|string| 是 | 角色组|none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "data": {
+    "user": {
+      "id": "1",
+      "username": "TomyJan",
+      "role": "user"
+    }
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» user|object|true|none|用户信息|none|
+|»»» id|string|true|none|用户ID|ID 编号|
+|»»» username|string|true|none|用户名|none|
+|»»» role|string|true|none|用户组|none|
+
+## POST 删除用户
+
+POST /admin/users/delete
+
+> Body 请求参数
+
+```json
+{
+  "id": 3
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» id|body|number| 是 | 用户ID|none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "data": {
+    "success": true
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» success|boolean|true|none|是否成功|none|
+
 # 票务预约
 
 ## POST 查询已购门票列表
@@ -1293,13 +1530,13 @@ POST /attraction/stats
   "code": 0,
   "message": "string",
   "data": {
-    "total": "1",
+    "total": 2,
     "attractions": [
       {
-        "id": 1,
-        "name": "星空湖",
-        "description": "夜间观星，湖光山色",
-        "feedbackCount": 2
+        "id": "1",
+        "name": "樱花谷",
+        "description": "春季赏樱胜地，风景优美",
+        "feedbackCount": "1"
       }
     ]
   }
@@ -1321,12 +1558,12 @@ POST /attraction/stats
 |» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
 |» data|object¦null|true|none|数据|none|
-|»» total|string|true|none|景点总数|none|
+|»» total|number|true|none|景点总数|none|
 |»» attractions|[object]|true|none|景点信息|none|
-|»»» id|number|true|none|景点ID|ID 编号|
+|»»» id|string|true|none|景点ID|ID 编号|
 |»»» name|string|true|none|景点名称|名称|
 |»»» description|string|true|none|景点描述|none|
-|»»» feedbackCount|number|true|none|反馈数量|none|
+|»»» feedbackCount|string|true|none|反馈数量|none|
 
 # 数据模型
 
@@ -1583,10 +1820,10 @@ POST /attraction/stats
 
 ```json
 {
-  "id": 1,
-  "name": "星空湖",
-  "description": "夜间观星，湖光山色",
-  "feedbackCount": 2
+  "id": "1",
+  "name": "樱花谷",
+  "description": "春季赏樱胜地，风景优美",
+  "feedbackCount": "1"
 }
 
 ```
@@ -1595,8 +1832,8 @@ POST /attraction/stats
 
 |名称|类型|必选|约束|中文名|说明|
 |---|---|---|---|---|---|
-|id|number|true|none|景点ID|ID 编号|
+|id|string|true|none|景点ID|ID 编号|
 |name|string|true|none|景点名称|名称|
 |description|string|true|none|景点描述|none|
-|feedbackCount|number|true|none|反馈数量|none|
+|feedbackCount|string|true|none|反馈数量|none|
 
