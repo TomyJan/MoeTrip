@@ -21,4 +21,20 @@ router.post(
 // 获取景点统计数据
 router.post('/stats', attractionController.getStats);
 
+// 更新景点（需要管理员权限）
+router.post(
+  '/update',
+  authMiddleware,
+  adminMiddleware,
+  attractionController.updateAttraction,
+);
+
+// 删除景点（需要管理员权限）
+router.post(
+  '/delete',
+  authMiddleware,
+  adminMiddleware,
+  attractionController.deleteAttraction,
+);
+
 export default router;

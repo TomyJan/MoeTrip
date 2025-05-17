@@ -317,6 +317,125 @@ POST /facility/add
 |»»» location|string|true|none|设施位置|none|
 |»»» status|string|true|none|设施状态|none|
 
+## POST 更新景点
+
+POST /attraction/update
+
+> Body 请求参数
+
+```json
+{
+  "id": "1",
+  "name": "樱花谷",
+  "description": "春季赏樱胜地",
+  "open_time": "open_time",
+  "image_url": "/images/sakura.jpg"
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» id|body|string| 是 | 景点ID|ID 编号|
+|» name|body|string¦null| 否 | 景点名称|名称|
+|» description|body|string¦null| 否 | 景点描述|none|
+|» open_time|body|string¦null| 否 | 开放时间|none|
+|» image_url|body|string¦null| 否 | 图片链接|none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": null,
+  "data": {
+    "attraction": {
+      "id": "1",
+      "name": "樱花谷",
+      "description": "春季赏樱胜地",
+      "open_time": "open_time",
+      "image_url": "/images/sakura.jpg"
+    }
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» attraction|object|true|none|景点信息|none|
+|»»» id|string|true|none|景点ID|ID 编号|
+|»»» name|string|true|none|景点名称|名称|
+|»»» description|string|true|none|景点描述|none|
+|»»» open_time|string|true|none|开放时间|none|
+|»»» image_url|string|true|none|图片链接|none|
+
+## POST 删除景点
+
+POST /attraction/delete
+
+> Body 请求参数
+
+```json
+{
+  "id": 3
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» id|body|number| 是 | 景点ID|none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": null,
+  "data": {
+    "success": true
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» success|boolean|true|none|是否成功|none|
+
 # 用户管理
 
 ## POST 用户注册
@@ -601,7 +720,7 @@ POST /admin/users/update
 ```json
 {
   "code": 0,
-  "message": "string",
+  "message": null,
   "data": {
     "user": {
       "id": "1",
@@ -658,7 +777,7 @@ POST /admin/users/delete
 ```json
 {
   "code": 0,
-  "message": "string",
+  "message": null,
   "data": {
     "success": true
   }

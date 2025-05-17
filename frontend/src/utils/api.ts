@@ -172,6 +172,30 @@ export const attractionApi = {
       body: JSON.stringify(attractionData),
     });
   },
+  
+  // 更新景点
+  update: async (attractionData: {
+    id: number;
+    name?: string;
+    description?: string;
+    open_time?: string;
+    image_url?: string;
+  }) => {
+    return apiRequest('/attraction/update', {
+      method: 'POST',
+      body: JSON.stringify(attractionData),
+    });
+  },
+  
+  // 删除景点
+  delete: async (params: {
+    id: number;
+  }) => {
+    return apiRequest('/attraction/delete', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+  },
 
   stats: async () => {
     return apiRequest('/attraction/stats', {

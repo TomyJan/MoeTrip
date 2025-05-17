@@ -258,3 +258,162 @@ export const getStats = async (req: Request, res: Response) => {
     });
   }
 };
+
+/**
+ * 更新景点
+ * @param req.body.id 景点ID
+ * @param req.body.name 景点名称（可选）
+ * @param req.body.description 景点描述（可选）
+ * @param req.body.open_time 开放时间（可选）
+ * @param req.body.image_url 图片URL（可选）
+ */
+export const updateAttraction = async (req: Request, res: Response) => {
+  try {
+    const { id, name, description, open_time, image_url } = req.body;
+
+    // 验证ID参数
+    if (!id) {
+      return res.json({
+        code: 1001,
+        message: '缺少景点ID',
+        data: null,
+      });
+    }
+
+    // 查找景点
+    const attraction = await Attraction.findByPk(id);
+    if (!attraction) {
+      return res.json({
+        code: 1002,
+        message: '景点不存在',
+        data: null,
+      });
+    }
+
+    // 验证字段长度
+    if (name && name.length > 100) {
+      return res.json({
+        code: 1003,
+        message: '景点名称不能超过100个字符',
+        data: null,
+      });
+    }
+
+    if (open_time && open_time.length > 50) {
+      return res.json({
+        code: 1003,
+        message: '开放时间不能超过50个字符',
+        data: null,
+      });
+    }
+
+    if (image_url && image_url.length > 255) {
+      return res.json({
+        code: 1003,
+        message: '图片URL不能超过255个字符',
+        data: null,
+      });
+    }
+
+    // 如果修改了名称，检查是否存在重名
+    if (name && name !== attraction.name) {
+      const existing = await Attraction.findOne({ where: { name } });
+      if (existing) {
+        return res.json({
+          code: 1004,
+          message: '景点名称已存在',
+          data: null,
+        });
+      }
+    }
+
+    // 更新景点信息
+    const updateFields: any = {};
+    if (name) updateFields.name = name;
+    if (description) updateFields.description = description;
+    if (open_time) updateFields.open_time = open_time;
+    if (image_url) updateFields.image_url = image_url;
+
+    // 如果没有任何要更新的字段
+    if (Object.keys(updateFields).length === 0) {
+      return res.json({
+        code: 1005,
+        message: '没有提供需要更新的信息',
+        data: null,
+      });
+    }
+
+    await attraction.update(updateFields);
+
+    logger.info(`景点已更新: ID=${id}, 名称=${attraction.name}`);
+
+    return res.json({
+      code: 0,
+      message: null,
+      data: { attraction: attraction.get({ plain: true }) },
+    });
+  } catch (error) {
+    logger.error('更新景点失败:', error);
+    return res.json({
+      code: 500,
+      message: '服务器内部错误',
+      data: null,
+    });
+  }
+};
+
+/**
+ * 删除景点
+ * @param req.body.id 景点ID
+ */
+export const deleteAttraction = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.body;
+
+    // 验证ID参数
+    if (!id) {
+      return res.json({
+        code: 1001,
+        message: '缺少景点ID',
+        data: null,
+      });
+    }
+
+    // 查找景点
+    const attraction = await Attraction.findByPk(id);
+    if (!attraction) {
+      return res.json({
+        code: 1002,
+        message: '景点不存在',
+        data: null,
+      });
+    }
+
+    // 检查该景点是否有关联的反馈
+    const feedbackCount = await Feedback.count({
+      where: { attraction_id: id },
+    });
+
+    if (feedbackCount > 0) {
+      logger.warn(`尝试删除有关联反馈的景点: ID=${id}, 名称=${attraction.name}, 反馈数=${feedbackCount}`);
+    }
+
+    // 删除景点
+    await attraction.destroy();
+
+    logger.info(`景点已删除: ID=${id}, 名称=${attraction.name}`);
+
+    return res.json({
+      code: 0,
+      message: null,
+      data: {success: true}
+    });
+  } catch (error) {
+    logger.error('删除景点失败:', error);
+    return res.json({
+      code: 500,
+      message: '服务器内部错误',
+      data: null,
+    });
+  }
+};
