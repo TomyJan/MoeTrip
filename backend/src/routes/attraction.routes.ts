@@ -18,4 +18,7 @@ router.post(
   attractionController.addAttraction,
 );
 
+// 获取景点统计数据
+router.post('/stats', attractionController.getStats);
+
 export default router;

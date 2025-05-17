@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import Attraction from '../models/attraction.model';
 import Feedback from '../models/feedback.model';
 import logger from '../utils/logger';
@@ -198,6 +198,61 @@ export const addAttraction = async (req: Request, res: Response) => {
     logger.error('添加景点失败:', error);
     return res.json({
       code: 500,
+      message: '服务器内部错误',
+      data: null,
+    });
+  }
+};
+
+/**
+ * 获取景点统计数据
+ * @route POST /attraction/stats
+ */
+export const getStats = async (req: Request, res: Response) => {
+  try {
+    // 查询景点总数
+    const total = await Attraction.count();
+
+    // 获取热门景点（按反馈数量排序）
+    const attractionsData = await Attraction.findAll({
+      attributes: [
+        'id',
+        'name',
+        'description',
+        [
+          Sequelize.literal(`(
+            SELECT COUNT(*) FROM feedback 
+            WHERE feedback.attraction_id = "Attraction".id 
+            AND feedback.status = 'public'
+          )`),
+          'feedbackCount',
+        ],
+      ],
+      order: [[Sequelize.literal('"feedbackCount"'), 'DESC']],
+      limit: 10, // 最多返回前10个热门景点
+      raw: true,
+    });
+
+    // 使用类型断言转换结果
+    const attractions = attractionsData as unknown as Array<{
+      id: number;
+      name: string;
+      description: string;
+      feedbackCount: number | string;
+    }>;
+
+    return res.json({
+      code: 0,
+      message: null,
+      data: {
+        total,
+        attractions,
+      },
+    });
+  } catch (error) {
+    console.error('获取景点统计数据失败:', error);
+    return res.status(500).json({
+      code: 5000,
       message: '服务器内部错误',
       data: null,
     });

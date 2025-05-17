@@ -3,6 +3,7 @@ import { Op } from 'sequelize';
 import Feedback from '../models/feedback.model';
 import Attraction from '../models/attraction.model';
 import logger from '../utils/logger';
+import { Sequelize } from 'sequelize';
 
 /**
  * 添加用户反馈
@@ -503,60 +504,93 @@ export const queryFeedback = async (req: Request, res: Response) => {
 };
 
 /**
- * 获取反馈统计信息
- * @param req.body.attraction_id 景点ID (可选，获取特定景点的反馈统计)
- * @param req.body.include_deleted 是否包含已删除的反馈 (可选)
+ * 获取反馈统计数据
+ * @route POST /feedback/stats
  */
-export const getFeedbackStats = async (req: Request, res: Response) => {
+export const getStats = async (req: Request, res: Response) => {
   try {
     const { attraction_id, include_deleted } = req.body;
 
     // 构建查询条件
-    const where: any = {};
+    const whereCondition: any = {};
+    
+    // 如果指定了景点ID，则只统计该景点的反馈
     if (attraction_id) {
-      where.attraction_id = attraction_id;
+      whereCondition.attraction_id = attraction_id;
     }
-
-    // 默认只统计未删除的反馈
+    
+    // 默认只统计公开状态的反馈，除非明确要求包含已删除的
     if (!include_deleted) {
-      where.status = 'public';
+      whereCondition.status = 'public';
     }
 
-    // 总反馈数
-    const totalCount = await Feedback.count({ where });
+    // 查询反馈总数
+    const totalCount = await Feedback.count({
+      where: whereCondition,
+    });
 
-    // 各评分的数量
-    const scoreDistribution = await Promise.all(
-      [1, 2, 3, 4, 5].map(async (score) => {
-        const count = await Feedback.count({
-          where: {
-            ...where,
-            score,
-          },
-        });
-        return { score, count };
-      }),
-    );
+    // 查询平均评分
+    const avgScoreResultData = await Feedback.findOne({
+      attributes: [
+        [Sequelize.fn('AVG', Sequelize.col('score')), 'avgScore'],
+      ],
+      where: whereCondition,
+      raw: true,
+    });
+    
+    // 使用类型断言转换结果
+    const avgScoreResult = avgScoreResultData as unknown as { avgScore?: string | number } | null;
 
-    // 计算平均评分
-    let avgScore = 0;
-    if (totalCount > 0) {
-      const sumScore = scoreDistribution.reduce(
-        (sum, item) => sum + item.score * item.count,
-        0,
-      );
-      avgScore = Math.round((sumScore / totalCount) * 10) / 10; // 保留一位小数
-    }
+    // 计算平均分，保留一位小数
+    const avgScore = avgScoreResult?.avgScore
+      ? parseFloat(parseFloat(avgScoreResult.avgScore.toString()).toFixed(1))
+      : 0;
 
-    // 有评论的反馈数
+    // 查询评分分布
+    const scoreDistributionData = await Feedback.findAll({
+      attributes: [
+        'score',
+        [Sequelize.fn('COUNT', Sequelize.col('score')), 'count'],
+      ],
+      where: whereCondition,
+      group: ['score'],
+      order: [[Sequelize.col('score'), 'ASC']],
+      raw: true,
+    });
+    
+    // 使用类型断言转换结果
+    const scoreDistribution = scoreDistributionData as unknown as Array<{
+      score: number;
+      count: string | number;
+    }>;
+
+    // 格式化评分分布结果
+    const distribution: Record<string, number> = {
+      '1': 0,
+      '2': 0,
+      '3': 0,
+      '4': 0,
+      '5': 0,
+    };
+
+    scoreDistribution.forEach((item) => {
+      distribution[item.score.toString()] = parseInt(item.count.toString());
+    });
+
+    // 查询有评论的反馈数量
     const withCommentCount = await Feedback.count({
       where: {
-        ...where,
+        ...whereCondition,
         comment: {
-          [Op.and]: [{ [Op.not]: null }, { [Op.ne]: '' }],
+          [Op.ne]: null,
         },
       },
     });
+
+    // 计算带评论的反馈百分比，保留一位小数
+    const withCommentPercent = totalCount > 0
+      ? parseFloat(((withCommentCount / totalCount) * 100).toFixed(1))
+      : 0;
 
     return res.json({
       code: 0,
@@ -564,18 +598,15 @@ export const getFeedbackStats = async (req: Request, res: Response) => {
       data: {
         totalCount,
         avgScore,
-        scoreDistribution,
+        scoreDistribution: distribution,
         withCommentCount,
-        withCommentPercent:
-          totalCount > 0
-            ? Math.round((withCommentCount / totalCount) * 100)
-            : 0,
+        withCommentPercent,
       },
     });
   } catch (error) {
-    logger.error('获取反馈统计失败:', error);
-    return res.json({
-      code: 500,
+    console.error('获取反馈统计数据失败:', error);
+    return res.status(500).json({
+      code: 5000,
       message: '服务器内部错误',
       data: null,
     });

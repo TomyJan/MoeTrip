@@ -21,7 +21,7 @@ router.post(
   '/stats',
   authMiddleware,
   adminMiddleware,
-  feedbackController.getFeedbackStats,
+  feedbackController.getStats,
 );
 
 export default router;
