@@ -395,7 +395,9 @@ export const deleteAttraction = async (req: Request, res: Response) => {
     });
 
     if (feedbackCount > 0) {
-      logger.warn(`尝试删除有关联反馈的景点: ID=${id}, 名称=${attraction.name}, 反馈数=${feedbackCount}`);
+      logger.warn(
+        `尝试删除有关联反馈的景点: ID=${id}, 名称=${attraction.name}, 反馈数=${feedbackCount}`,
+      );
     }
 
     // 删除景点
@@ -406,7 +408,7 @@ export const deleteAttraction = async (req: Request, res: Response) => {
     return res.json({
       code: 0,
       message: null,
-      data: {success: true}
+      data: { success: true },
     });
   } catch (error) {
     logger.error('删除景点失败:', error);

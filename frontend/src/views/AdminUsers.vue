@@ -86,7 +86,9 @@
                     variant="text"
                     color="red"
                     @click="confirmDelete(item)"
-                    :disabled="item.id === currentUserId || item.username === 'TomyJan'"
+                    :disabled="
+                      item.id === currentUserId || item.username === 'TomyJan'
+                    "
                     rounded="pill"
                   >
                     <v-icon>mdi-delete</v-icon>
@@ -125,7 +127,7 @@
           :rules="[
             (v: string) => !!v || '用户名不能为空',
             (v: string) => (v && v.length >= 3) || '用户名最少3个字符',
-            (v: string) => (v && v.length <= 50) || '用户名最多50个字符'
+            (v: string) => (v && v.length <= 50) || '用户名最多50个字符',
           ]"
           :disabled="isEditing"
           variant="outlined"
@@ -139,7 +141,7 @@
           required
           :rules="[
             (v: string) => !!v || '密码不能为空',
-            (v: string) => (v && v.length >= 6) || '密码最少6个字符'
+            (v: string) => (v && v.length >= 6) || '密码最少6个字符',
           ]"
           :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
           @click:append-inner="showPassword = !showPassword"
@@ -148,7 +150,7 @@
         ></v-text-field>
         <v-select
           v-model="editedUser.role"
-          :items="roles.filter(r => r !== '')"
+          :items="roles.filter((r) => r !== '')"
           label="用户角色"
           required
           :rules="[(v: string) => !!v || '角色不能为空']"
@@ -167,7 +169,10 @@
       persistent
       @confirm="deleteUser"
     >
-      <p>您确定要删除用户 <strong>{{ userToDelete?.username }}</strong> 吗？此操作不可恢复。</p>
+      <p>
+        您确定要删除用户
+        <strong>{{ userToDelete?.username }}</strong> 吗？此操作不可恢复。
+      </p>
     </AppDialog>
 
     <!-- 消息提示条 -->
@@ -268,7 +273,10 @@ const loadUsers = async () => {
       showError(result.error || '加载用户列表失败');
     }
   } catch (error) {
-    showError('加载用户列表失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '加载用户列表失败: ' +
+        (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     loading.value = false;
   }
@@ -278,7 +286,11 @@ const loadUsers = async () => {
 const formatDate = (dateStr: string) => {
   if (!dateStr) return '';
   const date = new Date(dateStr);
-  return date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  return (
+    date.toLocaleDateString('zh-CN') +
+    ' ' +
+    date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+  );
 };
 
 // 打开添加用户对话框
@@ -351,7 +363,9 @@ const saveUser = async () => {
       }
     }
   } catch (error) {
-    showError('操作失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '操作失败: ' + (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     saving.value = false;
   }
@@ -364,7 +378,7 @@ const confirmDelete = (user: User) => {
     showError('无法删除当前登录用户或系统管理员');
     return;
   }
-  
+
   userToDelete.value = user;
   deleteDialog.value = true;
 };
@@ -372,7 +386,7 @@ const confirmDelete = (user: User) => {
 // 删除用户
 const deleteUser = async () => {
   if (!userToDelete.value) return;
-  
+
   deleting.value = true;
   try {
     const result = await adminApi.deleteUser({
@@ -387,7 +401,9 @@ const deleteUser = async () => {
       showError(result.error || '删除用户失败');
     }
   } catch (error) {
-    showError('删除失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '删除失败: ' + (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     deleting.value = false;
   }

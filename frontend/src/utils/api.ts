@@ -172,7 +172,7 @@ export const attractionApi = {
       body: JSON.stringify(attractionData),
     });
   },
-  
+
   // 更新景点
   update: async (attractionData: {
     id: number;
@@ -186,11 +186,9 @@ export const attractionApi = {
       body: JSON.stringify(attractionData),
     });
   },
-  
+
   // 删除景点
-  delete: async (params: {
-    id: number;
-  }) => {
+  delete: async (params: { id: number }) => {
     return apiRequest('/attraction/delete', {
       method: 'POST',
       body: JSON.stringify(params),
@@ -303,19 +301,14 @@ export const adminApi = {
     });
   },
 
-  updateUser: async (userData: {
-    id: number;
-    role?: string;
-  }) => {
+  updateUser: async (userData: { id: number; role?: string }) => {
     return apiRequest('/admin/users/update', {
       method: 'POST',
       body: JSON.stringify(userData),
     });
   },
 
-  deleteUser: async (params: {
-    id: number;
-  }) => {
+  deleteUser: async (params: { id: number }) => {
     return apiRequest('/admin/users/delete', {
       method: 'POST',
       body: JSON.stringify(params),

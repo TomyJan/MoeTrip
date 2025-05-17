@@ -1,5 +1,11 @@
 import { Router } from 'express';
-import { getStats, queryUsers, addUser, updateUser, deleteUser } from '../controllers/admin.controller';
+import {
+  getStats,
+  queryUsers,
+  addUser,
+  updateUser,
+  deleteUser,
+} from '../controllers/admin.controller';
 import {
   authMiddleware,
   adminMiddleware,

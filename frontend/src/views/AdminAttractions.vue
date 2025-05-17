@@ -172,7 +172,10 @@
       persistent
       @confirm="deleteAttraction"
     >
-      <p>您确定要删除景点 <strong>{{ attractionToDelete?.name }}</strong> 吗？此操作不可恢复。</p>
+      <p>
+        您确定要删除景点
+        <strong>{{ attractionToDelete?.name }}</strong> 吗？此操作不可恢复。
+      </p>
     </AppDialog>
 
     <!-- 消息提示条 -->
@@ -213,7 +216,13 @@ const headers = [
   { title: '开放时间', key: 'open_time', sortable: false },
   { title: '创建时间', key: 'created_at', sortable: true },
   { title: '更新时间', key: 'updated_at', sortable: true },
-  { title: '操作', key: 'actions', sortable: false, align: 'end', width: '150px' },
+  {
+    title: '操作',
+    key: 'actions',
+    sortable: false,
+    align: 'end',
+    width: '150px',
+  },
 ];
 
 // 状态变量
@@ -272,7 +281,10 @@ const loadAttractions = async () => {
       showError(result.error || '加载景点列表失败');
     }
   } catch (error) {
-    showError('加载景点列表失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '加载景点列表失败: ' +
+        (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     loading.value = false;
   }
@@ -282,7 +294,11 @@ const loadAttractions = async () => {
 const formatDate = (dateStr: string) => {
   if (!dateStr) return '';
   const date = new Date(dateStr);
-  return date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  return (
+    date.toLocaleDateString('zh-CN') +
+    ' ' +
+    date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+  );
 };
 
 // 打开添加景点对话框
@@ -361,7 +377,9 @@ const saveAttraction = async () => {
       }
     }
   } catch (error) {
-    showError('操作失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '操作失败: ' + (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     saving.value = false;
   }
@@ -376,7 +394,7 @@ const confirmDelete = (attraction: Attraction) => {
 // 删除景点
 const deleteAttraction = async () => {
   if (!attractionToDelete.value) return;
-  
+
   deleting.value = true;
   try {
     const result = await attractionApi.delete({
@@ -391,7 +409,9 @@ const deleteAttraction = async () => {
       showError(result.error || '删除景点失败');
     }
   } catch (error) {
-    showError('删除失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '删除失败: ' + (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     deleting.value = false;
   }
