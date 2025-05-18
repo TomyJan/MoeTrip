@@ -362,12 +362,12 @@ const adminMenus = [
     icon: 'mdi-cog',
     link: '/admin/settings',
   },
-  {
-    title: '数据统计',
-    description: '查看系统数据报表',
-    icon: 'mdi-chart-bar',
-    link: '/admin/reports',
-  },
+  // {
+  //   title: '数据统计',
+  //   description: '查看系统数据报表',
+  //   icon: 'mdi-chart-bar',
+  //   link: '/admin/reports',
+  // },
   {
     title: '操作日志',
     description: '查看系统操作记录',
