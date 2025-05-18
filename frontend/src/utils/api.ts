@@ -371,3 +371,56 @@ export const ticketApi = {
     });
   },
 };
+
+// 设施相关API
+export const facilityApi = {
+  // 查询设施列表
+  query: async (params: {
+    attraction_id?: number;
+    keyword?: string;
+    page?: number;
+    pageSize?: number;
+  }) => {
+    return apiRequest('/facility/query', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+  },
+
+  // 添加设施
+  add: async (facilityData: {
+    name: string;
+    location: string;
+    status: string;
+    attraction_id: number;
+  }) => {
+    return apiRequest('/facility/add', {
+      method: 'POST',
+      body: JSON.stringify(facilityData),
+    });
+  },
+
+  // 更新设施
+  update: async (facilityData: {
+    id: number;
+    name?: string;
+    location?: string;
+    status?: string;
+    attraction_id?: number;
+  }) => {
+    return apiRequest('/facility/update', {
+      method: 'POST',
+      body: JSON.stringify(facilityData),
+    });
+  },
+
+  // 删除设施
+  delete: async (params: {
+    id: number;
+  }) => {
+    return apiRequest('/facility/delete', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+  },
+};

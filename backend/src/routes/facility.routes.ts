@@ -18,4 +18,20 @@ router.post(
   facilityController.addFacility,
 );
 
+// 更新设施（需要管理员权限）
+router.post(
+  '/update',
+  authMiddleware,
+  adminMiddleware,
+  facilityController.updateFacility,
+);
+
+// 删除设施（需要管理员权限）
+router.post(
+  '/delete',
+  authMiddleware,
+  adminMiddleware,
+  facilityController.deleteFacility,
+);
+
 export default router;

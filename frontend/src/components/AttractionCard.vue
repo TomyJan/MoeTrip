@@ -43,18 +43,53 @@
         <v-divider></v-divider>
         <v-card-text>
           <p class="text-subtitle-1 mb-2">设施信息:</p>
-          <v-chip-group>
-            <v-chip
-              v-for="facility in facilities || ['休息区', '卫生间', '售票处']"
-              :key="facility"
-              variant="elevated"
-              color="secondary"
-              size="small"
-              rounded="pill"
-            >
-              {{ facility }}
-            </v-chip>
-          </v-chip-group>
+          <div v-if="loadingFacilities" class="text-center pa-2">
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              size="24"
+            ></v-progress-circular>
+          </div>
+          <div v-else-if="facilities.length > 0">
+            <v-chip-group>
+              <v-chip
+                v-for="facility in facilities"
+                :key="facility.id"
+                variant="elevated"
+                color="secondary"
+                size="small"
+                rounded="pill"
+                @click.stop="toggleFacility(facility)"
+                :class="{ 'v-chip--selected': selectedFacility?.id === facility.id }"
+              >
+                {{ facility.name }}
+              </v-chip>
+            </v-chip-group>
+            
+            <div v-if="selectedFacility" class="mt-2 facility-location">
+              <v-alert
+                density="compact"
+                type="info"
+                variant="tonal"
+                rounded="lg"
+                class="text-body-2 pa-2"
+              >
+                <div class="d-flex justify-space-between align-center">
+                  <strong>{{ selectedFacility.name }}</strong>
+                  <v-btn
+                    icon
+                    size="x-small"
+                    variant="text"
+                    @click.stop="selectedFacility = null"
+                  >
+                    <v-icon size="small">mdi-close</v-icon>
+                  </v-btn>
+                </div>
+                <div>位置: {{ selectedFacility.location }}</div>
+              </v-alert>
+            </div>
+          </div>
+          <p v-else class="text-medium-emphasis">暂无设施信息</p>
         </v-card-text>
       </div>
     </v-expand-transition>
@@ -62,7 +97,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { facilityApi } from '../utils/api';
 
 interface Attraction {
   id: number;
@@ -74,18 +110,71 @@ interface Attraction {
   updated_at?: string;
 }
 
+interface Facility {
+  id: number;
+  name: string;
+  location: string;
+  status: string;
+  attraction_id: number;
+}
+
 interface Props {
   attraction: Attraction;
   facilities?: string[];
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 defineEmits<{
   (e: 'view'): void;
 }>();
 
 const expanded = ref(false);
+const loadingFacilities = ref(false);
+const facilityNames = ref<string[]>([]);
+const facilities = ref<Facility[]>([]);
+const selectedFacility = ref<Facility | null>(null);
+
+onMounted(() => {
+  if (!props.facilities || props.facilities.length === 0) {
+    // 如果没有传入设施信息，则加载设施信息
+    loadFacilities();
+  } else {
+    facilityNames.value = props.facilities;
+  }
+});
+
+async function loadFacilities() {
+  if (!props.attraction.id) return;
+  
+  loadingFacilities.value = true;
+  try {
+    const result = await facilityApi.query({
+      attraction_id: props.attraction.id
+    });
+    
+    if (result.success && result.data?.data?.facilities) {
+      // 只显示状态为normal的设施
+      facilities.value = result.data.data.facilities.filter(
+        (facility: Facility) => facility.status === 'normal'
+      );
+      facilityNames.value = facilities.value.map(f => f.name);
+    }
+  } catch (error) {
+    console.error('加载设施信息失败:', error);
+  } finally {
+    loadingFacilities.value = false;
+  }
+}
+
+// 切换设施选择
+function toggleFacility(facility: Facility) {
+  if (selectedFacility.value?.id === facility.id) {
+    selectedFacility.value = null;
+  } else {
+    selectedFacility.value = facility;
+  }
+}
 </script>
 
 <style scoped>
@@ -112,5 +201,30 @@ const expanded = ref(false);
 
 :deep(.v-card-text) {
   color: var(--text-color);
+}
+
+:deep(.v-chip) {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+:deep(.v-chip--selected) {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.facility-location {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

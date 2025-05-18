@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '../stores';
-import { attractionApi, feedbackApi } from '../utils/api';
+import { attractionApi, feedbackApi, facilityApi } from '../utils/api';
 import { formatShortDate } from '../utils/format';
 import AppSnackbar from '../components/AppSnackbar.vue';
 import FeedbackForm from '../components/FeedbackForm.vue';
@@ -15,7 +15,10 @@ const userStore = useUserStore();
 // 状态
 const attraction = ref<any>(null);
 const feedbacks = ref<any[]>([]);
+const facilities = ref<any[]>([]);
+const selectedFacility = ref<any>(null);
 const loading = ref(true);
+const loadingFacilities = ref(false);
 const loadingError = ref('');
 const showAddFeedbackDialog = ref(false);
 
@@ -68,6 +71,9 @@ async function loadAttractionDetail() {
       return;
     }
 
+    // 加载设施信息
+    loadFacilities(attractionId);
+
     // 加载景点反馈
     if (userStore.isLoggedIn) {
       const feedbackResult = await feedbackApi.query({
@@ -97,6 +103,24 @@ async function loadAttractionDetail() {
     loadingError.value = '加载景点详情失败，请稍后重试';
   } finally {
     loading.value = false;
+  }
+}
+
+// 加载设施信息
+async function loadFacilities(attractionId: number) {
+  loadingFacilities.value = true;
+  try {
+    const result = await facilityApi.query({
+      attraction_id: attractionId,
+    });
+    
+    if (result.success && result.data?.data?.facilities) {
+      facilities.value = result.data.data.facilities;
+    }
+  } catch (error) {
+    console.error('加载设施信息失败:', error);
+  } finally {
+    loadingFacilities.value = false;
   }
 }
 
@@ -282,6 +306,76 @@ onMounted(() => {
               <p class="text-md-body-1">
                 {{ attraction.description || '暂无描述' }}
               </p>
+
+              <v-divider class="my-3"></v-divider>
+
+              <div class="text-subtitle-1 mb-2 font-weight-medium">
+                设施信息
+              </div>
+              <div v-if="loadingFacilities" class="text-center pa-2">
+                <v-progress-circular indeterminate color="primary" size="24"></v-progress-circular>
+              </div>
+              <div v-else-if="facilities.length > 0">
+                <v-chip-group>
+                  <v-chip
+                    v-for="facility in facilities"
+                    :key="facility.id"
+                    :color="facility.status === 'normal' ? 'success' : 'warning'"
+                    variant="elevated"
+                    size="small"
+                    class="mr-2 mb-2"
+                    rounded="pill"
+                    @click="selectedFacility = facility === selectedFacility ? null : facility"
+                    :class="{ 'v-chip--selected': selectedFacility?.id === facility.id }"
+                  >
+                    {{ facility.name }}
+                    <v-icon v-if="facility.status === 'maintenance'" class="ml-1" size="x-small">
+                      mdi-tools
+                    </v-icon>
+                  </v-chip>
+                </v-chip-group>
+                
+                <div v-if="selectedFacility" class="mt-3 facility-location">
+                  <v-alert
+                    density="compact"
+                    type="info"
+                    variant="tonal"
+                    rounded="lg"
+                    class="text-body-2 pa-3"
+                  >
+                    <div class="d-flex justify-space-between align-center">
+                      <div class="d-flex align-center">
+                        <v-icon
+                          icon="mdi-map-marker-outline"
+                          color="info"
+                          class="mr-2"
+                          size="small"
+                        ></v-icon>
+                        <strong>{{ selectedFacility.name }}</strong>
+                        <v-chip
+                          size="x-small"
+                          :color="selectedFacility.status === 'normal' ? 'success' : 'warning'"
+                          class="ml-2"
+                          rounded="pill"
+                          variant="flat"
+                        >
+                          {{ selectedFacility.status === 'normal' ? '正常' : '维护中' }}
+                        </v-chip>
+                      </div>
+                      <v-btn
+                        icon
+                        size="x-small"
+                        variant="text"
+                        @click="selectedFacility = null"
+                      >
+                        <v-icon size="small">mdi-close</v-icon>
+                      </v-btn>
+                    </div>
+                    <p class="mt-1 mb-0">位置: {{ selectedFacility.location }}</p>
+                  </v-alert>
+                </div>
+              </div>
+              <p v-else class="text-medium-emphasis">暂无设施信息</p>
             </v-card-text>
 
             <v-card-actions class="pa-4">
@@ -450,5 +544,30 @@ onMounted(() => {
 
 .loading-skeleton {
   padding: 16px;
+}
+
+:deep(.v-chip) {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+:deep(.v-chip--selected) {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.facility-location {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

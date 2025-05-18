@@ -35,9 +35,9 @@ Facility.init(
     status: {
       type: DataTypes.STRING(20),
       allowNull: false,
-      defaultValue: '正常',
+      defaultValue: 'normal',
       validate: {
-        isIn: [['正常', '维护']],
+        isIn: [['normal', 'maintenance']],
       },
     },
     attraction_id: {

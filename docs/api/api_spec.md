@@ -190,7 +190,7 @@ POST /facility/query
 ```json
 {
   "attraction_id": 1,
-  "status": "正常"
+  "status": "normal"
 }
 ```
 
@@ -218,7 +218,7 @@ POST /facility/query
         "name": "休息亭",
         "attraction_id": "1",
         "location": "樱花谷入口",
-        "status": "正常"
+        "status": "normal"
       }
     ]
   }
@@ -244,7 +244,7 @@ POST /facility/query
 |»» facilities|[object]|true|none||none|
 |»»» id|string|true|none|设施ID|ID 编号|
 |»»» name|string|true|none|设施名称|名称|
-|»»» attraction_id|string|true|none|所在景点ID|none|
+|»»» attraction_id|number|true|none|所在景点ID|none|
 |»»» location|string|true|none|设施位置|none|
 |»»» status|string|true|none|设施状态|none|
 
@@ -261,7 +261,7 @@ POST /facility/add
   "attraction_id": 1,
   "name": "休息亭",
   "location": "樱花谷入口",
-  "status": "正常"
+  "status": "normal"
 }
 ```
 
@@ -285,11 +285,11 @@ POST /facility/add
   "message": null,
   "data": {
     "facility": {
-      "id": 1,
+      "id": "1",
       "name": "休息亭",
-      "attraction_id": 1,
+      "attraction_id": "1",
       "location": "樱花谷入口",
-      "status": "正常"
+      "status": "normal"
     }
   }
 }
@@ -313,7 +313,7 @@ POST /facility/add
 |»» facility|object|true|none|设施信息|none|
 |»»» id|string|true|none|设施ID|ID 编号|
 |»»» name|string|true|none|设施名称|名称|
-|»»» attraction_id|string|true|none|所在景点ID|none|
+|»»» attraction_id|number|true|none|所在景点ID|none|
 |»»» location|string|true|none|设施位置|none|
 |»»» status|string|true|none|设施状态|none|
 
@@ -432,6 +432,129 @@ POST /attraction/delete
 |名称|类型|必选|约束|中文名|说明|
 |---|---|---|---|---|---|
 |» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» success|boolean|true|none|是否成功|none|
+
+## POST 更新设施
+
+POST /facility/update
+
+管理员添加新设施
+
+> Body 请求参数
+
+```json
+{
+  "id": 1,
+  "attraction_id": 1,
+  "name": "休息亭",
+  "location": "樱花谷入口",
+  "status": "normal"
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» id|body|number| 是 | 设施ID|ID 编号|
+|» attraction_id|body|number| 否 | 所在景点ID|ID 编号|
+|» name|body|string| 否 | 设施名称|名称|
+|» location|body|string| 否 | 设施位置|none|
+|» status|body|string| 否 | 设施状态|none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": null,
+  "data": {
+    "facility": {
+      "id": "1",
+      "name": "休息亭",
+      "attraction_id": 1,
+      "location": "樱花谷入口",
+      "status": "normal"
+    }
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，1002 表示名称重复，2001表示无管理员权限，其他非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» facility|object|true|none|设施信息|none|
+|»»» id|string|true|none|设施ID|ID 编号|
+|»»» name|string|true|none|设施名称|名称|
+|»»» attraction_id|number|true|none|所在景点ID|none|
+|»»» location|string|true|none|设施位置|none|
+|»»» status|string|true|none|设施状态|none|
+
+## POST 删除设施
+
+POST /facility/delete
+
+管理员添加新设施
+
+> Body 请求参数
+
+```json
+{
+  "id": 4
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» id|body|number| 是 | 设施ID|ID 编号|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": null,
+  "data": {
+    "success": true
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，1002 表示名称重复，2001表示无管理员权限，其他非 0 表示错误|
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
 |» data|object¦null|true|none|数据|none|
 |»» success|boolean|true|none|是否成功|none|
@@ -1725,9 +1848,9 @@ POST /attraction/stats
 {
   "id": "1",
   "name": "休息亭",
-  "attraction_id": "1",
+  "attraction_id": 1,
   "location": "樱花谷入口",
-  "status": "正常"
+  "status": "normal"
 }
 
 ```
@@ -1738,7 +1861,7 @@ POST /attraction/stats
 |---|---|---|---|---|---|
 |id|string|true|none|设施ID|ID 编号|
 |name|string|true|none|设施名称|名称|
-|attraction_id|string|true|none|所在景点ID|none|
+|attraction_id|number|true|none|所在景点ID|none|
 |location|string|true|none|设施位置|none|
 |status|string|true|none|设施状态|none|
 
