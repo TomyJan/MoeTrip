@@ -60,7 +60,10 @@
                       class="flex-grow-1 mr-2"
                       v-bind="props"
                       clearable
-                      @click:clear="startDate = null; loadOrders()"
+                      @click:clear="
+                        startDate = null;
+                        loadOrders();
+                      "
                       variant="outlined"
                       density="comfortable"
                       hide-details
@@ -68,12 +71,15 @@
                   </template>
                   <v-date-picker
                     v-model="startDate"
-                    @update:model-value="startDateMenu = false; loadOrders()"
+                    @update:model-value="
+                      startDateMenu = false;
+                      loadOrders();
+                    "
                     no-title
                     locale="zh-cn"
                   ></v-date-picker>
                 </v-menu>
-                
+
                 <!-- 结束日期选择器 -->
                 <v-menu
                   v-model="endDateMenu"
@@ -90,7 +96,10 @@
                       class="flex-grow-1 ml-2"
                       v-bind="props"
                       clearable
-                      @click:clear="endDate = null; loadOrders()"
+                      @click:clear="
+                        endDate = null;
+                        loadOrders();
+                      "
                       variant="outlined"
                       density="comfortable"
                       hide-details
@@ -98,7 +107,10 @@
                   </template>
                   <v-date-picker
                     v-model="endDate"
-                    @update:model-value="endDateMenu = false; loadOrders()"
+                    @update:model-value="
+                      endDateMenu = false;
+                      loadOrders();
+                    "
                     no-title
                     locale="zh-cn"
                   ></v-date-picker>
@@ -121,7 +133,9 @@
               <span class="font-weight-medium">{{ item.order_id }}</span>
             </template>
             <template v-slot:item.total_price="{ item }">
-              <span class="text-primary font-weight-medium">¥{{ item.total_price.toFixed(2) }}</span>
+              <span class="text-primary font-weight-medium"
+                >¥{{ item.total_price.toFixed(2) }}</span
+              >
             </template>
             <template v-slot:item.status="{ item }">
               <v-chip
@@ -135,7 +149,9 @@
             <template v-slot:item.ticket_info="{ item }">
               <div class="d-flex flex-column">
                 <span>{{ item.ticket_name }}</span>
-                <span class="text-caption text-medium-emphasis">{{ item.attraction_name }}</span>
+                <span class="text-caption text-medium-emphasis">{{
+                  item.attraction_name
+                }}</span>
               </div>
             </template>
             <template v-slot:item.date="{ item }">
@@ -172,7 +188,10 @@
                       color="blue"
                       @click="openChangeStatusDialog(item)"
                       rounded="pill"
-                      :disabled="item.status === 'cancelled' || item.status === 'completed'"
+                      :disabled="
+                        item.status === 'cancelled' ||
+                        item.status === 'completed'
+                      "
                       class="action-btn"
                     >
                       <v-icon>mdi-pencil</v-icon>
@@ -243,21 +262,40 @@
             <v-list density="compact">
               <v-list-item>
                 <template v-slot:prepend>
-                  <v-icon icon="mdi-map-marker" class="me-2" color="primary"></v-icon>
+                  <v-icon
+                    icon="mdi-map-marker"
+                    class="me-2"
+                    color="primary"
+                  ></v-icon>
                 </template>
-                <v-list-item-title>{{ selectedOrder.attraction_name }}</v-list-item-title>
+                <v-list-item-title>{{
+                  selectedOrder.attraction_name
+                }}</v-list-item-title>
               </v-list-item>
               <v-list-item>
                 <template v-slot:prepend>
-                  <v-icon icon="mdi-ticket" class="me-2" color="primary"></v-icon>
+                  <v-icon
+                    icon="mdi-ticket"
+                    class="me-2"
+                    color="primary"
+                  ></v-icon>
                 </template>
-                <v-list-item-title>{{ selectedOrder.ticket_name }}</v-list-item-title>
+                <v-list-item-title>{{
+                  selectedOrder.ticket_name
+                }}</v-list-item-title>
               </v-list-item>
               <v-list-item>
                 <template v-slot:prepend>
-                  <v-icon icon="mdi-calendar" class="me-2" color="primary"></v-icon>
+                  <v-icon
+                    icon="mdi-calendar"
+                    class="me-2"
+                    color="primary"
+                  ></v-icon>
                 </template>
-                <v-list-item-title>使用日期: {{ formatDate(selectedOrder.date) }}</v-list-item-title>
+                <v-list-item-title
+                  >使用日期:
+                  {{ formatDate(selectedOrder.date) }}</v-list-item-title
+                >
               </v-list-item>
             </v-list>
           </v-card>
@@ -274,7 +312,7 @@
           </div>
         </v-card-text>
       </v-card>
-      
+
       <!-- 将按钮移到v-card外部 -->
       <div class="d-flex justify-end mt-4">
         <v-btn
@@ -287,7 +325,9 @@
           关闭
         </v-btn>
         <v-btn
-          v-if="!['cancelled', 'completed'].includes(selectedOrder?.status || '')"
+          v-if="
+            !['cancelled', 'completed'].includes(selectedOrder?.status || '')
+          "
           color="primary"
           variant="elevated"
           @click="openChangeStatusFromDetail"
@@ -377,7 +417,13 @@ const headers = [
   { title: '使用日期', key: 'date', sortable: true },
   { title: '状态', key: 'status', sortable: true },
   { title: '创建时间', key: 'created_at', sortable: true },
-  { title: '操作', key: 'actions', sortable: false, align: 'end', width: '120px' },
+  {
+    title: '操作',
+    key: 'actions',
+    sortable: false,
+    align: 'end',
+    width: '120px',
+  },
 ];
 
 // 状态变量
@@ -398,8 +444,12 @@ const startDateMenu = ref(false);
 const endDateMenu = ref(false);
 
 // 格式化日期显示
-const formattedStartDate = computed(() => startDate.value ? formatDate(startDate.value) : '');
-const formattedEndDate = computed(() => endDate.value ? formatDate(endDate.value) : '');
+const formattedStartDate = computed(() =>
+  startDate.value ? formatDate(startDate.value) : '',
+);
+const formattedEndDate = computed(() =>
+  endDate.value ? formatDate(endDate.value) : '',
+);
 
 // 状态选项
 const statusOptions = [
@@ -422,12 +472,12 @@ const saving = ref(false);
 // 可用状态选项（基于当前订单状态）
 const availableStatusOptions = computed(() => {
   if (!orderToUpdate.value) return [];
-  
+
   const currentStatus = orderToUpdate.value.status;
   // 基于当前状态，返回可以切换的状态选项
   switch (currentStatus) {
     case 'success':
-      return statusOptions.filter(s => ['cancelled'].includes(s.value));
+      return statusOptions.filter((s) => ['cancelled'].includes(s.value));
     case 'cancelled':
       return []; // 已取消的订单不能再改变状态
     default:
@@ -451,15 +501,20 @@ async function loadAttractions() {
   try {
     const result = await attractionApi.query({});
     if (result.success && result.data?.data?.attractions) {
-      attractionOptions.value = result.data.data.attractions.map((attraction: any) => ({
-        id: attraction.id,
-        name: attraction.name,
-      }));
+      attractionOptions.value = result.data.data.attractions.map(
+        (attraction: any) => ({
+          id: attraction.id,
+          name: attraction.name,
+        }),
+      );
     } else {
       showError(result.error || '加载景点列表失败');
     }
   } catch (error) {
-    showError('加载景点列表失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '加载景点列表失败: ' +
+        (error instanceof Error ? error.message : String(error)),
+    );
   }
 }
 
@@ -514,25 +569,30 @@ async function loadOrders() {
     if (result.success && result.data?.data) {
       console.log('订单查询结果:', result.data.data);
       orders.value = result.data.data.orders || [];
-      
+
       // 确保数值类型正确
-      orders.value = orders.value.map(order => ({
+      orders.value = orders.value.map((order) => ({
         ...order,
-        total_price: typeof order.total_price === 'number' ? 
-          order.total_price : 
-          parseFloat(order.total_price || '0'),
-        quantity: typeof order.quantity === 'number' ? 
-          order.quantity : 
-          parseInt(order.quantity || '0'),
+        total_price:
+          typeof order.total_price === 'number'
+            ? order.total_price
+            : parseFloat(order.total_price || '0'),
+        quantity:
+          typeof order.quantity === 'number'
+            ? order.quantity
+            : parseInt(order.quantity || '0'),
       }));
-      
+
       totalOrders.value = result.data.data.total || orders.value.length;
     } else {
       showError(result.error || '加载订单列表失败');
     }
   } catch (error) {
     console.error('加载订单列表失败:', error);
-    showError('加载订单列表失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '加载订单列表失败: ' +
+        (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     loading.value = false;
   }
@@ -540,7 +600,7 @@ async function loadOrders() {
 
 // 获取状态文本
 function getStatusText(status: string): string {
-  const option = statusOptions.find(opt => opt.value === status);
+  const option = statusOptions.find((opt) => opt.value === status);
   return option ? option.text : status;
 }
 
@@ -559,12 +619,12 @@ function getStatusColor(status: string): string {
 // 格式化日期为YYYY-MM-DD格式（用于API调用）
 function formatDateForApi(dateStr: string): string {
   if (!dateStr) return '';
-  
+
   // 如果已经是YYYY-MM-DD格式，直接返回
   if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
     return dateStr;
   }
-  
+
   // 否则格式化为YYYY-MM-DD
   const date = new Date(dateStr);
   const year = date.getFullYear();
@@ -583,7 +643,11 @@ function formatDate(dateStr: string): string {
 function formatDateTime(dateStr: string) {
   if (!dateStr) return '';
   const date = new Date(dateStr);
-  return date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  return (
+    date.toLocaleDateString('zh-CN') +
+    ' ' +
+    date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+  );
 }
 
 // 查看订单详情
@@ -591,12 +655,14 @@ function viewOrderDetail(order: Order) {
   selectedOrder.value = {
     ...order,
     // 确保数值类型正确
-    total_price: typeof order.total_price === 'number' ? 
-      order.total_price : 
-      parseFloat(order.total_price || '0'),
-    quantity: typeof order.quantity === 'number' ? 
-      order.quantity : 
-      parseInt(order.quantity || '0'),
+    total_price:
+      typeof order.total_price === 'number'
+        ? order.total_price
+        : parseFloat(order.total_price || '0'),
+    quantity:
+      typeof order.quantity === 'number'
+        ? order.quantity
+        : parseInt(order.quantity || '0'),
   };
   detailDialog.value = true;
 }
@@ -643,7 +709,9 @@ async function updateOrderStatus() {
       showError(result.error || '更新订单状态失败');
     }
   } catch (error) {
-    showError('操作失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '操作失败: ' + (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     saving.value = false;
   }

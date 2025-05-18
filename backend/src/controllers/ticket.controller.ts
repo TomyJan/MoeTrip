@@ -225,10 +225,10 @@ export const addTicket = async (req: Request, res: Response) => {
 export const queryTickets = async (req: Request, res: Response) => {
   try {
     const { attraction_id } = req.body;
-    
+
     // 构建查询条件
     const where: any = {};
-    
+
     // 如果提供了景点ID，则加入查询条件
     if (attraction_id) {
       // 检查景点是否存在
@@ -240,7 +240,7 @@ export const queryTickets = async (req: Request, res: Response) => {
           data: null,
         });
       }
-      
+
       where.attraction_id = attraction_id;
     }
 
@@ -377,7 +377,9 @@ export const updateTicket = async (req: Request, res: Response) => {
     // 更新票种
     await ticket.update(updateData);
 
-    logger.info(`票种已更新: ID=${id}, 字段: ${Object.keys(updateData).join(', ')}`);
+    logger.info(
+      `票种已更新: ID=${id}, 字段: ${Object.keys(updateData).join(', ')}`,
+    );
 
     return res.json({
       code: 0,
@@ -434,9 +436,9 @@ export const deleteTicket = async (req: Request, res: Response) => {
     if (relatedOrders > 0) {
       // 如果有关联订单，只标记为非活跃而不实际删除
       await ticket.update({ status: 'inactive' });
-      
+
       logger.info(`票种已标记为非活跃 (有关联订单): ID=${id}`);
-      
+
       return res.json({
         code: 0,
         message: '票种已标记为非活跃，因为存在关联的订单',

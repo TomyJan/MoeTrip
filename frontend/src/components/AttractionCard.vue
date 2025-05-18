@@ -60,12 +60,14 @@
                 size="small"
                 rounded="pill"
                 @click.stop="toggleFacility(facility)"
-                :class="{ 'v-chip--selected': selectedFacility?.id === facility.id }"
+                :class="{
+                  'v-chip--selected': selectedFacility?.id === facility.id,
+                }"
               >
                 {{ facility.name }}
               </v-chip>
             </v-chip-group>
-            
+
             <div v-if="selectedFacility" class="mt-2 facility-location">
               <v-alert
                 density="compact"
@@ -146,19 +148,19 @@ onMounted(() => {
 
 async function loadFacilities() {
   if (!props.attraction.id) return;
-  
+
   loadingFacilities.value = true;
   try {
     const result = await facilityApi.query({
-      attraction_id: props.attraction.id
+      attraction_id: props.attraction.id,
     });
-    
+
     if (result.success && result.data?.data?.facilities) {
       // 只显示状态为normal的设施
       facilities.value = result.data.data.facilities.filter(
-        (facility: Facility) => facility.status === 'normal'
+        (facility: Facility) => facility.status === 'normal',
       );
-      facilityNames.value = facilities.value.map(f => f.name);
+      facilityNames.value = facilities.value.map((f) => f.name);
     }
   } catch (error) {
     console.error('加载设施信息失败:', error);

@@ -173,20 +173,20 @@ export const createOrder = async (req: Request, res: Response) => {
  */
 export const queryOrders = async (req: Request, res: Response) => {
   try {
-    const { 
-      user_id, 
-      order_id, 
-      status, 
+    const {
+      user_id,
+      order_id,
+      status,
       attraction_id,
       start_date,
       end_date,
       page = 1,
-      pageSize = 10
+      pageSize = 10,
     } = req.body;
-    
+
     const currentUserId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
-    
+
     // 计算分页
     const offset = (page - 1) * pageSize;
     const limit = parseInt(pageSize.toString());
@@ -196,15 +196,17 @@ export const queryOrders = async (req: Request, res: Response) => {
     if (attraction_id) {
       // 查询指定景点下的所有票种
       const ticketsInAttraction = await Ticket.findAll({
-        where: { 
-          attraction_id: parseInt(attraction_id.toString())
+        where: {
+          attraction_id: parseInt(attraction_id.toString()),
         },
-        attributes: ['id']
+        attributes: ['id'],
       });
-      
+
       // 获取票种ID数组
-      ticketIdsForAttractionFilter = ticketsInAttraction.map(ticket => ticket.id);
-      
+      ticketIdsForAttractionFilter = ticketsInAttraction.map(
+        (ticket) => ticket.id,
+      );
+
       // 如果该景点没有票种，直接返回空结果
       if (ticketIdsForAttractionFilter.length === 0) {
         return res.json({
@@ -255,38 +257,38 @@ export const queryOrders = async (req: Request, res: Response) => {
           data: null,
         });
       }
-      
+
       if (targetUserId) {
         whereConditions.user_id = targetUserId;
       }
-      
+
       // 添加状态过滤条件
       if (status) {
         whereConditions.status = status;
       }
-      
+
       // 添加景点票种过滤条件
       if (attraction_id && ticketIdsForAttractionFilter.length > 0) {
         whereConditions.ticket_id = {
-          [Op.in]: ticketIdsForAttractionFilter
+          [Op.in]: ticketIdsForAttractionFilter,
         };
       }
-      
+
       // 添加日期范围过滤条件
       if (start_date && end_date) {
         whereConditions.date = {
-          [Op.between]: [start_date, end_date]
+          [Op.between]: [start_date, end_date],
         };
       } else if (start_date) {
         whereConditions.date = {
-          [Op.gte]: start_date
+          [Op.gte]: start_date,
         };
       } else if (end_date) {
         whereConditions.date = {
-          [Op.lte]: end_date
+          [Op.lte]: end_date,
         };
       }
-      
+
       // 计算总数
       totalCount = await Order.count({ where: whereConditions });
 
@@ -295,36 +297,36 @@ export const queryOrders = async (req: Request, res: Response) => {
         where: whereConditions,
         order: [['created_at', 'DESC']],
         offset,
-        limit
+        limit,
       });
     }
 
     // 获取所有相关票种的ID
     const ticketIds = orders.map((order) => order.ticket_id);
-    
+
     // 批量查询票种信息
     const tickets = await Ticket.findAll({
       where: {
-        id: { [Op.in]: ticketIds }
-      }
+        id: { [Op.in]: ticketIds },
+      },
     });
-    
+
     // 创建票种ID到票种信息的映射
     const ticketMap = new Map();
     tickets.forEach((ticket) => {
       ticketMap.set(ticket.id, ticket);
     });
-    
+
     // 获取所有相关景点的ID
     const attractionIds = tickets.map((ticket) => ticket.attraction_id);
-    
+
     // 批量查询景点信息
     const attractions = await Attraction.findAll({
       where: {
-        id: { [Op.in]: attractionIds }
-      }
+        id: { [Op.in]: attractionIds },
+      },
     });
-    
+
     // 创建景点ID到景点信息的映射
     const attractionMap = new Map();
     attractions.forEach((attraction) => {
@@ -336,7 +338,9 @@ export const queryOrders = async (req: Request, res: Response) => {
       // 获取票种信息
       const ticket = ticketMap.get(order.ticket_id);
       // 获取景点信息
-      const attraction = ticket ? attractionMap.get(ticket.attraction_id) : null;
+      const attraction = ticket
+        ? attractionMap.get(ticket.attraction_id)
+        : null;
 
       return {
         id: order.id,

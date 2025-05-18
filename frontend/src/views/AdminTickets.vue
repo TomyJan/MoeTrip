@@ -50,7 +50,13 @@
             class="elevation-0"
           >
             <template v-slot:item.price="{ item }">
-              <span>¥{{ typeof item.price === 'number' ? item.price.toFixed(2) : item.price }}</span>
+              <span
+                >¥{{
+                  typeof item.price === 'number'
+                    ? item.price.toFixed(2)
+                    : item.price
+                }}</span
+              >
             </template>
             <template v-slot:item.status="{ item }">
               <v-chip
@@ -152,7 +158,7 @@
           prefix="¥"
           :rules="[
             (v: number) => !!v || '价格不能为空',
-            (v: number) => v > 0 || '价格必须大于0'
+            (v: number) => v > 0 || '价格必须大于0',
           ]"
           variant="outlined"
           class="mb-3"
@@ -164,7 +170,7 @@
           type="number"
           :rules="[
             (v: number) => !!v || '每日限额不能为空',
-            (v: number) => v > 0 || '每日限额必须大于0'
+            (v: number) => v > 0 || '每日限额必须大于0',
           ]"
           variant="outlined"
           class="mb-3"
@@ -192,7 +198,10 @@
       persistent
       @confirm="deleteTicket"
     >
-      <p>您确定要删除票种 <strong>{{ ticketToDelete?.name }}</strong> 吗？此操作不可恢复。</p>
+      <p>
+        您确定要删除票种
+        <strong>{{ ticketToDelete?.name }}</strong> 吗？此操作不可恢复。
+      </p>
     </AppDialog>
 
     <!-- 消息提示条 -->
@@ -216,12 +225,12 @@ import AppPagination from '../components/AppPagination.vue';
 interface Ticket {
   id: number;
   name: string;
-  available: number;  // API返回的是available
+  available: number; // API返回的是available
   attraction_id: number;
   created_at: string;
   updated_at: string;
-  status?: string;   // 可能不存在
-  price?: number;    // 可能不存在
+  status?: string; // 可能不存在
+  price?: number; // 可能不存在
 }
 
 // 景点类型定义
@@ -239,7 +248,13 @@ const headers = [
   { title: '状态', key: 'status', sortable: true },
   { title: '创建时间', key: 'created_at', sortable: true },
   { title: '更新时间', key: 'updated_at', sortable: true },
-  { title: '操作', key: 'actions', sortable: false, align: 'end', width: '120px' },
+  {
+    title: '操作',
+    key: 'actions',
+    sortable: false,
+    align: 'end',
+    width: '120px',
+  },
 ];
 
 // 状态变量
@@ -265,7 +280,7 @@ const editedTicket = reactive({
   id: 0,
   name: '',
   price: 0,
-  available: 0,   // 使用API的available字段
+  available: 0, // 使用API的available字段
   status: 'active',
   attraction_id: 0,
 });
@@ -298,15 +313,20 @@ async function loadAttractions() {
   try {
     const result = await attractionApi.query({});
     if (result.success && result.data?.data?.attractions) {
-      attractionOptions.value = result.data.data.attractions.map((attraction: any) => ({
-        id: attraction.id,
-        name: attraction.name,
-      }));
+      attractionOptions.value = result.data.data.attractions.map(
+        (attraction: any) => ({
+          id: attraction.id,
+          name: attraction.name,
+        }),
+      );
     } else {
       showError(result.error || '加载景点列表失败');
     }
   } catch (error) {
-    showError('加载景点列表失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '加载景点列表失败: ' +
+        (error instanceof Error ? error.message : String(error)),
+    );
   }
 }
 
@@ -319,35 +339,41 @@ async function loadTickets() {
     if (selectedAttraction.value) {
       params.attraction_id = selectedAttraction.value;
     }
-    
+
     const result = await ticketApi.query(params);
 
     if (result.success && result.data?.data) {
       tickets.value = result.data.data.tickets || [];
-      
+
       // 修正数据类型，确保price是数字
-      tickets.value = tickets.value.map(ticket => ({
+      tickets.value = tickets.value.map((ticket) => ({
         ...ticket,
-        price: typeof ticket.price === 'number' ? ticket.price : parseFloat(ticket.price || '0'),
-        status: ticket.status || 'active'
+        price:
+          typeof ticket.price === 'number'
+            ? ticket.price
+            : parseFloat(ticket.price || '0'),
+        status: ticket.status || 'active',
       }));
-      
+
       // 应用搜索过滤
       if (searchKeyword.value) {
-        tickets.value = tickets.value.filter(ticket => 
-          ticket.name.includes(searchKeyword.value)
+        tickets.value = tickets.value.filter((ticket) =>
+          ticket.name.includes(searchKeyword.value),
         );
       }
-      
+
       totalTickets.value = tickets.value.length;
-      
+
       console.log('加载到的票种数据:', tickets.value);
     } else {
       showError(result.error || '加载票种列表失败');
     }
   } catch (error) {
     console.error('加载票种列表失败:', error);
-    showError('加载票种列表失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '加载票种列表失败: ' +
+        (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     loading.value = false;
   }
@@ -355,7 +381,7 @@ async function loadTickets() {
 
 // 获取状态文本
 function getStatusText(status: string): string {
-  const option = statusOptions.find(opt => opt.value === status);
+  const option = statusOptions.find((opt) => opt.value === status);
   return option ? option.text : status;
 }
 
@@ -375,7 +401,11 @@ function getStatusColor(status: string): string {
 function formatDate(dateStr: string) {
   if (!dateStr) return '';
   const date = new Date(dateStr);
-  return date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  return (
+    date.toLocaleDateString('zh-CN') +
+    ' ' +
+    date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+  );
 }
 
 // 打开添加票种对话框
@@ -384,7 +414,7 @@ function openAddDialog() {
   editedTicket.id = 0;
   editedTicket.name = '';
   editedTicket.price = 0;
-  editedTicket.available = 0;  // 使用available
+  editedTicket.available = 0; // 使用available
   editedTicket.status = 'active';
   editedTicket.attraction_id = selectedAttraction.value || 0;
   dialog.value = true;
@@ -395,8 +425,11 @@ function openEditDialog(ticket: Ticket) {
   isEditing.value = true;
   editedTicket.id = ticket.id;
   editedTicket.name = ticket.name;
-  editedTicket.price = typeof ticket.price === 'number' ? ticket.price : parseFloat(ticket.price || '0');
-  editedTicket.available = ticket.available;  // 直接使用available
+  editedTicket.price =
+    typeof ticket.price === 'number'
+      ? ticket.price
+      : parseFloat(ticket.price || '0');
+  editedTicket.available = ticket.available; // 直接使用available
   editedTicket.status = ticket.status || 'active';
   editedTicket.attraction_id = ticket.attraction_id;
   dialog.value = true;
@@ -423,7 +456,7 @@ async function saveTicket() {
         id: editedTicket.id,
         name: editedTicket.name,
         price: editedTicket.price,
-        daily_limit: editedTicket.available,  // 映射到daily_limit
+        daily_limit: editedTicket.available, // 映射到daily_limit
         status: editedTicket.status,
       });
 
@@ -440,7 +473,7 @@ async function saveTicket() {
         attraction_id: editedTicket.attraction_id,
         name: editedTicket.name,
         price: editedTicket.price,
-        daily_limit: editedTicket.available,  // 映射到daily_limit
+        daily_limit: editedTicket.available, // 映射到daily_limit
       });
 
       if (result.success) {
@@ -452,7 +485,9 @@ async function saveTicket() {
       }
     }
   } catch (error) {
-    showError('操作失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '操作失败: ' + (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     saving.value = false;
   }
@@ -467,7 +502,7 @@ function confirmDelete(ticket: Ticket) {
 // 删除票种
 async function deleteTicket() {
   if (!ticketToDelete.value) return;
-  
+
   deleting.value = true;
   try {
     const result = await ticketApi.delete({
@@ -482,7 +517,9 @@ async function deleteTicket() {
       showError(result.error || '删除票种失败');
     }
   } catch (error) {
-    showError('删除失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '删除失败: ' + (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     deleting.value = false;
   }

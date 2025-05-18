@@ -113,7 +113,7 @@ async function loadFacilities(attractionId: number) {
     const result = await facilityApi.query({
       attraction_id: attractionId,
     });
-    
+
     if (result.success && result.data?.data?.facilities) {
       facilities.value = result.data.data.facilities;
     }
@@ -313,28 +313,43 @@ onMounted(() => {
                 设施信息
               </div>
               <div v-if="loadingFacilities" class="text-center pa-2">
-                <v-progress-circular indeterminate color="primary" size="24"></v-progress-circular>
+                <v-progress-circular
+                  indeterminate
+                  color="primary"
+                  size="24"
+                ></v-progress-circular>
               </div>
               <div v-else-if="facilities.length > 0">
                 <v-chip-group>
                   <v-chip
                     v-for="facility in facilities"
                     :key="facility.id"
-                    :color="facility.status === 'normal' ? 'success' : 'warning'"
+                    :color="
+                      facility.status === 'normal' ? 'success' : 'warning'
+                    "
                     variant="elevated"
                     size="small"
                     class="mr-2 mb-2"
                     rounded="pill"
-                    @click="selectedFacility = facility === selectedFacility ? null : facility"
-                    :class="{ 'v-chip--selected': selectedFacility?.id === facility.id }"
+                    @click="
+                      selectedFacility =
+                        facility === selectedFacility ? null : facility
+                    "
+                    :class="{
+                      'v-chip--selected': selectedFacility?.id === facility.id,
+                    }"
                   >
                     {{ facility.name }}
-                    <v-icon v-if="facility.status === 'maintenance'" class="ml-1" size="x-small">
+                    <v-icon
+                      v-if="facility.status === 'maintenance'"
+                      class="ml-1"
+                      size="x-small"
+                    >
                       mdi-tools
                     </v-icon>
                   </v-chip>
                 </v-chip-group>
-                
+
                 <div v-if="selectedFacility" class="mt-3 facility-location">
                   <v-alert
                     density="compact"
@@ -354,12 +369,20 @@ onMounted(() => {
                         <strong>{{ selectedFacility.name }}</strong>
                         <v-chip
                           size="x-small"
-                          :color="selectedFacility.status === 'normal' ? 'success' : 'warning'"
+                          :color="
+                            selectedFacility.status === 'normal'
+                              ? 'success'
+                              : 'warning'
+                          "
                           class="ml-2"
                           rounded="pill"
                           variant="flat"
                         >
-                          {{ selectedFacility.status === 'normal' ? '正常' : '维护中' }}
+                          {{
+                            selectedFacility.status === 'normal'
+                              ? '正常'
+                              : '维护中'
+                          }}
                         </v-chip>
                       </div>
                       <v-btn
@@ -371,7 +394,9 @@ onMounted(() => {
                         <v-icon size="small">mdi-close</v-icon>
                       </v-btn>
                     </div>
-                    <p class="mt-1 mb-0">位置: {{ selectedFacility.location }}</p>
+                    <p class="mt-1 mb-0">
+                      位置: {{ selectedFacility.location }}
+                    </p>
                   </v-alert>
                 </div>
               </div>

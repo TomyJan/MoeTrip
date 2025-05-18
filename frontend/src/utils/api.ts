@@ -319,8 +319,8 @@ export const adminApi = {
 // 订单相关API
 export const orderApi = {
   // 查询用户的订单
-  query: async (params: { 
-    user_id?: number; 
+  query: async (params: {
+    user_id?: number;
     order_id?: number;
     page?: number;
     pageSize?: number;
@@ -363,9 +363,7 @@ export const orderApi = {
   },
 
   // 取消订单
-  cancel: async (params: {
-    order_id: number;
-  }) => {
+  cancel: async (params: { order_id: number }) => {
     return apiRequest('/order/cancel', {
       method: 'POST',
       body: JSON.stringify(params),
@@ -388,8 +386,8 @@ export const orderApi = {
 // 票务相关API
 export const ticketApi = {
   // 查询票种
-  query: async (params: { 
-    attraction_id?: number;  // 改为可选参数
+  query: async (params: {
+    attraction_id?: number; // 改为可选参数
     page?: number;
     pageSize?: number;
   }) => {
@@ -434,12 +432,13 @@ export const ticketApi = {
     status?: string;
   }) => {
     const requestData: any = { id: ticketData.id };
-    
+
     if (ticketData.name !== undefined) requestData.name = ticketData.name;
     if (ticketData.price !== undefined) requestData.price = ticketData.price;
-    if (ticketData.daily_limit !== undefined) requestData.available = ticketData.daily_limit;
+    if (ticketData.daily_limit !== undefined)
+      requestData.available = ticketData.daily_limit;
     if (ticketData.status !== undefined) requestData.status = ticketData.status;
-    
+
     return apiRequest('/ticket/update', {
       method: 'POST',
       body: JSON.stringify(requestData),
@@ -447,9 +446,7 @@ export const ticketApi = {
   },
 
   // 删除票种
-  delete: async (params: {
-    id: number;
-  }) => {
+  delete: async (params: { id: number }) => {
     return apiRequest('/ticket/delete', {
       method: 'POST',
       body: JSON.stringify(params),
@@ -500,9 +497,7 @@ export const facilityApi = {
   },
 
   // 删除设施
-  delete: async (params: {
-    id: number;
-  }) => {
+  delete: async (params: { id: number }) => {
     return apiRequest('/facility/delete', {
       method: 'POST',
       body: JSON.stringify(params),

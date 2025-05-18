@@ -171,7 +171,10 @@
       persistent
       @confirm="deleteFacility"
     >
-      <p>您确定要删除设施 <strong>{{ facilityToDelete?.name }}</strong> 吗？此操作不可恢复。</p>
+      <p>
+        您确定要删除设施
+        <strong>{{ facilityToDelete?.name }}</strong> 吗？此操作不可恢复。
+      </p>
     </AppDialog>
 
     <!-- 消息提示条 -->
@@ -217,7 +220,13 @@ const headers = [
   { title: '所属景点', key: 'attraction_id', sortable: true },
   { title: '创建时间', key: 'created_at', sortable: true },
   { title: '更新时间', key: 'updated_at', sortable: true },
-  { title: '操作', key: 'actions', sortable: false, align: 'end', width: '120px' },
+  {
+    title: '操作',
+    key: 'actions',
+    sortable: false,
+    align: 'end',
+    width: '120px',
+  },
 ];
 
 // 状态变量
@@ -239,7 +248,7 @@ const statusOptions = [
 // 状态中英文映射
 const statusMap: Record<string, string> = {
   normal: '正常',
-  maintenance: '维护'
+  maintenance: '维护',
 };
 
 // 对话框状态
@@ -278,15 +287,20 @@ const loadAttractions = async () => {
   try {
     const result = await attractionApi.query({});
     if (result.success && result.data?.data?.attractions) {
-      attractionOptions.value = result.data.data.attractions.map((attraction: any) => ({
-        id: attraction.id,
-        name: attraction.name,
-      }));
+      attractionOptions.value = result.data.data.attractions.map(
+        (attraction: any) => ({
+          id: attraction.id,
+          name: attraction.name,
+        }),
+      );
     } else {
       showError(result.error || '加载景点列表失败');
     }
   } catch (error) {
-    showError('加载景点列表失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '加载景点列表失败: ' +
+        (error instanceof Error ? error.message : String(error)),
+    );
   }
 };
 
@@ -308,7 +322,10 @@ const loadFacilities = async () => {
       showError(result.error || '加载设施列表失败');
     }
   } catch (error) {
-    showError('加载设施列表失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '加载设施列表失败: ' +
+        (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     loading.value = false;
   }
@@ -316,7 +333,7 @@ const loadFacilities = async () => {
 
 // 获取景点名称
 const getAttractionName = (attractionId: number) => {
-  const attraction = attractionOptions.value.find(a => a.id === attractionId);
+  const attraction = attractionOptions.value.find((a) => a.id === attractionId);
   return attraction ? attraction.name : `景点 #${attractionId}`;
 };
 
@@ -324,7 +341,11 @@ const getAttractionName = (attractionId: number) => {
 const formatDate = (dateStr: string) => {
   if (!dateStr) return '';
   const date = new Date(dateStr);
-  return date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  return (
+    date.toLocaleDateString('zh-CN') +
+    ' ' +
+    date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+  );
 };
 
 // 打开添加设施对话框
@@ -334,7 +355,7 @@ const openAddDialog = () => {
   editedFacility.name = '';
   editedFacility.location = '';
   editedFacility.status = 'normal';
-  editedFacility.attraction_id = selectedAttraction.value || null as any;
+  editedFacility.attraction_id = selectedAttraction.value || (null as any);
   editedFacility.created_at = '';
   editedFacility.updated_at = '';
   dialog.value = true;
@@ -403,7 +424,9 @@ const saveFacility = async () => {
       }
     }
   } catch (error) {
-    showError('操作失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '操作失败: ' + (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     saving.value = false;
   }
@@ -418,7 +441,7 @@ const confirmDelete = (facility: Facility) => {
 // 删除设施
 const deleteFacility = async () => {
   if (!facilityToDelete.value) return;
-  
+
   deleting.value = true;
   try {
     const result = await facilityApi.delete({
@@ -433,7 +456,9 @@ const deleteFacility = async () => {
       showError(result.error || '删除设施失败');
     }
   } catch (error) {
-    showError('删除失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '删除失败: ' + (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     deleting.value = false;
   }
