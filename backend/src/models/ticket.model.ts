@@ -8,6 +8,7 @@ class Ticket extends Model {
   public name!: string;
   public available!: number;
   public price!: string;
+  public status!: string;
 
   // 时间戳
   public readonly created_at!: Date;
@@ -51,6 +52,11 @@ Ticket.init(
       validate: {
         min: 0,
       },
+    },
+    status: {
+      type: DataTypes.ENUM('active', 'inactive'),
+      allowNull: false,
+      defaultValue: 'active',
     },
   },
   {

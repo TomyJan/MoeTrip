@@ -937,7 +937,13 @@ POST /order/query
 ```json
 {
   "user_id": 1,
-  "order_id": 1
+  "order_id": 1,
+  "status": "success",
+  "attraction_id": "1",
+  "start_date": "2025-07-15",
+  "end_date": "2025-07-15",
+  "page": 1,
+  "pageSize": 10
 }
 ```
 
@@ -948,6 +954,12 @@ POST /order/query
 |body|body|object| 否 ||none|
 |» user_id|body|number| 否 | 目标用户ID|none|
 |» order_id|body|number| 否 | 订单ID|none|
+|» status|body|string| 否 | 订单状态|none|
+|» attraction_id|body|string| 否 | 景点ID|none|
+|» start_date|body|string(date)| 否 | 开始日期|none|
+|» end_date|body|string(date)| 否 | 结束日期|none|
+|» page|body|number| 是 | 页码|none|
+|» pageSize|body|number| 是 | 每页数量|none|
 
 > 返回示例
 
@@ -1314,6 +1326,136 @@ POST /order/update
 ## POST 查询票种列表
 
 POST /ticket/query
+
+> Body 请求参数
+
+```json
+{
+  "attraction_id": 1
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» attraction_id|body|number| 是 | 景点ID|none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "data": {
+    "tickets": [
+      {
+        "id": "1",
+        "attraction_id": "1",
+        "name": "单人票",
+        "available": 100,
+        "created_at": "2025-07-15",
+        "updated_at": "2025-07-15"
+      }
+    ]
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，1001 表示参数错误, 非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» tickets|[object]|true|none|票种信息|none|
+|»»» id|string|true|none|票种ID|ID 编号|
+|»»» attraction_id|string|true|none|所在景点ID|none|
+|»»» name|string|true|none|票种名称|名称|
+|»»» available|number|true|none|当日票种余量|none|
+|»»» created_at|string(date)|true|none|票种创建日期|none|
+|»»» updated_at|string(date)|true|none|票种更新日期|none|
+
+## POST 更新票种
+
+POST /ticket/update
+
+用户购买门票，生成订单
+
+> Body 请求参数
+
+```json
+{
+  "attraction_id": 1,
+  "name": "单人票",
+  "available": 100
+}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» attraction_id|body|number| 是 | 所在景点ID|none|
+|» name|body|string| 是 | 票种名称|名称|
+|» available|body|number| 是 | 当日票种余量|none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": null,
+  "data": {
+    "ticket": {
+      "id": 1,
+      "attraction_id": 1,
+      "name": "单人票",
+      "available": 100
+    }
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，1005 表示票种余量不足，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» ticket|object|true|none|门票信息|none|
+|»»» id|string|true|none|票种ID|ID 编号|
+|»»» attraction_id|string|true|none|所在景点ID|none|
+|»»» name|string|true|none|票种名称|名称|
+|»»» available|number|true|none|每日票种余量|none|
+
+## POST 查询票种列表 Copy
+
+POST /ticket/delete
 
 > Body 请求参数
 

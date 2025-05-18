@@ -21,4 +21,20 @@ router.post(
   ticketController.addTicket,
 );
 
+// 更新票种（需要管理员权限）
+router.post(
+  '/update',
+  authMiddleware,
+  adminMiddleware,
+  ticketController.updateTicket,
+);
+
+// 删除票种（需要管理员权限）
+router.post(
+  '/delete',
+  authMiddleware,
+  adminMiddleware,
+  ticketController.deleteTicket,
+);
+
 export default router;

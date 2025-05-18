@@ -351,6 +351,12 @@ const adminMenus = [
     link: '/admin/tickets',
   },
   {
+    title: '订单管理',
+    description: '查看和管理用户订单',
+    icon: 'mdi-cart',
+    link: '/admin/orders',
+  },
+  {
     title: '系统设置',
     description: '配置系统参数',
     icon: 'mdi-cog',

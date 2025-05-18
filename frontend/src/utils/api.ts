@@ -319,7 +319,17 @@ export const adminApi = {
 // 订单相关API
 export const orderApi = {
   // 查询用户的订单
-  query: async (params: { user_id?: number; order_id?: number }) => {
+  query: async (params: { 
+    user_id?: number; 
+    order_id?: number;
+    page?: number;
+    pageSize?: number;
+    status?: string;
+    start_date?: string;
+    end_date?: string;
+    ticket_id?: number;
+    attraction_id?: number;
+  }) => {
     return apiRequest('/order/query', {
       method: 'POST',
       body: JSON.stringify(params),
@@ -351,12 +361,38 @@ export const orderApi = {
       body: JSON.stringify(orderData),
     });
   },
+
+  // 取消订单
+  cancel: async (params: {
+    order_id: number;
+  }) => {
+    return apiRequest('/order/cancel', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+  },
+
+  // 获取订单统计信息
+  stats: async (params: {
+    start_date?: string;
+    end_date?: string;
+    attraction_id?: number;
+  }) => {
+    return apiRequest('/order/stats', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+  },
 };
 
 // 票务相关API
 export const ticketApi = {
   // 查询票种
-  query: async (params: { attraction_id: number }) => {
+  query: async (params: { 
+    attraction_id?: number;  // 改为可选参数
+    page?: number;
+    pageSize?: number;
+  }) => {
     return apiRequest('/ticket/query', {
       method: 'POST',
       body: JSON.stringify(params),
@@ -366,6 +402,55 @@ export const ticketApi = {
   // 检查票种余量
   check: async (params: { ticket_id: number; date: string }) => {
     return apiRequest('/ticket/check', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+  },
+
+  // 添加票种
+  add: async (ticketData: {
+    attraction_id: number;
+    name: string;
+    price: number;
+    daily_limit: number;
+  }) => {
+    return apiRequest('/ticket/add', {
+      method: 'POST',
+      body: JSON.stringify({
+        attraction_id: ticketData.attraction_id,
+        name: ticketData.name,
+        available: ticketData.daily_limit,
+        price: ticketData.price,
+      }),
+    });
+  },
+
+  // 更新票种
+  update: async (ticketData: {
+    id: number;
+    name?: string;
+    price?: number;
+    daily_limit?: number;
+    status?: string;
+  }) => {
+    const requestData: any = { id: ticketData.id };
+    
+    if (ticketData.name !== undefined) requestData.name = ticketData.name;
+    if (ticketData.price !== undefined) requestData.price = ticketData.price;
+    if (ticketData.daily_limit !== undefined) requestData.available = ticketData.daily_limit;
+    if (ticketData.status !== undefined) requestData.status = ticketData.status;
+    
+    return apiRequest('/ticket/update', {
+      method: 'POST',
+      body: JSON.stringify(requestData),
+    });
+  },
+
+  // 删除票种
+  delete: async (params: {
+    id: number;
+  }) => {
+    return apiRequest('/ticket/delete', {
       method: 'POST',
       body: JSON.stringify(params),
     });

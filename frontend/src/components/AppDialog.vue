@@ -22,6 +22,7 @@
             {{ cancelText }}
           </v-btn>
           <v-btn
+            v-if="!hideConfirm"
             color="primary"
             variant="tonal"
             class="ml-2"
@@ -51,6 +52,7 @@ interface Props {
   persistent?: boolean;
   alignActionsEnd?: boolean;
   hideActions?: boolean;
+  hideConfirm?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -62,6 +64,7 @@ const props = withDefaults(defineProps<Props>(), {
   persistent: false,
   alignActionsEnd: true,
   hideActions: false,
+  hideConfirm: false,
 });
 
 const emit = defineEmits<{

@@ -163,14 +163,67 @@ export const createOrder = async (req: Request, res: Response) => {
 /**
  * 查询用户的购票记录
  * @param req.body.user_id 用户ID（可选，管理员可查询特定用户，普通用户只能查自己）
+ * @param req.body.order_id 订单ID（可选，查询单个订单）
+ * @param req.body.status 订单状态（可选，过滤特定状态的订单）
+ * @param req.body.attraction_id 景点ID（可选，过滤特定景点的订单）
+ * @param req.body.start_date 开始日期（可选，格式YYYY-MM-DD）
+ * @param req.body.end_date 结束日期（可选，格式YYYY-MM-DD）
+ * @param req.body.page 页码（可选，默认1）
+ * @param req.body.pageSize 每页数量（可选，默认10）
  */
 export const queryOrders = async (req: Request, res: Response) => {
   try {
-    const { user_id, order_id } = req.body;
+    const { 
+      user_id, 
+      order_id, 
+      status, 
+      attraction_id,
+      start_date,
+      end_date,
+      page = 1,
+      pageSize = 10
+    } = req.body;
+    
     const currentUserId = req.user?.id;
     const isAdmin = req.user?.role === 'admin';
+    
+    // 计算分页
+    const offset = (page - 1) * pageSize;
+    const limit = parseInt(pageSize.toString());
 
+    // 处理景点ID筛选
+    let ticketIdsForAttractionFilter: number[] = [];
+    if (attraction_id) {
+      // 查询指定景点下的所有票种
+      const ticketsInAttraction = await Ticket.findAll({
+        where: { 
+          attraction_id: parseInt(attraction_id.toString())
+        },
+        attributes: ['id']
+      });
+      
+      // 获取票种ID数组
+      ticketIdsForAttractionFilter = ticketsInAttraction.map(ticket => ticket.id);
+      
+      // 如果该景点没有票种，直接返回空结果
+      if (ticketIdsForAttractionFilter.length === 0) {
+        return res.json({
+          code: 0,
+          message: null,
+          data: {
+            total: 0,
+            orders: [],
+            page,
+            pageSize,
+          },
+        });
+      }
+    }
+
+    // 构建查询条件
+    const whereConditions: any = {};
     let orders = [];
+    let totalCount = 0;
 
     if (order_id) {
       // 查单个订单
@@ -191,8 +244,9 @@ export const queryOrders = async (req: Request, res: Response) => {
         });
       }
       orders = [order];
+      totalCount = 1;
     } else {
-      // user_id 查询
+      // 添加用户ID条件
       const targetUserId = isAdmin && user_id ? user_id : currentUserId;
       if (!isAdmin && user_id && user_id !== Number(currentUserId)) {
         return res.json({
@@ -201,45 +255,114 @@ export const queryOrders = async (req: Request, res: Response) => {
           data: null,
         });
       }
+      
+      if (targetUserId) {
+        whereConditions.user_id = targetUserId;
+      }
+      
+      // 添加状态过滤条件
+      if (status) {
+        whereConditions.status = status;
+      }
+      
+      // 添加景点票种过滤条件
+      if (attraction_id && ticketIdsForAttractionFilter.length > 0) {
+        whereConditions.ticket_id = {
+          [Op.in]: ticketIdsForAttractionFilter
+        };
+      }
+      
+      // 添加日期范围过滤条件
+      if (start_date && end_date) {
+        whereConditions.date = {
+          [Op.between]: [start_date, end_date]
+        };
+      } else if (start_date) {
+        whereConditions.date = {
+          [Op.gte]: start_date
+        };
+      } else if (end_date) {
+        whereConditions.date = {
+          [Op.lte]: end_date
+        };
+      }
+      
+      // 计算总数
+      totalCount = await Order.count({ where: whereConditions });
+
+      // 查询订单
       orders = await Order.findAll({
-        where: { user_id: targetUserId },
+        where: whereConditions,
         order: [['created_at', 'DESC']],
+        offset,
+        limit
       });
     }
 
-    // 格式化订单
-    const formattedOrders = await Promise.all(
-      orders.map(async (order) => {
-        // 查询票种和景点信息
-        const ticketInfo = await Ticket.findByPk(order.ticket_id);
-        const attractionInfo = await Attraction.findByPk(
-          ticketInfo?.attraction_id,
-        );
+    // 获取所有相关票种的ID
+    const ticketIds = orders.map((order) => order.ticket_id);
+    
+    // 批量查询票种信息
+    const tickets = await Ticket.findAll({
+      where: {
+        id: { [Op.in]: ticketIds }
+      }
+    });
+    
+    // 创建票种ID到票种信息的映射
+    const ticketMap = new Map();
+    tickets.forEach((ticket) => {
+      ticketMap.set(ticket.id, ticket);
+    });
+    
+    // 获取所有相关景点的ID
+    const attractionIds = tickets.map((ticket) => ticket.attraction_id);
+    
+    // 批量查询景点信息
+    const attractions = await Attraction.findAll({
+      where: {
+        id: { [Op.in]: attractionIds }
+      }
+    });
+    
+    // 创建景点ID到景点信息的映射
+    const attractionMap = new Map();
+    attractions.forEach((attraction) => {
+      attractionMap.set(attraction.id, attraction);
+    });
 
-        return {
-          id: order.id,
-          order_id: order.id,
-          ticket_id: order.ticket_id,
-          ticket_name: ticketInfo?.name,
-          quantity: order.quantity,
-          attraction_id: attractionInfo?.id,
-          attraction_name: attractionInfo?.name,
-          date: order.date,
-          total_price: order.total_price, // 使用数据库中的总价
-          user_id: order.user_id,
-          status: order.status,
-          created_at: order.created_at,
-          updated_at: order.updated_at,
-        };
-      }),
-    );
+    // 格式化订单
+    const formattedOrders = orders.map((order) => {
+      // 获取票种信息
+      const ticket = ticketMap.get(order.ticket_id);
+      // 获取景点信息
+      const attraction = ticket ? attractionMap.get(ticket.attraction_id) : null;
+
+      return {
+        id: order.id,
+        order_id: order.id,
+        ticket_id: order.ticket_id,
+        ticket_name: ticket?.name,
+        quantity: order.quantity,
+        attraction_id: ticket?.attraction_id,
+        attraction_name: attraction?.name,
+        date: order.date,
+        total_price: order.total_price,
+        user_id: order.user_id,
+        status: order.status,
+        created_at: order.created_at,
+        updated_at: order.updated_at,
+      };
+    });
 
     return res.json({
       code: 0,
       message: null,
       data: {
-        total: formattedOrders.length,
+        total: totalCount,
         orders: formattedOrders,
+        page,
+        pageSize,
       },
     });
   } catch (error) {
