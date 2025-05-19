@@ -40,7 +40,11 @@
                     :disabled="loading"
                     @click="loadAttractions"
                   >
-                    <v-icon icon="mdi-magnify" size="small" class="mr-2"></v-icon>
+                    <v-icon
+                      icon="mdi-magnify"
+                      size="small"
+                      class="mr-2"
+                    ></v-icon>
                     搜索
                   </v-btn>
                 </v-col>
@@ -64,7 +68,7 @@
                 />
               </v-col>
             </v-row>
-            
+
             <!-- 暂无数据 -->
             <v-row v-else>
               <v-col cols="12">
@@ -75,9 +79,9 @@
                     color="outline"
                     class="mb-3"
                   ></v-icon>
-                  <p class="md-body-large text-medium-emphasis">{{ 
-                    loading ? '正在加载景点数据...' : '暂无景点数据' 
-                  }}</p>
+                  <p class="md-body-large text-medium-emphasis">
+                    {{ loading ? '正在加载景点数据...' : '暂无景点数据' }}
+                  </p>
                 </div>
               </v-col>
             </v-row>

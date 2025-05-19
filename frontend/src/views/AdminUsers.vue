@@ -46,8 +46,15 @@
             class="elevation-0"
             :page="page"
             :items-per-page-options="[10, 20, 50]"
-            @update:page="page = $event; loadUsers()"
-            @update:items-per-page="pageSize = $event; page = 1; loadUsers()"
+            @update:page="
+              page = $event;
+              loadUsers();
+            "
+            @update:items-per-page="
+              pageSize = $event;
+              page = 1;
+              loadUsers();
+            "
             :server-items-length="totalUsers || 0"
           >
             <template v-slot:item.role="{ item }">
@@ -345,7 +352,7 @@ const saveUser = async () => {
       // 添加新用户
       // 将密码转换为SHA1哈希值
       const passwordHash = CryptoJS.SHA1(editedUser.password || '').toString();
-      
+
       const result = await adminApi.addUser({
         username: editedUser.username,
         password: passwordHash,

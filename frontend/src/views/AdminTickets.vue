@@ -50,8 +50,15 @@
             class="elevation-0"
             :page="page"
             :items-per-page-options="[10, 20, 50]"
-            @update:page="page = $event; loadTickets()"
-            @update:items-per-page="pageSize = $event; page = 1; loadTickets()"
+            @update:page="
+              page = $event;
+              loadTickets();
+            "
+            @update:items-per-page="
+              pageSize = $event;
+              page = 1;
+              loadTickets();
+            "
             :server-items-length="totalTickets || 0"
           >
             <template v-slot:item.price="{ item }">
@@ -539,9 +546,7 @@ function showError(message: string) {
 
 // 获取景点名称
 function getAttractionName(attractionId: number): string {
-  const attraction = attractionOptions.value.find(
-    (a) => a.id === attractionId
-  );
+  const attraction = attractionOptions.value.find((a) => a.id === attractionId);
   return attraction ? attraction.name : `景点#${attractionId}`;
 }
 </script>

@@ -6,10 +6,12 @@
           <v-card class="login-brand-card mb-4" rounded="lg" flat>
             <div class="text-center py-4">
               <h1 class="md-headline-medium text-primary mb-2">萌游旅行</h1>
-              <p class="md-body-medium text-medium-emphasis">探索世界，记录美好</p>
+              <p class="md-body-medium text-medium-emphasis">
+                探索世界，记录美好
+              </p>
             </div>
           </v-card>
-          
+
           <AuthForm
             title="用户登录"
             submitText="登录"

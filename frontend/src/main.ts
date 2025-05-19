@@ -72,37 +72,37 @@ const vuetify = createVuetify({
         dark: false,
         colors: {
           // Material Design 3 官方浅色主题调色板
-          primary: '#6750A4',     // MD3 Primary
+          primary: '#6750A4', // MD3 Primary
           'on-primary': '#FFFFFF',
           'primary-container': '#EADDFF',
           'on-primary-container': '#21005E',
-          
-          secondary: '#625B71',   // MD3 Secondary
+
+          secondary: '#625B71', // MD3 Secondary
           'on-secondary': '#FFFFFF',
           'secondary-container': '#E8DEF8',
           'on-secondary-container': '#1E192B',
-          
-          tertiary: '#7D5260',    // MD3 Tertiary
+
+          tertiary: '#7D5260', // MD3 Tertiary
           'on-tertiary': '#FFFFFF',
           'tertiary-container': '#FFD8E4',
           'on-tertiary-container': '#370B1E',
-          
-          error: '#B3261E',       // MD3 Error
+
+          error: '#B3261E', // MD3 Error
           'on-error': '#FFFFFF',
           'error-container': '#F9DEDC',
           'on-error-container': '#410E0B',
-          
-          surface: '#FFFBFE',     // MD3 Surface
+
+          surface: '#FFFBFE', // MD3 Surface
           'on-surface': '#1C1B1F',
           'surface-variant': '#E7E0EC',
           'on-surface-variant': '#49454F',
-          
-          outline: '#79747E',     // MD3 Outline
+
+          outline: '#79747E', // MD3 Outline
           'outline-variant': '#CAC4D0',
-          
+
           background: '#F6F2FA', // MD3 Background
           'on-background': '#1C1B1F',
-          
+
           // MD3 表面色调
           'surface-1': '#F4EFF4',
           'surface-2': '#E9E3EA',
@@ -115,37 +115,37 @@ const vuetify = createVuetify({
         dark: true,
         colors: {
           // Material Design 3 官方深色主题调色板
-          primary: '#D0BCFF',     // MD3 Primary (dark)
+          primary: '#D0BCFF', // MD3 Primary (dark)
           'on-primary': '#381E72',
           'primary-container': '#4F378B',
           'on-primary-container': '#EADDFF',
-          
-          secondary: '#CCC2DC',   // MD3 Secondary (dark)
+
+          secondary: '#CCC2DC', // MD3 Secondary (dark)
           'on-secondary': '#332D41',
           'secondary-container': '#4A4458',
           'on-secondary-container': '#E8DEF8',
-          
-          tertiary: '#EFB8C8',    // MD3 Tertiary (dark)
+
+          tertiary: '#EFB8C8', // MD3 Tertiary (dark)
           'on-tertiary': '#492532',
           'tertiary-container': '#633B48',
           'on-tertiary-container': '#FFD8E4',
-          
-          error: '#F2B8B5',       // MD3 Error (dark)
+
+          error: '#F2B8B5', // MD3 Error (dark)
           'on-error': '#601410',
           'error-container': '#8C1D18',
           'on-error-container': '#F9DEDC',
-          
-          surface: '#1C1B1F',     // MD3 Surface (dark)
+
+          surface: '#1C1B1F', // MD3 Surface (dark)
           'on-surface': '#E6E1E5',
           'surface-variant': '#49454F',
           'on-surface-variant': '#CAC4D0',
-          
-          outline: '#938F99',     // MD3 Outline (dark)
+
+          outline: '#938F99', // MD3 Outline (dark)
           'outline-variant': '#444746',
-          
+
           background: '#141218', // MD3 Background (dark)
           'on-background': '#E6E1E5',
-          
+
           // MD3 表面色调 (dark)
           'surface-1': '#252329',
           'surface-2': '#2F2B33',
@@ -159,7 +159,7 @@ const vuetify = createVuetify({
   // 设置Vuetify的全局语言为中文
   locale: {
     locale: 'zhHans',
-    messages: { zhHans }
+    messages: { zhHans },
   },
 });
 

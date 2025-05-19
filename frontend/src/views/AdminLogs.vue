@@ -79,7 +79,7 @@
                     locale="zh-cn"
                   ></v-date-picker>
                 </v-menu>
-                
+
                 <!-- 结束日期选择器 -->
                 <v-menu
                   v-model="endDateMenu"
@@ -130,14 +130,25 @@
             class="elevation-0"
             :page="page"
             :items-per-page-options="[10, 20, 50]"
-            @update:page="page = $event; loadLogs()"
-            @update:items-per-page="pageSize = $event; page = 1; loadLogs()"
+            @update:page="
+              page = $event;
+              loadLogs();
+            "
+            @update:items-per-page="
+              pageSize = $event;
+              page = 1;
+              loadLogs();
+            "
             :server-items-length="totalLogs || 0"
           >
             <template v-slot:item.user="{ item }">
               <div class="d-flex flex-column">
-                <span class="text-primary font-weight-medium">{{ item.user?.username || '未知用户' }}</span>
-                <span class="text-caption text-medium-emphasis">ID: {{ item.user_id }}</span>
+                <span class="text-primary font-weight-medium">{{
+                  item.user?.username || '未知用户'
+                }}</span>
+                <span class="text-caption text-medium-emphasis"
+                  >ID: {{ item.user_id }}</span
+                >
               </div>
             </template>
             <template v-slot:item.action="{ item }">
@@ -200,7 +211,10 @@
           <div class="d-flex flex-wrap justify-space-between mb-4">
             <div class="info-item">
               <p class="text-subtitle-1 font-weight-bold mb-1">操作用户</p>
-              <p class="mb-0">{{ selectedLog.user?.username || '未知用户' }} (ID: {{ selectedLog.user_id }})</p>
+              <p class="mb-0">
+                {{ selectedLog.user?.username || '未知用户' }} (ID:
+                {{ selectedLog.user_id }})
+              </p>
             </div>
             <div class="info-item">
               <p class="text-subtitle-1 font-weight-bold mb-1">操作类型</p>
@@ -219,8 +233,11 @@
           <div class="d-flex flex-wrap justify-space-between mb-4">
             <div class="info-item">
               <p class="text-subtitle-1 font-weight-bold mb-1">操作对象</p>
-              <p class="mb-0">{{ getTargetText(selectedLog.target) }}
-                <span v-if="selectedLog.target_id">(ID: {{ selectedLog.target_id }})</span>
+              <p class="mb-0">
+                {{ getTargetText(selectedLog.target) }}
+                <span v-if="selectedLog.target_id"
+                  >(ID: {{ selectedLog.target_id }})</span
+                >
               </p>
             </div>
             <div class="info-item">
@@ -240,12 +257,14 @@
           <p class="text-subtitle-1 font-weight-bold mb-2">操作内容</p>
           <v-card variant="outlined" class="mb-4 info-card">
             <v-card-text>
-              <pre class="log-content">{{ formatDetailContent(selectedLog.content) }}</pre>
+              <pre class="log-content">{{
+                formatDetailContent(selectedLog.content)
+              }}</pre>
             </v-card-text>
           </v-card>
         </v-card-text>
       </v-card>
-      
+
       <!-- 对话框底部按钮 -->
       <div class="d-flex justify-end mt-4">
         <v-btn
@@ -301,7 +320,13 @@ const headers = [
   { title: '对象', key: 'target_info', sortable: true },
   { title: '内容', key: 'content', sortable: true },
   { title: '时间', key: 'created_at', sortable: true },
-  { title: '操作', key: 'actions', sortable: false, align: 'end', width: '80px' },
+  {
+    title: '操作',
+    key: 'actions',
+    sortable: false,
+    align: 'end',
+    width: '80px',
+  },
 ];
 
 // 状态变量
@@ -410,14 +435,18 @@ async function loadLogs() {
       console.log('日志查询结果:', result.data.data);
       logs.value = result.data.data.logs || [];
       totalLogs.value = result.data.data.total || 0;
-      
+
       // 如果有搜索关键词，前端过滤
       if (searchKeyword.value) {
-        logs.value = logs.value.filter(log => {
+        logs.value = logs.value.filter((log) => {
           // 匹配用户名
-          const usernameMatch = log.user?.username?.toLowerCase().includes(searchKeyword.value.toLowerCase());
+          const usernameMatch = log.user?.username
+            ?.toLowerCase()
+            .includes(searchKeyword.value.toLowerCase());
           // 匹配内容
-          const contentMatch = log.content.toLowerCase().includes(searchKeyword.value.toLowerCase());
+          const contentMatch = log.content
+            .toLowerCase()
+            .includes(searchKeyword.value.toLowerCase());
           return usernameMatch || contentMatch;
         });
       }
@@ -426,7 +455,10 @@ async function loadLogs() {
     }
   } catch (error) {
     console.error('加载日志列表失败:', error);
-    showError('加载日志列表失败: ' + (error instanceof Error ? error.message : String(error)));
+    showError(
+      '加载日志列表失败: ' +
+        (error instanceof Error ? error.message : String(error)),
+    );
   } finally {
     loading.value = false;
   }
@@ -436,15 +468,21 @@ async function loadLogs() {
 function getActionText(action: string): string {
   const option = actionOptions.find((opt) => opt.value === action);
   if (option) return option.text;
-  
+
   // 尝试通用映射
   switch (action) {
-    case 'init': return '初始化';
-    case 'buy': return '购买';
-    case 'pay': return '支付';
-    case 'check': return '检查';
-    case 'stats': return '统计';
-    default: return action;
+    case 'init':
+      return '初始化';
+    case 'buy':
+      return '购买';
+    case 'pay':
+      return '支付';
+    case 'check':
+      return '检查';
+    case 'stats':
+      return '统计';
+    default:
+      return action;
   }
 }
 
@@ -481,35 +519,48 @@ function getActionColor(action: string): string {
 function getTargetText(target: string): string {
   const option = targetOptions.find((opt) => opt.value === target);
   if (option) return option.text;
-  
+
   // 尝试通用映射
   switch (target) {
-    case 'admin': return '管理员';
-    case 'api': return 'API接口';
-    case 'file': return '文件';
-    case 'config': return '配置';
-    case 'report': return '报表';
+    case 'admin':
+      return '管理员';
+    case 'api':
+      return 'API接口';
+    case 'file':
+      return '文件';
+    case 'config':
+      return '配置';
+    case 'report':
+      return '报表';
     // 处理复数形式
-    case 'users': return '用户';
-    case 'attractions': return '景点';
-    case 'facilities': return '设施';
-    case 'tickets': return '票种';
-    case 'orders': return '订单';
-    case 'feedbacks': return '反馈';
-    case 'logs': return '日志';
-    default: return target;
+    case 'users':
+      return '用户';
+    case 'attractions':
+      return '景点';
+    case 'facilities':
+      return '设施';
+    case 'tickets':
+      return '票种';
+    case 'orders':
+      return '订单';
+    case 'feedbacks':
+      return '反馈';
+    case 'logs':
+      return '日志';
+    default:
+      return target;
   }
 }
 
 // 格式化日期为YYYY-MM-DD格式（用于API调用）
 function formatDateForApi(dateStr: string): string {
   if (!dateStr) return '';
-  
+
   // 如果已经是YYYY-MM-DD格式，直接返回
   if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
     return dateStr;
   }
-  
+
   // 否则格式化为YYYY-MM-DD
   const date = new Date(dateStr);
   const year = date.getFullYear();
@@ -547,14 +598,17 @@ function formatContent(content: string): string {
       if (summary) {
         return summary;
       }
-      
+
       // 如无法生成摘要，则截取前50个字符
-      return JSON.stringify(obj).substring(0, 50) + (JSON.stringify(obj).length > 50 ? '...' : '');
+      return (
+        JSON.stringify(obj).substring(0, 50) +
+        (JSON.stringify(obj).length > 50 ? '...' : '')
+      );
     }
   } catch (e) {
     // 不是JSON，直接返回文本
   }
-  
+
   // 纯文本，截取前50个字符
   return content.substring(0, 50) + (content.length > 50 ? '...' : '');
 }
@@ -564,37 +618,40 @@ function generateSummary(obj: any): string | null {
   // 如果有method和path，说明是通过中间件记录的API操作
   if (obj.method && obj.path) {
     let summary = `${obj.method} ${obj.path}`;
-    
+
     // 如果有请求体，添加一些重要字段的摘要
     if (obj.body) {
-      const keys = Object.keys(obj.body).filter(k => 
-        k !== 'password' && 
-        k !== 'token' && 
-        k !== 'password_hash' &&
-        obj.body[k] !== '[REDACTED]'
+      const keys = Object.keys(obj.body).filter(
+        (k) =>
+          k !== 'password' &&
+          k !== 'token' &&
+          k !== 'password_hash' &&
+          obj.body[k] !== '[REDACTED]',
       );
-      
+
       if (keys.length > 0) {
         // 最多显示3个字段
         const displayKeys = keys.slice(0, 3);
-        const bodyStr = displayKeys.map(k => {
-          const val = obj.body[k];
-          if (typeof val === 'object') return `${k}: {...}`;
-          return `${k}: ${String(val).substring(0, 15)}${String(val).length > 15 ? '...' : ''}`;
-        }).join(', ');
-        
+        const bodyStr = displayKeys
+          .map((k) => {
+            const val = obj.body[k];
+            if (typeof val === 'object') return `${k}: {...}`;
+            return `${k}: ${String(val).substring(0, 15)}${String(val).length > 15 ? '...' : ''}`;
+          })
+          .join(', ');
+
         summary += ` (${bodyStr}${keys.length > 3 ? ', ...' : ''})`;
       }
     }
-    
+
     return summary;
   }
-  
+
   // 注册/登录的特殊处理
   if (obj.username && obj.role) {
     return `用户: ${obj.username}, 角色: ${obj.role}`;
   }
-  
+
   // 处理可能包含名称的对象
   if (obj.name) {
     let summary = `名称: ${obj.name}`;
@@ -602,7 +659,7 @@ function generateSummary(obj: any): string | null {
     if (obj.status) summary += `, 状态: ${obj.status}`;
     return summary;
   }
-  
+
   return null;
 }
 

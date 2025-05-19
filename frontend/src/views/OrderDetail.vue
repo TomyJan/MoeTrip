@@ -6,7 +6,12 @@
           <h1 class="md-headline-medium mb-6 font-weight-medium">订单详情</h1>
 
           <!-- 订单信息卡片 -->
-          <v-card v-if="order" class="mb-6 order-card" rounded="lg" elevation="1">
+          <v-card
+            v-if="order"
+            class="mb-6 order-card"
+            rounded="lg"
+            elevation="1"
+          >
             <v-card-title class="md-title-large d-flex align-center py-4">
               <span>订单信息</span>
               <v-spacer></v-spacer>
@@ -24,44 +29,77 @@
                 <v-col cols="12" md="6">
                   <div class="md-title-medium mb-4">基本信息</div>
                   <div class="d-flex justify-space-between mb-3 info-row">
-                    <span class="text-medium-emphasis md-body-medium">订单编号:</span>
+                    <span class="text-medium-emphasis md-body-medium"
+                      >订单编号:</span
+                    >
                     <span class="md-body-medium">{{ order.id }}</span>
                   </div>
                   <div class="d-flex justify-space-between mb-3 info-row">
-                    <span class="text-medium-emphasis md-body-medium">创建时间:</span>
-                    <span class="md-body-medium">{{ formatDateTime(order.created_at) }}</span>
-                  </div>
-                  <div class="d-flex justify-space-between mb-3 info-row">
-                    <span class="text-medium-emphasis md-body-medium">更新时间:</span>
-                    <span class="md-body-medium">{{ formatDateTime(order.updated_at) }}</span>
-                  </div>
-                  <div class="d-flex justify-space-between mb-3 info-row">
-                    <span class="text-medium-emphasis md-body-medium">订单状态:</span>
-                    <span class="md-body-medium" :class="{'text-success': order.status === 'success', 'text-error': order.status !== 'success'}">{{
-                      order.status === 'success' ? '已确认' : '已取消'
+                    <span class="text-medium-emphasis md-body-medium"
+                      >创建时间:</span
+                    >
+                    <span class="md-body-medium">{{
+                      formatDateTime(order.created_at)
                     }}</span>
+                  </div>
+                  <div class="d-flex justify-space-between mb-3 info-row">
+                    <span class="text-medium-emphasis md-body-medium"
+                      >更新时间:</span
+                    >
+                    <span class="md-body-medium">{{
+                      formatDateTime(order.updated_at)
+                    }}</span>
+                  </div>
+                  <div class="d-flex justify-space-between mb-3 info-row">
+                    <span class="text-medium-emphasis md-body-medium"
+                      >订单状态:</span
+                    >
+                    <span
+                      class="md-body-medium"
+                      :class="{
+                        'text-success': order.status === 'success',
+                        'text-error': order.status !== 'success',
+                      }"
+                      >{{
+                        order.status === 'success' ? '已确认' : '已取消'
+                      }}</span
+                    >
                   </div>
                 </v-col>
                 <v-col cols="12" md="6">
                   <div class="md-title-medium mb-4">门票信息</div>
                   <div class="d-flex justify-space-between mb-3 info-row">
-                    <span class="text-medium-emphasis md-body-medium">景点名称:</span>
-                    <span class="md-body-medium">{{ order.attraction_name }}</span>
+                    <span class="text-medium-emphasis md-body-medium"
+                      >景点名称:</span
+                    >
+                    <span class="md-body-medium">{{
+                      order.attraction_name
+                    }}</span>
                   </div>
                   <div class="d-flex justify-space-between mb-3 info-row">
-                    <span class="text-medium-emphasis md-body-medium">票种名称:</span>
+                    <span class="text-medium-emphasis md-body-medium"
+                      >票种名称:</span
+                    >
                     <span class="md-body-medium">{{ order.ticket_name }}</span>
                   </div>
                   <div class="d-flex justify-space-between mb-3 info-row">
-                    <span class="text-medium-emphasis md-body-medium">门票数量:</span>
+                    <span class="text-medium-emphasis md-body-medium"
+                      >门票数量:</span
+                    >
                     <span class="md-body-medium">{{ order.quantity }}张</span>
                   </div>
                   <div class="d-flex justify-space-between mb-3 info-row">
-                    <span class="text-medium-emphasis md-body-medium">游玩日期:</span>
-                    <span class="md-body-medium">{{ formatDateOnly(order.date) }}</span>
+                    <span class="text-medium-emphasis md-body-medium"
+                      >游玩日期:</span
+                    >
+                    <span class="md-body-medium">{{
+                      formatDateOnly(order.date)
+                    }}</span>
                   </div>
                   <div class="d-flex justify-space-between mb-3 info-row">
-                    <span class="text-medium-emphasis md-body-medium">总价:</span>
+                    <span class="text-medium-emphasis md-body-medium"
+                      >总价:</span
+                    >
                     <span class="md-body-medium text-primary font-weight-bold"
                       >¥{{ order.total_price || 0 }}</span
                     >
@@ -97,7 +135,12 @@
           </v-card>
 
           <!-- 加载中状态 -->
-          <v-card v-else-if="loading" class="mb-6 loading-card" rounded="lg" elevation="1">
+          <v-card
+            v-else-if="loading"
+            class="mb-6 loading-card"
+            rounded="lg"
+            elevation="1"
+          >
             <v-card-text class="d-flex justify-center align-center py-8">
               <v-progress-circular
                 indeterminate
@@ -115,7 +158,13 @@
               <div class="md-body-medium text-medium-emphasis mb-5">
                 {{ errorMessage }}
               </div>
-              <v-btn color="primary" variant="elevated" rounded="pill" @click="loadOrderDetail">重试</v-btn>
+              <v-btn
+                color="primary"
+                variant="elevated"
+                rounded="pill"
+                @click="loadOrderDetail"
+                >重试</v-btn
+              >
             </v-card-text>
           </v-card>
         </v-col>
@@ -159,9 +208,7 @@
                   </v-list-item>
                 </template>
                 <template v-slot:selection="{ item }">
-                  <span>{{
-                    item?.raw?.name || getSelectedTicketName()
-                  }}</span>
+                  <span>{{ item?.raw?.name || getSelectedTicketName() }}</span>
                 </template>
               </v-select>
             </v-col>
@@ -201,22 +248,34 @@
 
             <!-- 订单价格预览 -->
             <v-col cols="12">
-              <v-card variant="outlined" class="pa-4 price-preview" rounded="lg">
+              <v-card
+                variant="outlined"
+                class="pa-4 price-preview"
+                rounded="lg"
+              >
                 <div class="d-flex justify-space-between mb-3">
                   <span class="text-medium-emphasis md-body-medium">票种:</span>
-                  <span class="md-body-medium">{{ getSelectedTicketName() }}</span>
+                  <span class="md-body-medium">{{
+                    getSelectedTicketName()
+                  }}</span>
                 </div>
                 <div class="d-flex justify-space-between mb-3">
                   <span class="text-medium-emphasis md-body-medium">单价:</span>
-                  <span class="md-body-medium">¥{{ getSelectedTicketPrice() }}</span>
+                  <span class="md-body-medium"
+                    >¥{{ getSelectedTicketPrice() }}</span
+                  >
                 </div>
                 <div class="d-flex justify-space-between mb-3">
                   <span class="text-medium-emphasis md-body-medium">数量:</span>
-                  <span class="md-body-medium">{{ currentOrder.quantity }}张</span>
+                  <span class="md-body-medium"
+                    >{{ currentOrder.quantity }}张</span
+                  >
                 </div>
                 <div class="d-flex justify-space-between mb-3">
                   <span class="text-medium-emphasis md-body-medium">日期:</span>
-                  <span class="md-body-medium">{{ formatDateOnly(currentOrder.date) }}</span>
+                  <span class="md-body-medium">{{
+                    formatDateOnly(currentOrder.date)
+                  }}</span>
                 </div>
                 <v-divider class="my-3"></v-divider>
                 <div class="d-flex justify-space-between mt-3">

@@ -145,7 +145,7 @@ export const authApi = {
       body: JSON.stringify({ username, password }),
     });
   },
-  
+
   logout: async () => {
     return apiRequest('/user/logout', {
       method: 'POST',

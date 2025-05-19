@@ -18,7 +18,12 @@
     <v-row v-else-if="showEmpty">
       <v-col cols="12" class="text-center py-8">
         <div class="empty-state">
-          <v-icon :icon="emptyIcon" size="large" color="outline" class="mb-3"></v-icon>
+          <v-icon
+            :icon="emptyIcon"
+            size="large"
+            color="outline"
+            class="mb-3"
+          ></v-icon>
           <p class="md-body-large text-medium-emphasis">{{ emptyText }}</p>
         </div>
       </v-col>

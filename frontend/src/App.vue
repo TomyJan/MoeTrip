@@ -25,7 +25,7 @@ const isDarkMode = computed(() => themeStore.isDarkMode);
 
 const handleLogout = async () => {
   logoutLoading.value = true;
-  
+
   try {
     // 如果用户已登录，则调用登出API
     if (userStore.isLoggedIn && userStore.token) {
@@ -103,10 +103,10 @@ onMounted(() => {
           class="ml-2 d-none d-md-flex nav-btn"
           >登录</v-btn
         >
-        <v-btn 
-          to="/register" 
-          variant="elevated" 
-          rounded="pill" 
+        <v-btn
+          to="/register"
+          variant="elevated"
+          rounded="pill"
           color="primary"
           class="ml-2 d-none d-md-flex nav-btn"
         >
@@ -175,7 +175,13 @@ onMounted(() => {
               >
                 <v-list-item-title>
                   <span v-if="!logoutLoading">退出登录</span>
-                  <v-progress-circular v-else indeterminate size="20" width="2" class="mr-2"></v-progress-circular>
+                  <v-progress-circular
+                    v-else
+                    indeterminate
+                    size="20"
+                    width="2"
+                    class="mr-2"
+                  ></v-progress-circular>
                 </v-list-item-title>
               </v-list-item>
             </v-list>
@@ -432,7 +438,8 @@ onMounted(() => {
   z-index: 1;
 }
 
-.user-menu, .theme-menu {
+.user-menu,
+.theme-menu {
   overflow: hidden;
   box-shadow: var(--md-shadow-2);
   border: 1px solid var(--md-outline-variant);
