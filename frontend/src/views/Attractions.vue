@@ -113,8 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import { useUserStore } from '../stores';
+import { ref, onMounted } from 'vue';
 import { attractionApi } from '../utils/api';
 import { useRouter } from 'vue-router';
 import AttractionCard from '../components/AttractionCard.vue';
@@ -132,7 +131,6 @@ interface Attraction {
 }
 
 const router = useRouter();
-const userStore = useUserStore();
 
 // 分页和搜索
 const page = ref(1);

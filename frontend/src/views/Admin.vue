@@ -227,7 +227,6 @@ import {
   ToolboxComponent,
 } from 'echarts/components';
 import VChart from 'vue-echarts';
-import dayjs from 'dayjs';
 import AppSnackbar from '../components/AppSnackbar.vue';
 
 // 注册必要的ECharts组件

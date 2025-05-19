@@ -316,84 +316,6 @@ const currentOrder = ref<any>(null);
 // 编辑订单
 const showEditOrderDialog = ref(false);
 
-// 支付订单
-async function payOrder(orderId: number) {
-  try {
-    // 显示确认对话框
-    const confirm = window.confirm('确定要支付此订单吗？');
-    if (!confirm) return;
-
-    loading.value = true;
-
-    // 调用更新订单API
-    const result = await orderApi.update({
-      order_id: orderId,
-      status: 'success',
-    });
-
-    // 检查是否请求成功
-    if (!result.success) {
-      snackbarText.value = result.error || '订单支付失败';
-      snackbarColor.value = 'error';
-      showSnackbar.value = true;
-      return;
-    }
-
-    // 支付成功
-    snackbarText.value = '订单支付成功';
-    snackbarColor.value = 'success';
-    showSnackbar.value = true;
-    await loadUserOrders(); // 重新加载订单
-  } catch (error) {
-    console.error('支付订单出错', error);
-    snackbarText.value =
-      error instanceof Error ? error.message : '支付过程中出现错误';
-    snackbarColor.value = 'error';
-    showSnackbar.value = true;
-  } finally {
-    loading.value = false;
-  }
-}
-
-// 取消订单
-async function cancelOrder(orderId: number) {
-  try {
-    // 显示确认对话框
-    const confirm = window.confirm('确定要取消此订单吗？');
-    if (!confirm) return;
-
-    loading.value = true;
-
-    // 调用更新订单API
-    const result = await orderApi.update({
-      order_id: orderId,
-      status: 'canceled',
-    });
-
-    // 检查是否请求成功
-    if (!result.success) {
-      snackbarText.value = result.error || '取消订单失败';
-      snackbarColor.value = 'error';
-      showSnackbar.value = true;
-      return;
-    }
-
-    // 取消成功
-    snackbarText.value = '订单已取消';
-    snackbarColor.value = 'success';
-    showSnackbar.value = true;
-    await loadUserOrders(); // 重新加载订单
-  } catch (error) {
-    console.error('取消订单出错', error);
-    snackbarText.value =
-      error instanceof Error ? error.message : '取消过程中出现错误';
-    snackbarColor.value = 'error';
-    showSnackbar.value = true;
-  } finally {
-    loading.value = false;
-  }
-}
-
 // 格式化订单状态
 function formatOrderStatus(status: string): { text: string; color: string } {
   switch (status) {
@@ -535,12 +457,6 @@ watch(
     }
   },
 );
-
-// 编辑订单函数
-function editOrder(order: any) {
-  currentOrder.value = order;
-  showEditOrderDialog.value = true;
-}
 
 // 确认修改订单
 async function confirmEditOrder() {

@@ -22,7 +22,7 @@
                 density="comfortable"
                 hide-details
                 @update:model-value="loadTickets"
-                :rules="[(v: any) => true]"
+                :rules="[() => true]"
                 clearable
               ></v-select>
             </v-col>

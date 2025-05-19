@@ -110,7 +110,7 @@ const router = createRouter({
 });
 
 // 导航守卫，用于检查用户是否已登录和是否有管理员权限
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const token = localStorage.getItem('token');
   const userRole = localStorage.getItem('userRole');
 

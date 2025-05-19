@@ -397,7 +397,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { orderApi, attractionApi } from '../utils/api';
 import SearchFilterBar from '../components/SearchFilterBar.vue';
 import AppDialog from '../components/AppDialog.vue';

@@ -681,13 +681,6 @@ function viewLogDetail(log: Log) {
   detailDialog.value = true;
 }
 
-// 显示成功消息
-function showSuccess(message: string) {
-  snackbarText.value = message;
-  snackbarColor.value = 'success';
-  snackbar.value = true;
-}
-
 // 显示错误消息
 function showError(message: string) {
   snackbarText.value = message;

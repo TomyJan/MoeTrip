@@ -347,13 +347,6 @@ function showSuccess(message: string) {
   snackbarColor.value = 'success';
   snackbar.value = true;
 }
-
-// 显示错误消息
-function showError(message: string) {
-  snackbarText.value = message;
-  snackbarColor.value = 'error';
-  snackbar.value = true;
-}
 </script>
 
 <style scoped>
