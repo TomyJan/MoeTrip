@@ -39,8 +39,9 @@ async function startServer() {
 
     // 同步数据库模型（开发环境）
     if (process.env.NODE_ENV === 'development') {
-      await sequelize.sync({ alter: true });
-      logger.info('数据库模型同步完成');
+      // 禁用掉数据库同步, 手动导吧
+      // await sequelize.sync({ alter: true });
+      // logger.info('数据库模型同步完成');
     }
 
     // 启动服务器
