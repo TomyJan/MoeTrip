@@ -161,6 +161,24 @@ const vuetify = createVuetify({
     locale: 'zhHans',
     messages: { zhHans },
   },
+  // 配置全局默认字体
+  defaults: {
+    global: {
+      ripple: true,
+    },
+    VBtn: {
+      fontFamily: 'MiSans, Roboto, sans-serif',
+    },
+    VTextField: {
+      fontFamily: 'MiSans, Roboto, sans-serif',
+    },
+    VCard: {
+      fontFamily: 'MiSans, Roboto, sans-serif',
+    },
+    VList: {
+      fontFamily: 'MiSans, Roboto, sans-serif',
+    },
+  },
 });
 
 const app = createApp(App);
