@@ -96,10 +96,10 @@ onMounted(() => {
 
       <!-- 未登录状态 -->
       <template v-if="!userStore.isLoggedIn">
-        <v-btn 
-          to="/login" 
-          variant="text" 
-          rounded="pill" 
+        <v-btn
+          to="/login"
+          variant="text"
+          rounded="pill"
           class="ml-2 d-none d-md-flex nav-btn"
           >登录</v-btn
         >
@@ -262,9 +262,9 @@ onMounted(() => {
         <v-list-item class="mb-2 mt-2">
           <v-list-item-title class="text-h6">萌游旅行</v-list-item-title>
         </v-list-item>
-        
+
         <v-divider class="mb-2"></v-divider>
-        
+
         <!-- 导航链接 -->
         <v-list-item
           to="/attractions"
@@ -274,7 +274,7 @@ onMounted(() => {
         >
           <v-list-item-title>景点</v-list-item-title>
         </v-list-item>
-        
+
         <!-- 登录/注册链接 (未登录状态) -->
         <template v-if="!userStore.isLoggedIn">
           <v-list-item
@@ -285,7 +285,7 @@ onMounted(() => {
           >
             <v-list-item-title>登录</v-list-item-title>
           </v-list-item>
-          
+
           <v-list-item
             to="/register"
             prepend-icon="mdi-account-plus"
@@ -295,9 +295,9 @@ onMounted(() => {
             <v-list-item-title>注册</v-list-item-title>
           </v-list-item>
         </template>
-        
+
         <v-divider class="my-2"></v-divider>
-        
+
         <!-- 主题设置 -->
         <v-list-subheader>主题设置</v-list-subheader>
         <v-list-item
