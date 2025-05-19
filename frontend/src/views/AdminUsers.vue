@@ -192,6 +192,7 @@ import SearchFilterBar from '../components/SearchFilterBar.vue';
 import AppDialog from '../components/AppDialog.vue';
 import AppSnackbar from '../components/AppSnackbar.vue';
 import AppPagination from '../components/AppPagination.vue';
+import CryptoJS from 'crypto-js';
 
 // 用户类型定义
 interface User {
@@ -348,9 +349,12 @@ const saveUser = async () => {
       }
     } else {
       // 添加新用户
+      // 将密码转换为SHA1哈希值
+      const passwordHash = CryptoJS.SHA1(editedUser.password || '').toString();
+      
       const result = await adminApi.addUser({
         username: editedUser.username,
-        password: editedUser.password || '',
+        password: passwordHash,
         role: editedUser.role,
       });
 
