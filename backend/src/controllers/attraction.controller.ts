@@ -3,6 +3,7 @@ import { Op, Sequelize } from 'sequelize';
 import Attraction from '../models/attraction.model';
 import Feedback from '../models/feedback.model';
 import logger from '../utils/logger';
+import sequelize from '../utils/database';
 
 /**
  * 查询景点列表
@@ -213,6 +214,12 @@ export const getStats = async (req: Request, res: Response) => {
     // 查询景点总数
     const total = await Attraction.count();
 
+    // 确定数据库类型，使用适当的标识符引用
+    const dialect = sequelize.getDialect();
+    const identifierFormat = dialect === 'mysql' ? '`%s`' : '"%s"';
+    const tableRef = identifierFormat.replace('%s', 'Attraction');
+    const columnRef = identifierFormat.replace('%s', 'feedbackCount');
+    
     // 获取热门景点（按反馈数量排序）
     const attractionsData = await Attraction.findAll({
       attributes: [
@@ -222,13 +229,13 @@ export const getStats = async (req: Request, res: Response) => {
         [
           Sequelize.literal(`(
             SELECT COUNT(*) FROM feedback 
-            WHERE feedback.attraction_id = "Attraction".id 
+            WHERE feedback.attraction_id = ${tableRef}.id 
             AND feedback.status = 'public'
           )`),
           'feedbackCount',
         ],
       ],
-      order: [[Sequelize.literal('"feedbackCount"'), 'DESC']],
+      order: [[Sequelize.literal(columnRef), 'DESC']],
       limit: 10, // 最多返回前10个热门景点
       raw: true,
     });
