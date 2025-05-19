@@ -4,6 +4,7 @@ frontend/node_modules/
 
 # Build Products
 backend/dist/
+frontend/dist/
 
 # Environment
 backend/.env
