@@ -39,16 +39,24 @@
                   </v-img>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <div class="md-headline-small mb-3">{{ selectedAttraction.name }}</div>
+                  <div class="md-headline-small mb-3">
+                    {{ selectedAttraction.name }}
+                  </div>
                   <div class="md-body-medium text-medium-emphasis mb-5">
                     {{ selectedAttraction.description }}
                   </div>
                   <div class="d-flex align-center mb-3 info-row">
-                    <v-icon size="small" color="primary" class="mr-2">mdi-clock-outline</v-icon>
-                    <span class="md-body-medium">开放时间: {{ selectedAttraction.open_time }}</span>
+                    <v-icon size="small" color="primary" class="mr-2"
+                      >mdi-clock-outline</v-icon
+                    >
+                    <span class="md-body-medium"
+                      >开放时间: {{ selectedAttraction.open_time }}</span
+                    >
                   </div>
                   <div class="d-flex align-center info-row">
-                    <v-icon size="small" color="warning" class="mr-2">mdi-star</v-icon>
+                    <v-icon size="small" color="warning" class="mr-2"
+                      >mdi-star</v-icon
+                    >
                     <span class="md-body-medium"
                       >评分:
                       {{ selectedAttraction.feedback_avg || '暂无评分' }}</span
@@ -85,7 +93,8 @@
                     <template v-slot:item="{ item, props }">
                       <v-list-item v-bind="props">
                         <v-list-item-subtitle class="md-body-medium">
-                          价格: ¥{{ item.raw.price }} | 余量: {{ item.raw.available }}
+                          价格: ¥{{ item.raw.price }} | 余量:
+                          {{ item.raw.available }}
                         </v-list-item-subtitle>
                       </v-list-item>
                     </template>
@@ -109,7 +118,12 @@
           </v-card>
 
           <!-- 日期选择 -->
-          <v-card v-if="selectedTicket" class="mb-6 date-card" rounded="lg" elevation="1">
+          <v-card
+            v-if="selectedTicket"
+            class="mb-6 date-card"
+            rounded="lg"
+            elevation="1"
+          >
             <v-card-title class="md-title-large py-4">选择日期</v-card-title>
             <v-card-text class="pb-5">
               <v-row>
@@ -127,33 +141,57 @@
                   ></v-date-picker>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-card variant="outlined" class="h-100 order-summary" rounded="lg">
+                  <v-card
+                    variant="outlined"
+                    class="h-100 order-summary"
+                    rounded="lg"
+                  >
                     <v-card-text class="pa-5">
                       <div class="md-title-medium mb-4">订单信息</div>
                       <div class="d-flex justify-space-between mb-3 info-row">
-                        <span class="text-medium-emphasis md-body-medium">景点:</span>
-                        <span class="md-body-medium">{{ selectedAttraction?.name }}</span>
+                        <span class="text-medium-emphasis md-body-medium"
+                          >景点:</span
+                        >
+                        <span class="md-body-medium">{{
+                          selectedAttraction?.name
+                        }}</span>
                       </div>
                       <div class="d-flex justify-space-between mb-3 info-row">
-                        <span class="text-medium-emphasis md-body-medium">票种:</span>
-                        <span class="md-body-medium">{{ selectedTicket?.name }}</span>
+                        <span class="text-medium-emphasis md-body-medium"
+                          >票种:</span
+                        >
+                        <span class="md-body-medium">{{
+                          selectedTicket?.name
+                        }}</span>
                       </div>
                       <div class="d-flex justify-space-between mb-3 info-row">
-                        <span class="text-medium-emphasis md-body-medium">数量:</span>
-                        <span class="md-body-medium">{{ ticketQuantity }}张</span>
+                        <span class="text-medium-emphasis md-body-medium"
+                          >数量:</span
+                        >
+                        <span class="md-body-medium"
+                          >{{ ticketQuantity }}张</span
+                        >
                       </div>
                       <div class="d-flex justify-space-between mb-3 info-row">
-                        <span class="text-medium-emphasis md-body-medium">日期:</span>
+                        <span class="text-medium-emphasis md-body-medium"
+                          >日期:</span
+                        >
                         <span class="md-body-medium">{{ selectedDate }}</span>
                       </div>
                       <div class="d-flex justify-space-between mb-3 info-row">
-                        <span class="text-medium-emphasis md-body-medium">单价:</span>
-                        <span class="md-body-medium">¥{{ selectedTicket?.price || 0 }}</span>
+                        <span class="text-medium-emphasis md-body-medium"
+                          >单价:</span
+                        >
+                        <span class="md-body-medium"
+                          >¥{{ selectedTicket?.price || 0 }}</span
+                        >
                       </div>
                       <v-divider class="my-4"></v-divider>
                       <div class="d-flex justify-space-between mt-4">
                         <span class="md-title-medium">总计:</span>
-                        <span class="md-title-medium text-primary font-weight-bold">
+                        <span
+                          class="md-title-medium text-primary font-weight-bold"
+                        >
                           ¥{{ (selectedTicket?.price || 0) * ticketQuantity }}
                         </span>
                       </div>
@@ -165,7 +203,12 @@
           </v-card>
 
           <!-- 提交按钮 -->
-          <v-card v-if="selectedTicket" class="submit-card" rounded="lg" elevation="1">
+          <v-card
+            v-if="selectedTicket"
+            class="submit-card"
+            rounded="lg"
+            elevation="1"
+          >
             <v-card-text class="d-flex justify-end pa-4">
               <v-btn
                 color="primary"

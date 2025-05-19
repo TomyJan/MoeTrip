@@ -1,8 +1,5 @@
 import { Router } from 'express';
-import { 
-  queryLogs,
-  getLogStats
-} from '../controllers/log.controller';
+import { queryLogs, getLogStats } from '../controllers/log.controller';
 import {
   authMiddleware,
   adminMiddleware,

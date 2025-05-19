@@ -130,8 +130,15 @@
             class="elevation-0"
             :page="page"
             :items-per-page-options="[10, 20, 50]"
-            @update:page="page = $event; loadOrders()"
-            @update:items-per-page="pageSize = $event; page = 1; loadOrders()"
+            @update:page="
+              page = $event;
+              loadOrders();
+            "
+            @update:items-per-page="
+              pageSize = $event;
+              page = 1;
+              loadOrders();
+            "
             :server-items-length="totalOrders || 0"
           >
             <template v-slot:item.order_id="{ item }">
@@ -206,11 +213,19 @@
               </div>
             </template>
           </v-data-table>
-          
+
           <!-- 空状态 -->
-          <div v-if="!loading && (!orders.length || orders.length === 0)" class="text-center py-8">
+          <div
+            v-if="!loading && (!orders.length || orders.length === 0)"
+            class="text-center py-8"
+          >
             <div class="empty-state">
-              <v-icon icon="mdi-cart-outline" size="large" color="outline" class="mb-3"></v-icon>
+              <v-icon
+                icon="mdi-cart-outline"
+                size="large"
+                color="outline"
+                class="mb-3"
+              ></v-icon>
               <p class="md-body-large text-medium-emphasis">暂无订单数据</p>
             </div>
           </div>

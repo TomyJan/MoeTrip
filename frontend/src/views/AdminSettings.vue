@@ -101,10 +101,14 @@
                 <v-list density="comfortable" class="bg-transparent pa-0">
                   <v-list-item>
                     <template v-slot:prepend>
-                      <v-icon color="primary" class="mr-2">mdi-information</v-icon>
+                      <v-icon color="primary" class="mr-2"
+                        >mdi-information</v-icon
+                      >
                     </template>
                     <v-list-item-title>系统名称</v-list-item-title>
-                    <v-list-item-subtitle>MoeTrip 旅游景区信息管理系统</v-list-item-subtitle>
+                    <v-list-item-subtitle
+                      >MoeTrip 旅游景区信息管理系统</v-list-item-subtitle
+                    >
                   </v-list-item>
 
                   <v-list-item>
@@ -120,7 +124,9 @@
                       <v-icon color="primary" class="mr-2">mdi-update</v-icon>
                     </template>
                     <v-list-item-title>最后更新</v-list-item-title>
-                    <v-list-item-subtitle>{{ new Date().toLocaleDateString('zh-CN') }}</v-list-item-subtitle>
+                    <v-list-item-subtitle>{{
+                      new Date().toLocaleDateString('zh-CN')
+                    }}</v-list-item-subtitle>
                   </v-list-item>
                 </v-list>
               </v-col>
@@ -132,7 +138,9 @@
                       <v-icon color="primary" class="mr-2">mdi-vuetify</v-icon>
                     </template>
                     <v-list-item-title>前端框架</v-list-item-title>
-                    <v-list-item-subtitle>Vue 3 + Vuetify 3</v-list-item-subtitle>
+                    <v-list-item-subtitle
+                      >Vue 3 + Vuetify 3</v-list-item-subtitle
+                    >
                   </v-list-item>
 
                   <v-list-item>
@@ -140,7 +148,9 @@
                       <v-icon color="primary" class="mr-2">mdi-nodejs</v-icon>
                     </template>
                     <v-list-item-title>后端框架</v-list-item-title>
-                    <v-list-item-subtitle>Node.js + Express</v-list-item-subtitle>
+                    <v-list-item-subtitle
+                      >Node.js + Express</v-list-item-subtitle
+                    >
                   </v-list-item>
 
                   <v-list-item>
@@ -148,7 +158,9 @@
                       <v-icon color="primary" class="mr-2">mdi-database</v-icon>
                     </template>
                     <v-list-item-title>数据库</v-list-item-title>
-                    <v-list-item-subtitle>PostgreSQL / MySQL</v-list-item-subtitle>
+                    <v-list-item-subtitle
+                      >PostgreSQL / MySQL</v-list-item-subtitle
+                    >
                   </v-list-item>
                 </v-list>
               </v-col>
@@ -180,20 +192,34 @@
               class="mb-0"
               border="start"
             >
-              <p class="text-subtitle-2 mb-3">以下设置功能将在后续版本中实现：</p>
+              <p class="text-subtitle-2 mb-3">
+                以下设置功能将在后续版本中实现：
+              </p>
               <v-list density="compact" class="bg-transparent pa-0">
                 <v-list-item>
                   <template v-slot:prepend>
-                    <v-avatar size="26" color="info" variant="tonal" class="mr-2">
+                    <v-avatar
+                      size="26"
+                      color="info"
+                      variant="tonal"
+                      class="mr-2"
+                    >
                       <v-icon size="small">mdi-translate</v-icon>
                     </v-avatar>
                   </template>
                   <v-list-item-title>多语言设置</v-list-item-title>
-                  <v-list-item-subtitle>支持切换多种界面语言</v-list-item-subtitle>
+                  <v-list-item-subtitle
+                    >支持切换多种界面语言</v-list-item-subtitle
+                  >
                 </v-list-item>
                 <v-list-item>
                   <template v-slot:prepend>
-                    <v-avatar size="26" color="info" variant="tonal" class="mr-2">
+                    <v-avatar
+                      size="26"
+                      color="info"
+                      variant="tonal"
+                      class="mr-2"
+                    >
                       <v-icon size="small">mdi-email-outline</v-icon>
                     </v-avatar>
                   </template>
@@ -202,16 +228,28 @@
                 </v-list-item>
                 <v-list-item>
                   <template v-slot:prepend>
-                    <v-avatar size="26" color="info" variant="tonal" class="mr-2">
+                    <v-avatar
+                      size="26"
+                      color="info"
+                      variant="tonal"
+                      class="mr-2"
+                    >
                       <v-icon size="small">mdi-security</v-icon>
                     </v-avatar>
                   </template>
                   <v-list-item-title>安全选项</v-list-item-title>
-                  <v-list-item-subtitle>密码策略与访问控制</v-list-item-subtitle>
+                  <v-list-item-subtitle
+                    >密码策略与访问控制</v-list-item-subtitle
+                  >
                 </v-list-item>
                 <v-list-item>
                   <template v-slot:prepend>
-                    <v-avatar size="26" color="info" variant="tonal" class="mr-2">
+                    <v-avatar
+                      size="26"
+                      color="info"
+                      variant="tonal"
+                      class="mr-2"
+                    >
                       <v-icon size="small">mdi-backup-restore</v-icon>
                     </v-avatar>
                   </template>
@@ -220,7 +258,12 @@
                 </v-list-item>
                 <v-list-item>
                   <template v-slot:prepend>
-                    <v-avatar size="26" color="info" variant="tonal" class="mr-2">
+                    <v-avatar
+                      size="26"
+                      color="info"
+                      variant="tonal"
+                      class="mr-2"
+                    >
                       <v-icon size="small">mdi-dots-horizontal</v-icon>
                     </v-avatar>
                   </template>

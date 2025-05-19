@@ -184,12 +184,17 @@
             class="md3-pagination"
           ></v-pagination>
         </div>
-        
+
         <!-- 空状态 -->
         <v-row v-else-if="!feedbackList || feedbackList.length === 0">
           <v-col cols="12" class="text-center py-8">
             <div class="empty-state">
-              <v-icon icon="mdi-emoticon-sad-outline" size="large" color="outline" class="mb-3"></v-icon>
+              <v-icon
+                icon="mdi-emoticon-sad-outline"
+                size="large"
+                color="outline"
+                class="mb-3"
+              ></v-icon>
               <p class="md-body-large text-medium-emphasis">暂无反馈数据</p>
             </div>
           </v-col>

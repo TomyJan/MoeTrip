@@ -11,7 +11,11 @@
       height="200px"
       cover
       class="rounded-t-lg"
-      :gradient="isDarkMode ? 'to bottom, rgba(0,0,0,0.0), rgba(28,27,31,0.6)' : 'to bottom, rgba(255,255,255,0.0), rgba(255,251,254,0.6)'"
+      :gradient="
+        isDarkMode
+          ? 'to bottom, rgba(0,0,0,0.0), rgba(28,27,31,0.6)'
+          : 'to bottom, rgba(255,255,255,0.0), rgba(255,251,254,0.6)'
+      "
     ></v-img>
 
     <v-card-title class="md-title-large">{{ attraction.name }}</v-card-title>
@@ -19,7 +23,12 @@
     <v-card-text>
       <p class="md-body-medium">{{ attraction.description }}</p>
       <div class="mt-3 d-flex align-center time-info">
-        <v-icon icon="mdi-clock-outline" size="small" class="mr-2" color="primary"></v-icon>
+        <v-icon
+          icon="mdi-clock-outline"
+          size="small"
+          class="mr-2"
+          color="primary"
+        ></v-icon>
         <span class="md-body-medium">开放时间: {{ attraction.open_time }}</span>
       </div>
     </v-card-text>
@@ -82,7 +91,9 @@
                 color="primary"
               >
                 <div class="d-flex justify-space-between align-center">
-                  <strong class="md-title-small">{{ selectedFacility.name }}</strong>
+                  <strong class="md-title-small">{{
+                    selectedFacility.name
+                  }}</strong>
                   <v-btn
                     icon
                     size="x-small"

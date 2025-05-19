@@ -28,7 +28,8 @@ export class LogService {
   ) {
     try {
       // 如果content是对象，转为JSON字符串
-      const contentStr = typeof content === 'object' ? JSON.stringify(content) : content;
+      const contentStr =
+        typeof content === 'object' ? JSON.stringify(content) : content;
 
       const log = await Log.create({
         user_id: userId,
@@ -109,7 +110,9 @@ export class LogService {
         order: [['created_at', 'DESC']],
         limit: pageSize,
         offset,
-        include: [{ association: 'user', attributes: ['id', 'username', 'role'] }],
+        include: [
+          { association: 'user', attributes: ['id', 'username', 'role'] },
+        ],
       });
 
       return {

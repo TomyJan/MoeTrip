@@ -68,7 +68,7 @@ export const register = async (req: Request, res: Response) => {
         user.id,
         { username: user.username, role: user.role },
         req.ip || req.socket.remoteAddress || '',
-        req.headers['user-agent'] || ''
+        req.headers['user-agent'] || '',
       );
     } catch (logError) {
       logger.error('注册日志记录失败:', logError);
@@ -144,7 +144,7 @@ export const login = async (req: Request, res: Response) => {
         user.id,
         { username: user.username, role: user.role },
         req.ip || req.socket.remoteAddress || '',
-        req.headers['user-agent'] || ''
+        req.headers['user-agent'] || '',
       );
     } catch (logError) {
       logger.error('登录日志记录失败:', logError);
@@ -186,7 +186,7 @@ export const logout = async (req: Request, res: Response) => {
           req.user.id,
           { userId: req.user.id },
           req.ip || req.socket.remoteAddress || '',
-          req.headers['user-agent'] || ''
+          req.headers['user-agent'] || '',
         );
       } catch (logError) {
         logger.error('登出日志记录失败:', logError);

@@ -49,8 +49,15 @@
             class="elevation-0"
             :page="page"
             :items-per-page-options="[10, 20, 50]"
-            @update:page="page = $event; loadFacilities()"
-            @update:items-per-page="pageSize = $event; page = 1; loadFacilities()"
+            @update:page="
+              page = $event;
+              loadFacilities();
+            "
+            @update:items-per-page="
+              pageSize = $event;
+              page = 1;
+              loadFacilities();
+            "
             :server-items-length="totalFacilities || 0"
           >
             <template v-slot:item.status="{ item }">
@@ -328,9 +335,7 @@ const loadFacilities = async () => {
 
 // 获取景点名称
 const getAttractionName = (attractionId: number): string => {
-  const attraction = attractionOptions.value.find(
-    (a) => a.id === attractionId
-  );
+  const attraction = attractionOptions.value.find((a) => a.id === attractionId);
   return attraction ? attraction.name : `景点#${attractionId}`;
 };
 

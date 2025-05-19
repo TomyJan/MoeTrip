@@ -3,41 +3,75 @@
     <v-container>
       <v-row>
         <v-col cols="12">
-          <h1 class="md-headline-medium mb-6 font-weight-medium">管理员控制面板</h1>
+          <h1 class="md-headline-medium mb-6 font-weight-medium">
+            管理员控制面板
+          </h1>
 
           <!-- 系统数据概览 -->
           <v-row class="mb-6">
             <v-col cols="12" sm="6" md="3">
-              <v-card class="mb-4 stat-card" rounded="lg" elevation="1" color="primary" theme="dark">
+              <v-card
+                class="mb-4 stat-card"
+                rounded="lg"
+                elevation="1"
+                color="primary"
+                theme="dark"
+              >
                 <v-card-text class="d-flex flex-column align-center pa-4">
-                  <div class="md-display-small mb-2">{{ stats.attractions || 0 }}</div>
+                  <div class="md-display-small mb-2">
+                    {{ stats.attractions || 0 }}
+                  </div>
                   <div class="md-title-medium">景点数量</div>
                 </v-card-text>
               </v-card>
             </v-col>
 
             <v-col cols="12" sm="6" md="3">
-              <v-card class="mb-4 stat-card" rounded="lg" elevation="1" color="success" theme="dark">
+              <v-card
+                class="mb-4 stat-card"
+                rounded="lg"
+                elevation="1"
+                color="success"
+                theme="dark"
+              >
                 <v-card-text class="d-flex flex-column align-center pa-4">
-                  <div class="md-display-small mb-2">{{ stats.users || 0 }}</div>
+                  <div class="md-display-small mb-2">
+                    {{ stats.users || 0 }}
+                  </div>
                   <div class="md-title-medium">用户数量</div>
                 </v-card-text>
               </v-card>
             </v-col>
 
             <v-col cols="12" sm="6" md="3">
-              <v-card class="mb-4 stat-card" rounded="lg" elevation="1" color="info" theme="dark">
+              <v-card
+                class="mb-4 stat-card"
+                rounded="lg"
+                elevation="1"
+                color="info"
+                theme="dark"
+              >
                 <v-card-text class="d-flex flex-column align-center pa-4">
-                  <div class="md-display-small mb-2">{{ stats.feedback || 0 }}</div>
+                  <div class="md-display-small mb-2">
+                    {{ stats.feedback || 0 }}
+                  </div>
                   <div class="md-title-medium">反馈数量</div>
                 </v-card-text>
               </v-card>
             </v-col>
 
             <v-col cols="12" sm="6" md="3">
-              <v-card class="mb-4 stat-card" rounded="lg" elevation="1" color="warning" theme="dark">
+              <v-card
+                class="mb-4 stat-card"
+                rounded="lg"
+                elevation="1"
+                color="warning"
+                theme="dark"
+              >
                 <v-card-text class="d-flex flex-column align-center pa-4">
-                  <div class="md-display-small mb-2">{{ stats.avgScore || 0 }}</div>
+                  <div class="md-display-small mb-2">
+                    {{ stats.avgScore || 0 }}
+                  </div>
                   <div class="md-title-medium">平均评分</div>
                 </v-card-text>
               </v-card>
@@ -948,7 +982,9 @@ const topAttractionsOption = computed(() => {
   background-color: var(--md-surface);
 }
 
-.stat-card, .admin-menu-card, .chart-card {
+.stat-card,
+.admin-menu-card,
+.chart-card {
   overflow: hidden;
   transition:
     box-shadow 0.3s var(--md-motion-standard),
@@ -957,7 +993,9 @@ const topAttractionsOption = computed(() => {
   background: var(--md-surface);
 }
 
-.stat-card:hover, .admin-menu-card:hover, .chart-card:hover {
+.stat-card:hover,
+.admin-menu-card:hover,
+.chart-card:hover {
   box-shadow: var(--md-shadow-2);
   transform: translateY(-2px);
 }

@@ -1,7 +1,7 @@
 <template>
-  <v-dialog 
-    v-model="localShow" 
-    :max-width="maxWidth" 
+  <v-dialog
+    v-model="localShow"
+    :max-width="maxWidth"
     :persistent="persistent"
     transition="dialog-bottom-transition"
     class="md3-dialog"
@@ -111,7 +111,8 @@ function onConfirm() {
 .md3-dialog :deep(.v-overlay__content) {
   box-shadow: var(--md-shadow-3);
   border-radius: 28px;
-  transition: all var(--md-duration-medium2) var(--md-motion-emphasized-decelerate);
+  transition: all var(--md-duration-medium2)
+    var(--md-motion-emphasized-decelerate);
 }
 
 .dialog-card {

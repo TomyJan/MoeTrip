@@ -105,7 +105,7 @@ export const createAdminLog = async (
   action: string,
   target: string,
   targetId: number | null,
-  content: string | object
+  content: string | object,
 ) => {
   try {
     if (!req.user) return null;
@@ -121,7 +121,7 @@ export const createAdminLog = async (
       targetId,
       content,
       ipAddress,
-      userAgent
+      userAgent,
     );
   } catch (error) {
     logger.error('创建管理日志失败:', error);
@@ -151,7 +151,7 @@ export const getLogStats = async (req: Request, res: Response) => {
       data: {
         stats: {
           // 暂时返回空对象，后续可扩展
-        }
+        },
       },
     });
   } catch (error) {

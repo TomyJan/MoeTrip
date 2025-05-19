@@ -35,8 +35,15 @@
             class="elevation-0"
             :page="page"
             :items-per-page-options="[10, 20, 50]"
-            @update:page="page = $event; loadAttractions()"
-            @update:items-per-page="pageSize = $event; page = 1; loadAttractions()"
+            @update:page="
+              page = $event;
+              loadAttractions();
+            "
+            @update:items-per-page="
+              pageSize = $event;
+              page = 1;
+              loadAttractions();
+            "
             :server-items-length="totalAttractions || 0"
           >
             <template v-slot:item.image_url="{ item }">

@@ -6,30 +6,30 @@
   --md-on-primary: #ffffff;
   --md-primary-container: #eaddff;
   --md-on-primary-container: #21005e;
-  
+
   --md-secondary: #625b71;
   --md-on-secondary: #ffffff;
   --md-secondary-container: #e8def8;
   --md-on-secondary-container: #1e192b;
-  
+
   --md-tertiary: #7d5260;
   --md-on-tertiary: #ffffff;
   --md-tertiary-container: #ffd8e4;
   --md-on-tertiary-container: #370b1e;
-  
+
   --md-error: #b3261e;
   --md-on-error: #ffffff;
   --md-error-container: #f9dedc;
   --md-on-error-container: #410e0b;
-  
+
   --md-surface: #fffbfe;
   --md-on-surface: #1c1b1f;
   --md-surface-variant: #e7e0ec;
   --md-on-surface-variant: #49454f;
-  
+
   --md-outline: #79747e;
   --md-outline-variant: #cac4d0;
-  
+
   --md-background: #f6f2fa;
   --md-on-background: #1c1b1f;
 
@@ -41,17 +41,22 @@
   --md-surface-5: #c8c1cb;
 
   /* MD3 阴影 */
-  --md-shadow-1: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-  --md-shadow-2: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
-  --md-shadow-3: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
-  --md-shadow-4: 0px 6px 10px 4px rgba(0, 0, 0, 0.15), 0px 2px 3px rgba(0, 0, 0, 0.3);
-  --md-shadow-5: 0px 8px 12px 6px rgba(0, 0, 0, 0.15), 0px 4px 4px rgba(0, 0, 0, 0.3);
-  
+  --md-shadow-1:
+    0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --md-shadow-2:
+    0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --md-shadow-3:
+    0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
+  --md-shadow-4:
+    0px 6px 10px 4px rgba(0, 0, 0, 0.15), 0px 2px 3px rgba(0, 0, 0, 0.3);
+  --md-shadow-5:
+    0px 8px 12px 6px rgba(0, 0, 0, 0.15), 0px 4px 4px rgba(0, 0, 0, 0.3);
+
   /* MD3 卡片和边框 */
   --md-card-border: rgba(103, 80, 164, 0.1);
   --md-card-shadow: var(--md-shadow-1);
   --md-card-shadow-hover: var(--md-shadow-2);
-  
+
   /* 为兼容保留的旧变量 */
   --surface-color: var(--md-surface);
   --background-color: var(--md-background);
@@ -62,7 +67,7 @@
   --primary-color: var(--md-primary);
   --secondary-color: var(--md-secondary);
   --accent-color: var(--md-tertiary);
-  
+
   /* MD3 字体 */
   font-family:
     Roboto,
@@ -78,23 +83,23 @@
     sans-serif;
 
   /* MD3 状态层不透明度 */
-  --md-state-hover-opacity: 0.08;  
+  --md-state-hover-opacity: 0.08;
   --md-state-focus-opacity: 0.12;
   --md-state-pressed-opacity: 0.12;
   --md-state-dragged-opacity: 0.16;
-  
+
   /* MD3 形状尺寸 */
   --md-shape-corner-small: 8px;
   --md-shape-corner-medium: 12px;
   --md-shape-corner-large: 16px;
   --md-shape-corner-full: 9999px;
-  
+
   /* MD3 贝塞尔曲线 */
   --md-motion-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --md-motion-emphasized: cubic-bezier(0.2, 0, 0, 1);
   --md-motion-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
   --md-motion-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
-  
+
   /* MD3 动效时长 */
   --md-duration-short1: 50ms;
   --md-duration-short2: 100ms;
@@ -117,30 +122,30 @@
   --md-on-primary: #381e72;
   --md-primary-container: #4f378b;
   --md-on-primary-container: #eaddff;
-  
+
   --md-secondary: #ccc2dc;
   --md-on-secondary: #332d41;
   --md-secondary-container: #4a4458;
   --md-on-secondary-container: #e8def8;
-  
+
   --md-tertiary: #efb8c8;
   --md-on-tertiary: #492532;
   --md-tertiary-container: #633b48;
   --md-on-tertiary-container: #ffd8e4;
-  
+
   --md-error: #f2b8b5;
   --md-on-error: #601410;
   --md-error-container: #8c1d18;
   --md-on-error-container: #f9dedc;
-  
+
   --md-surface: #1c1b1f;
   --md-on-surface: #e6e1e5;
   --md-surface-variant: #49454f;
   --md-on-surface-variant: #cac4d0;
-  
+
   --md-outline: #938f99;
   --md-outline-variant: #444746;
-  
+
   --md-background: #141218;
   --md-on-background: #e6e1e5;
 
@@ -152,17 +157,22 @@
   --md-surface-5: #4c4651;
 
   /* 深色模式下的阴影 */
-  --md-shadow-1: 0px 1px 3px 1px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.5);
-  --md-shadow-2: 0px 2px 6px 2px rgba(0, 0, 0, 0.2), 0px 1px 2px rgba(0, 0, 0, 0.5);
-  --md-shadow-3: 0px 4px 8px 3px rgba(0, 0, 0, 0.2), 0px 1px 3px rgba(0, 0, 0, 0.5);
-  --md-shadow-4: 0px 6px 10px 4px rgba(0, 0, 0, 0.2), 0px 2px 3px rgba(0, 0, 0, 0.5);
-  --md-shadow-5: 0px 8px 12px 6px rgba(0, 0, 0, 0.2), 0px 4px 4px rgba(0, 0, 0, 0.5);
-  
+  --md-shadow-1:
+    0px 1px 3px 1px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.5);
+  --md-shadow-2:
+    0px 2px 6px 2px rgba(0, 0, 0, 0.2), 0px 1px 2px rgba(0, 0, 0, 0.5);
+  --md-shadow-3:
+    0px 4px 8px 3px rgba(0, 0, 0, 0.2), 0px 1px 3px rgba(0, 0, 0, 0.5);
+  --md-shadow-4:
+    0px 6px 10px 4px rgba(0, 0, 0, 0.2), 0px 2px 3px rgba(0, 0, 0, 0.5);
+  --md-shadow-5:
+    0px 8px 12px 6px rgba(0, 0, 0, 0.2), 0px 4px 4px rgba(0, 0, 0, 0.5);
+
   /* 深色模式下卡片边框和阴影 */
   --md-card-border: rgba(208, 188, 255, 0.15);
   --md-card-shadow: var(--md-shadow-1);
   --md-card-shadow-hover: var(--md-shadow-2);
-  
+
   /* 为兼容保留的旧变量 */
   --surface-color: var(--md-surface);
   --background-color: var(--md-background);
@@ -252,7 +262,8 @@ body {
   bottom: 0;
   pointer-events: none;
   border-radius: inherit;
-  transition: background-color var(--md-duration-short4) var(--md-motion-standard);
+  transition: background-color var(--md-duration-short4)
+    var(--md-motion-standard);
 }
 
 .md-state-layer--hover {
@@ -278,7 +289,7 @@ body {
 }
 
 .md-button::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
