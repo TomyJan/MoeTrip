@@ -9,6 +9,9 @@ const themeStore = useThemeStore();
 const router = useRouter();
 const route = useRoute();
 
+// 抽屉导航状态
+const drawer = ref(false);
+
 // 登出加载状态
 const logoutLoading = ref(false);
 
@@ -33,6 +36,7 @@ const handleLogout = async () => {
   } finally {
     // 无论API调用是否成功，都执行本地登出操作
     userStore.logout();
+    drawer.value = false; // 关闭抽屉
     router.push('/');
     logoutLoading.value = false;
   }
@@ -71,32 +75,32 @@ onMounted(() => {
       class="app-bar"
       flat
     >
+      <!-- 移动端汉堡菜单按钮 -->
+      <v-app-bar-nav-icon
+        class="d-md-none"
+        @click="drawer = !drawer"
+        aria-label="菜单"
+      ></v-app-bar-nav-icon>
+
       <v-app-bar-title class="md-title-large">萌游旅行</v-app-bar-title>
       <v-spacer></v-spacer>
 
+      <!-- 桌面端导航链接 -->
       <v-btn
         to="/attractions"
         variant="text"
         rounded="pill"
-        class="ml-2 d-none d-sm-flex nav-btn"
+        class="ml-2 d-none d-md-flex nav-btn"
         >景点</v-btn
       >
 
-      <!-- 移动设备上显示的景点菜单 -->
-      <v-btn
-        to="/attractions"
-        variant="text"
-        icon
-        rounded="pill"
-        class="ml-2 d-flex d-sm-none nav-btn"
-      >
-        <v-icon>mdi-map-marker</v-icon>
-        <v-tooltip activator="parent" location="bottom">景点</v-tooltip>
-      </v-btn>
-
       <!-- 未登录状态 -->
       <template v-if="!userStore.isLoggedIn">
-        <v-btn to="/login" variant="text" rounded="pill" class="ml-2 nav-btn"
+        <v-btn 
+          to="/login" 
+          variant="text" 
+          rounded="pill" 
+          class="ml-2 d-none d-md-flex nav-btn"
           >登录</v-btn
         >
         <v-btn 
@@ -104,13 +108,13 @@ onMounted(() => {
           variant="elevated" 
           rounded="pill" 
           color="primary"
-          class="ml-2 nav-btn"
+          class="ml-2 d-none d-md-flex nav-btn"
         >
           注册
         </v-btn>
       </template>
 
-      <!-- 已登录状态 -->
+      <!-- 已登录状态 - 桌面端 -->
       <template v-if="userStore.isLoggedIn">
         <!-- 管理员专属 -->
         <v-btn
@@ -119,7 +123,7 @@ onMounted(() => {
           variant="tonal"
           rounded="pill"
           color="error"
-          class="ml-2 nav-btn"
+          class="ml-2 d-none d-md-flex nav-btn"
         >
           管理中心
         </v-btn>
@@ -136,10 +140,10 @@ onMounted(() => {
               v-bind="props"
               class="ml-2 text-none nav-btn"
               rounded="pill"
-              prepend-icon="mdi-account-circle"
             >
+              <v-icon start>mdi-account-circle</v-icon>
               {{ userStore.username }}
-              <v-icon end icon="mdi-chevron-down" size="small"></v-icon>
+              <v-icon end size="small">mdi-chevron-down</v-icon>
             </v-btn>
           </template>
           <v-card rounded="lg" elevation="2" class="mt-1 user-menu">
@@ -151,6 +155,15 @@ onMounted(() => {
                 density="comfortable"
               >
                 <v-list-item-title>个人中心</v-list-item-title>
+              </v-list-item>
+              <v-list-item
+                v-if="userStore.isAdmin && $vuetify.display.smAndDown"
+                prepend-icon="mdi-shield-account"
+                to="/admin"
+                rounded="lg"
+                density="comfortable"
+              >
+                <v-list-item-title>管理中心</v-list-item-title>
               </v-list-item>
               <v-divider class="mx-3 my-2"></v-divider>
               <v-list-item
@@ -175,12 +188,13 @@ onMounted(() => {
         location="bottom end"
         transition="scale-transition"
         min-width="200"
+        class="d-none d-md-block"
       >
         <template v-slot:activator="{ props }">
           <v-btn
             variant="text"
             v-bind="props"
-            class="ml-2 nav-btn"
+            class="ml-2 nav-btn d-none d-md-flex"
             icon
             rounded="pill"
             min-width="36"
@@ -227,6 +241,85 @@ onMounted(() => {
         </v-card>
       </v-menu>
     </v-app-bar>
+
+    <!-- 移动端导航抽屉 -->
+    <v-navigation-drawer
+      v-if="!isAuthPage"
+      v-model="drawer"
+      temporary
+      location="left"
+      width="280"
+      class="mobile-drawer"
+      elevation="4"
+    >
+      <v-list>
+        <v-list-item class="mb-2 mt-2">
+          <v-list-item-title class="text-h6">萌游旅行</v-list-item-title>
+        </v-list-item>
+        
+        <v-divider class="mb-2"></v-divider>
+        
+        <!-- 导航链接 -->
+        <v-list-item
+          to="/attractions"
+          prepend-icon="mdi-map-marker"
+          rounded="lg"
+          :active="route.path === '/attractions'"
+        >
+          <v-list-item-title>景点</v-list-item-title>
+        </v-list-item>
+        
+        <!-- 登录/注册链接 (未登录状态) -->
+        <template v-if="!userStore.isLoggedIn">
+          <v-list-item
+            to="/login"
+            prepend-icon="mdi-login"
+            rounded="lg"
+            :active="route.path === '/login'"
+          >
+            <v-list-item-title>登录</v-list-item-title>
+          </v-list-item>
+          
+          <v-list-item
+            to="/register"
+            prepend-icon="mdi-account-plus"
+            rounded="lg"
+            :active="route.path === '/register'"
+          >
+            <v-list-item-title>注册</v-list-item-title>
+          </v-list-item>
+        </template>
+        
+        <v-divider class="my-2"></v-divider>
+        
+        <!-- 主题设置 -->
+        <v-list-subheader>主题设置</v-list-subheader>
+        <v-list-item
+          @click="setThemeMode('system')"
+          prepend-icon="mdi-theme-light-dark"
+          rounded="lg"
+          :active="themeStore.mode === 'system'"
+        >
+          <v-list-item-title>跟随系统</v-list-item-title>
+        </v-list-item>
+        <v-list-item
+          @click="setThemeMode('light')"
+          prepend-icon="mdi-weather-sunny"
+          rounded="lg"
+          :active="themeStore.mode === 'light'"
+        >
+          <v-list-item-title>浅色模式</v-list-item-title>
+        </v-list-item>
+        <v-list-item
+          @click="setThemeMode('dark')"
+          prepend-icon="mdi-weather-night"
+          rounded="lg"
+          :active="themeStore.mode === 'dark'"
+        >
+          <v-list-item-title>深色模式</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
 
     <v-main :class="{ 'auth-main': isAuthPage }">
       <router-view />
@@ -346,6 +439,11 @@ onMounted(() => {
   transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.mobile-drawer {
+  background-color: var(--md-surface);
+  border-right: 1px solid var(--md-outline-variant);
+}
+
 :deep(.v-list-item) {
   min-height: 48px;
   border-radius: 28px;
@@ -379,5 +477,17 @@ onMounted(() => {
 
 :deep(.v-list-item--active .v-icon) {
   color: var(--md-on-primary-container);
+}
+
+/* 抽屉的标题样式 */
+:deep(.v-navigation-drawer__content) {
+  padding: 8px;
+}
+
+:deep(.v-list-subheader) {
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  color: var(--md-on-surface-variant);
 }
 </style>
