@@ -219,7 +219,7 @@ export const getStats = async (req: Request, res: Response) => {
     const identifierFormat = dialect === 'mysql' ? '`%s`' : '"%s"';
     const tableRef = identifierFormat.replace('%s', 'Attraction');
     const columnRef = identifierFormat.replace('%s', 'feedbackCount');
-    
+
     // 获取热门景点（按反馈数量排序）
     const attractionsData = await Attraction.findAll({
       attributes: [
