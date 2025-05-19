@@ -82,6 +82,21 @@ CREATE TABLE feedback (
     UNIQUE KEY feedback_user_attraction_unique (user_id, attraction_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- 操作日志表
+CREATE TABLE logs (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNSIGNED NOT NULL,
+    action VARCHAR(50) NOT NULL COMMENT '操作类型（如create, update, delete, login, logout等）',
+    target VARCHAR(50) NOT NULL COMMENT '操作对象（如user, ticket, order等）',
+    target_id BIGINT UNSIGNED NULL COMMENT '操作对象ID（可空，如登录操作没有特定目标ID）',
+    content TEXT NOT NULL COMMENT '操作内容详情（JSON或描述文本）',
+    ip_address VARCHAR(50) NULL COMMENT '操作者IP地址',
+    user_agent TEXT NULL COMMENT '操作者浏览器信息',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统操作日志';
+
 -- 索引
 CREATE INDEX idx_facilities_attraction_id ON facilities(attraction_id);
 CREATE INDEX idx_tickets_attraction_id ON tickets(attraction_id);
@@ -90,6 +105,10 @@ CREATE INDEX idx_orders_ticket_id ON orders(ticket_id);
 CREATE INDEX idx_orders_date ON orders(date);
 CREATE INDEX idx_feedback_user_id ON feedback(user_id);
 CREATE INDEX idx_feedback_attraction_id ON feedback(attraction_id);
+CREATE INDEX idx_logs_user_id ON logs(user_id);
+CREATE INDEX idx_logs_action ON logs(action);
+CREATE INDEX idx_logs_target ON logs(target);
+CREATE INDEX idx_logs_created_at ON logs(created_at);
 
 -- 插入初始数据
 
@@ -125,3 +144,7 @@ INSERT INTO orders (user_id, ticket_id, quantity, date, status, total_price) VAL
 -- 反馈
 INSERT INTO feedback (user_id, attraction_id, score, comment, status) VALUES
 (2, 1, 5, '景色非常美！', 'public');
+
+-- 初始日志记录
+INSERT INTO logs (user_id, action, target, target_id, content, ip_address) VALUES
+(1, 'init', 'system', NULL, '系统初始化', '127.0.0.1');

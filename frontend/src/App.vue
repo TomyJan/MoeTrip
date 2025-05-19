@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 import { useUserStore, useThemeStore } from './stores';
 import { useRouter, useRoute } from 'vue-router';
+import { authApi } from './utils/api';
 
 const userStore = useUserStore();
 const themeStore = useThemeStore();
 const router = useRouter();
 const route = useRoute();
+
+// 登出加载状态
+const logoutLoading = ref(false);
 
 // 判断当前是否为登录或注册页面
 const isAuthPage = computed(() => {
@@ -16,9 +20,22 @@ const isAuthPage = computed(() => {
 // 当前是否为深色模式
 const isDarkMode = computed(() => themeStore.isDarkMode);
 
-const handleLogout = () => {
-  userStore.logout();
-  router.push('/');
+const handleLogout = async () => {
+  logoutLoading.value = true;
+  
+  try {
+    // 如果用户已登录，则调用登出API
+    if (userStore.isLoggedIn && userStore.token) {
+      await authApi.logout();
+    }
+  } catch (error) {
+    console.error('登出API调用失败:', error);
+  } finally {
+    // 无论API调用是否成功，都执行本地登出操作
+    userStore.logout();
+    router.push('/');
+    logoutLoading.value = false;
+  }
 };
 
 // 主题模式文本映射
@@ -129,8 +146,12 @@ onMounted(() => {
                 @click="handleLogout"
                 rounded="lg"
                 density="comfortable"
+                :disabled="logoutLoading"
               >
-                <v-list-item-title>退出登录</v-list-item-title>
+                <v-list-item-title>
+                  <span v-if="!logoutLoading">退出登录</span>
+                  <v-progress-circular v-else indeterminate size="20" width="2" class="mr-2"></v-progress-circular>
+                </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-card>

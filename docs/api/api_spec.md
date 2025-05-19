@@ -935,16 +935,7 @@ POST /order/query
 > Body 请求参数
 
 ```json
-{
-  "user_id": 1,
-  "order_id": 1,
-  "status": "success",
-  "attraction_id": "1",
-  "start_date": "2025-07-15",
-  "end_date": "2025-07-15",
-  "page": 1,
-  "pageSize": 10
-}
+"{\n    \"user_id\": 1,\n    // \"order_id\": 1,\n    \"status\": \"success\",\n    \"attraction_id\": \"1\",\n    \"start_date\": \"2025-07-15\",\n    \"end_date\": \"2025-07-15\",\n    \"page\": 1,\n    \"pageSize\": 10\n}"
 ```
 
 ### 请求参数
@@ -1453,7 +1444,7 @@ POST /ticket/update
 |»»» name|string|true|none|票种名称|名称|
 |»»» available|number|true|none|每日票种余量|none|
 
-## POST 查询票种列表 Copy
+## POST 删除票种
 
 POST /ticket/delete
 
@@ -1470,7 +1461,7 @@ POST /ticket/delete
 |名称|位置|类型|必选|中文名|说明|
 |---|---|---|---|---|---|
 |body|body|object| 否 ||none|
-|» attraction_id|body|number| 是 | 景点ID|none|
+|» id|body|number| 是 | 票种ID|none|
 
 > 返回示例
 
@@ -1479,18 +1470,9 @@ POST /ticket/delete
 ```json
 {
   "code": 0,
-  "message": "string",
+  "message": null,
   "data": {
-    "tickets": [
-      {
-        "id": "1",
-        "attraction_id": "1",
-        "name": "单人票",
-        "available": 100,
-        "created_at": "2025-07-15",
-        "updated_at": "2025-07-15"
-      }
-    ]
+    "success": true
   }
 }
 ```
@@ -1510,13 +1492,7 @@ POST /ticket/delete
 |» code|number|true|none|状态码|0 表示成功，1001 表示参数错误, 非 0 表示错误|
 |» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
 |» data|object¦null|true|none|数据|none|
-|»» tickets|[object]|true|none|票种信息|none|
-|»»» id|string|true|none|票种ID|ID 编号|
-|»»» attraction_id|string|true|none|所在景点ID|none|
-|»»» name|string|true|none|票种名称|名称|
-|»»» available|number|true|none|当日票种余量|none|
-|»»» created_at|string(date)|true|none|票种创建日期|none|
-|»»» updated_at|string(date)|true|none|票种更新日期|none|
+|»» success|boolean|true|none|是否成功|none|
 
 # 用户反馈
 
@@ -1949,6 +1925,139 @@ POST /attraction/stats
 |»»» description|string|true|none|景点描述|none|
 |»»» feedbackCount|string|true|none|反馈数量|none|
 
+# 日志记录
+
+## POST 查询系统日志
+
+POST /log/query
+
+> Body 请求参数
+
+```json
+"{\r\n    // \"page\": 1,\r\n    // \"pageSize\": 10,\r\n    // \"startDate\": \"2025-07-15\",\r\n    // \"endDate\": \"2025-07-15\",\r\n    // \"userId\": 1,\r\n    // \"action\": \"create\",\r\n    // \"target\": \"user\"\r\n}"
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+|» page|body|number| 否 | 页码|none|
+|» pageSize|body|number| 否 | 每页数量|none|
+|» startDate|body|string(date)| 否 | 开始日期|none|
+|» endDate|body|string(date)| 否 | 结束日期|none|
+|» userId|body|number| 否 | 用户ID|none|
+|» action|body|string| 否 | 操作类型|none|
+|» target|body|string| 否 | 操作对象|none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": null,
+  "data": {
+    "total": 1,
+    "logs": [
+      {
+        "id": "1",
+        "user": {
+          "id": "1",
+          "username": "TomyJan",
+          "role": "admin"
+        },
+        "user_id": "1",
+        "action": "create",
+        "target": "user",
+        "target_id": "1",
+        "content": "{}",
+        "ip_address": "127.0.0.1",
+        "user_agent": "MoeTrip/0.0.1"
+      }
+    ]
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» total|number|true|none|日志总数|none|
+|»» logs|[object]|true|none|日志|none|
+|»»» id|string|true|none|日志ID|none|
+|»»» user|object|true|none|用户信息|none|
+|»»»» id|string|true|none|用户ID|ID 编号|
+|»»»» username|string|true|none|用户名|none|
+|»»»» role|string|true|none|角色组|none|
+|»»» user_id|string|true|none|用户ID|none|
+|»»» action|string|true|none|操作类型|none|
+|»»» target|string|true|none|操作对象|none|
+|»»» target_id|string¦null|true|none|操作对象ID|none|
+|»»» content|string|true|none|操作内容|none|
+|»»» ip_address|string|true|none|IP地址|none|
+|»»» user_agent|string¦null|true|none|UA|none|
+
+## POST 获取日志统计信息
+
+POST /log/stats
+
+> Body 请求参数
+
+```json
+{}
+```
+
+### 请求参数
+
+|名称|位置|类型|必选|中文名|说明|
+|---|---|---|---|---|---|
+|body|body|object| 否 ||none|
+
+> 返回示例
+
+> 200 Response
+
+```json
+{
+  "code": 0,
+  "message": "string",
+  "data": {
+    "stats": {}
+  }
+}
+```
+
+### 返回结果
+
+|状态码|状态码含义|说明|数据模型|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|Inline|
+
+### 返回数据结构
+
+状态码 **200**
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|» code|number|true|none|状态码|0 表示成功，非 0 表示错误|
+|» message|string¦null|true|none|信息|成功为null, 错误为错误信息|
+|» data|object¦null|true|none|数据|none|
+|»» stats|object|true|none|统计数据|none|
+
 # 数据模型
 
 <h2 id="tocS_单个景点信息">单个景点信息</h2>
@@ -2220,4 +2329,47 @@ POST /attraction/stats
 |name|string|true|none|景点名称|名称|
 |description|string|true|none|景点描述|none|
 |feedbackCount|string|true|none|反馈数量|none|
+
+<h2 id="tocS_单条日志记录">单条日志记录</h2>
+
+<a id="schema单条日志记录"></a>
+<a id="schema_单条日志记录"></a>
+<a id="tocS单条日志记录"></a>
+<a id="tocs单条日志记录"></a>
+
+```json
+{
+  "id": "1",
+  "user": {
+    "id": "1",
+    "username": "TomyJan",
+    "role": "admin"
+  },
+  "user_id": "1",
+  "action": "create",
+  "target": "user",
+  "target_id": "1",
+  "content": "{}",
+  "ip_address": "127.0.0.1",
+  "user_agent": "MoeTrip/0.0.1"
+}
+
+```
+
+### 属性
+
+|名称|类型|必选|约束|中文名|说明|
+|---|---|---|---|---|---|
+|id|string|true|none|日志ID|none|
+|user|object|true|none|用户信息|none|
+|» id|string|true|none|用户ID|ID 编号|
+|» username|string|true|none|用户名|none|
+|» role|string|true|none|角色组|none|
+|user_id|string|true|none|用户ID|none|
+|action|string|true|none|操作类型|none|
+|target|string|true|none|操作对象|none|
+|target_id|string¦null|true|none|操作对象ID|none|
+|content|string|true|none|操作内容|none|
+|ip_address|string|true|none|IP地址|none|
+|user_agent|string¦null|true|none|UA|none|
 

@@ -145,6 +145,12 @@ export const authApi = {
       body: JSON.stringify({ username, password }),
     });
   },
+  
+  logout: async () => {
+    return apiRequest('/user/logout', {
+      method: 'POST',
+    });
+  },
 };
 
 // 景点相关API
@@ -501,6 +507,32 @@ export const facilityApi = {
     return apiRequest('/facility/delete', {
       method: 'POST',
       body: JSON.stringify(params),
+    });
+  },
+};
+
+// 日志相关API
+export const logApi = {
+  // 查询日志列表
+  query: async (params: {
+    page?: number;
+    pageSize?: number;
+    startDate?: string;
+    endDate?: string;
+    userId?: number;
+    action?: string;
+    target?: string;
+  }) => {
+    return apiRequest('/log/query', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+  },
+
+  // 获取日志统计信息
+  stats: async () => {
+    return apiRequest('/log/stats', {
+      method: 'POST',
     });
   },
 };

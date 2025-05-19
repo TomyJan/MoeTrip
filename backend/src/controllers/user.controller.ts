@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import User from '../models/user.model';
+import LogService from '../utils/log-service';
+import logger from '../utils/logger';
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -56,6 +58,21 @@ export const register = async (req: Request, res: Response) => {
       process.env.JWT_SECRET!,
       { expiresIn: process.env.JWT_EXPIRES_IN } as SignOptions,
     );
+
+    // 记录注册操作日志
+    try {
+      await LogService.createLog(
+        user.id,
+        'register',
+        'user',
+        user.id,
+        { username: user.username, role: user.role },
+        req.ip || req.socket.remoteAddress || '',
+        req.headers['user-agent'] || ''
+      );
+    } catch (logError) {
+      logger.error('注册日志记录失败:', logError);
+    }
 
     return res.json({
       code: 0,
@@ -118,6 +135,21 @@ export const login = async (req: Request, res: Response) => {
       { expiresIn: process.env.JWT_EXPIRES_IN } as SignOptions,
     );
 
+    // 记录登录操作日志
+    try {
+      await LogService.createLog(
+        user.id,
+        'login',
+        'user',
+        user.id,
+        { username: user.username, role: user.role },
+        req.ip || req.socket.remoteAddress || '',
+        req.headers['user-agent'] || ''
+      );
+    } catch (logError) {
+      logger.error('登录日志记录失败:', logError);
+    }
+
     return res.json({
       code: 0,
       message: null,
@@ -132,6 +164,42 @@ export const login = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error('登录失败:', error);
+    return res.json({
+      code: 500,
+      message: '服务器内部错误',
+      data: null,
+    });
+  }
+};
+
+// 添加登出操作的API
+export const logout = async (req: Request, res: Response) => {
+  try {
+    // 当前没有真正的登出操作，因为使用的是JWT，客户端只需丢弃token
+    // 但我们仍然可以记录登出行为
+    if (req.user) {
+      try {
+        await LogService.createLog(
+          req.user.id,
+          'logout',
+          'user',
+          req.user.id,
+          { userId: req.user.id },
+          req.ip || req.socket.remoteAddress || '',
+          req.headers['user-agent'] || ''
+        );
+      } catch (logError) {
+        logger.error('登出日志记录失败:', logError);
+      }
+    }
+
+    return res.json({
+      code: 0,
+      message: null,
+      data: { success: true },
+    });
+  } catch (error) {
+    console.error('登出失败:', error);
     return res.json({
       code: 500,
       message: '服务器内部错误',

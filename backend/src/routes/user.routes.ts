@@ -1,12 +1,16 @@
 import { Router } from 'express';
-import * as userController from '../controllers/user.controller';
+import { login, register, logout } from '../controllers/user.controller';
+import { authMiddleware } from '../middlewares/auth.middleware';
 
 const router = Router();
 
 // 用户注册
-router.post('/register', userController.register);
+router.post('/register', register);
 
 // 用户登录
-router.post('/login', userController.login);
+router.post('/login', login);
+
+// 添加登出路由，需要认证
+router.post('/logout', authMiddleware, logout);
 
 export default router;
