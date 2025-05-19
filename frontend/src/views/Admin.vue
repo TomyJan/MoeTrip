@@ -1,178 +1,180 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <h1 class="text-h4 mb-4">管理员控制面板</h1>
+  <div class="admin-page">
+    <v-container>
+      <v-row>
+        <v-col cols="12">
+          <h1 class="md-headline-medium mb-6 font-weight-medium">管理员控制面板</h1>
 
-        <!-- 系统数据概览 -->
-        <v-row class="mb-4">
-          <v-col cols="12" sm="6" md="3">
-            <v-card class="mb-4" color="primary" theme="dark">
-              <v-card-text class="d-flex flex-column align-center">
-                <div class="text-h3 mb-2">{{ stats.attractions || 0 }}</div>
-                <div class="text-subtitle-1">景点数量</div>
-              </v-card-text>
-            </v-card>
-          </v-col>
+          <!-- 系统数据概览 -->
+          <v-row class="mb-6">
+            <v-col cols="12" sm="6" md="3">
+              <v-card class="mb-4 stat-card" rounded="lg" elevation="1" color="primary" theme="dark">
+                <v-card-text class="d-flex flex-column align-center pa-4">
+                  <div class="md-display-small mb-2">{{ stats.attractions || 0 }}</div>
+                  <div class="md-title-medium">景点数量</div>
+                </v-card-text>
+              </v-card>
+            </v-col>
 
-          <v-col cols="12" sm="6" md="3">
-            <v-card class="mb-4" color="success" theme="dark">
-              <v-card-text class="d-flex flex-column align-center">
-                <div class="text-h3 mb-2">{{ stats.users || 0 }}</div>
-                <div class="text-subtitle-1">用户数量</div>
-              </v-card-text>
-            </v-card>
-          </v-col>
+            <v-col cols="12" sm="6" md="3">
+              <v-card class="mb-4 stat-card" rounded="lg" elevation="1" color="success" theme="dark">
+                <v-card-text class="d-flex flex-column align-center pa-4">
+                  <div class="md-display-small mb-2">{{ stats.users || 0 }}</div>
+                  <div class="md-title-medium">用户数量</div>
+                </v-card-text>
+              </v-card>
+            </v-col>
 
-          <v-col cols="12" sm="6" md="3">
-            <v-card class="mb-4" color="info" theme="dark">
-              <v-card-text class="d-flex flex-column align-center">
-                <div class="text-h3 mb-2">{{ stats.feedback || 0 }}</div>
-                <div class="text-subtitle-1">反馈数量</div>
-              </v-card-text>
-            </v-card>
-          </v-col>
+            <v-col cols="12" sm="6" md="3">
+              <v-card class="mb-4 stat-card" rounded="lg" elevation="1" color="info" theme="dark">
+                <v-card-text class="d-flex flex-column align-center pa-4">
+                  <div class="md-display-small mb-2">{{ stats.feedback || 0 }}</div>
+                  <div class="md-title-medium">反馈数量</div>
+                </v-card-text>
+              </v-card>
+            </v-col>
 
-          <v-col cols="12" sm="6" md="3">
-            <v-card class="mb-4" color="warning" theme="dark">
-              <v-card-text class="d-flex flex-column align-center">
-                <div class="text-h3 mb-2">{{ stats.avgScore || 0 }}</div>
-                <div class="text-subtitle-1">平均评分</div>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
+            <v-col cols="12" sm="6" md="3">
+              <v-card class="mb-4 stat-card" rounded="lg" elevation="1" color="warning" theme="dark">
+                <v-card-text class="d-flex flex-column align-center pa-4">
+                  <div class="md-display-small mb-2">{{ stats.avgScore || 0 }}</div>
+                  <div class="md-title-medium">平均评分</div>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
 
-        <!-- 功能导航 -->
-        <v-card class="mb-6" rounded="lg" elevation="1">
-          <v-card-title class="text-md-h6">系统管理</v-card-title>
-          <v-card-text>
-            <v-row>
-              <v-col
-                v-for="(item, index) in adminMenus"
-                :key="index"
-                cols="12"
-                sm="6"
-                md="4"
-                lg="3"
-              >
-                <v-card
-                  :to="item.link"
-                  variant="outlined"
-                  class="h-100"
-                  hover
-                  rounded="lg"
-                  elevation="0"
+          <!-- 功能导航 -->
+          <v-card class="mb-6 admin-menu-card" rounded="lg" elevation="1">
+            <v-card-title class="md-title-large py-4">系统管理</v-card-title>
+            <v-card-text class="pb-6">
+              <v-row>
+                <v-col
+                  v-for="(item, index) in adminMenus"
+                  :key="index"
+                  cols="12"
+                  sm="6"
+                  md="4"
+                  lg="3"
                 >
-                  <v-card-text
-                    class="d-flex flex-column align-center text-center"
+                  <v-card
+                    :to="item.link"
+                    variant="outlined"
+                    class="h-100 menu-item"
+                    hover
+                    rounded="lg"
+                    elevation="0"
                   >
-                    <v-icon
-                      :icon="item.icon"
-                      size="large"
-                      color="primary"
-                      class="mb-4"
-                    ></v-icon>
-                    <div class="text-subtitle-1 font-weight-medium">
-                      {{ item.title }}
-                    </div>
-                    <div class="text-body-2 text-medium-emphasis">
-                      {{ item.description }}
-                    </div>
-                  </v-card-text>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
+                    <v-card-text
+                      class="d-flex flex-column align-center text-center pa-6"
+                    >
+                      <v-icon
+                        :icon="item.icon"
+                        size="large"
+                        color="primary"
+                        class="mb-4"
+                      ></v-icon>
+                      <div class="md-title-small font-weight-medium mb-2">
+                        {{ item.title }}
+                      </div>
+                      <div class="md-body-medium text-medium-emphasis">
+                        {{ item.description }}
+                      </div>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
 
-        <!-- 数据可视化部分 -->
-        <v-row>
-          <!-- 最近一周访问量 -->
-          <v-col cols="12" md="6">
-            <v-card class="mb-4" rounded="lg" elevation="1">
-              <v-card-title class="text-center text-md-h6"
-                >最近一周访问量</v-card-title
-              >
-              <v-card-text style="height: 300px">
-                <v-chart
-                  :option="visitorsChartOption"
-                  style="height: 100%; width: 100%"
-                  :autoresize="true"
-                />
-              </v-card-text>
-            </v-card>
-          </v-col>
+          <!-- 数据可视化部分 -->
+          <v-row>
+            <!-- 最近一周访问量 -->
+            <v-col cols="12" md="6">
+              <v-card class="mb-6 chart-card" rounded="lg" elevation="1">
+                <v-card-title class="md-title-medium py-4 text-center"
+                  >最近一周访问量</v-card-title
+                >
+                <v-card-text style="height: 300px">
+                  <v-chart
+                    :option="visitorsChartOption"
+                    style="height: 100%; width: 100%"
+                    :autoresize="true"
+                  />
+                </v-card-text>
+              </v-card>
+            </v-col>
 
-          <!-- 评分分布 -->
-          <v-col cols="12" md="6">
-            <v-card class="mb-4" rounded="lg" elevation="1">
-              <v-card-title class="text-center text-md-h6"
-                >评分分布</v-card-title
-              >
-              <v-card-text style="height: 300px">
-                <v-chart
-                  :option="scoreDistributionOption"
-                  style="height: 100%; width: 100%"
-                  :autoresize="true"
-                />
-              </v-card-text>
-            </v-card>
-          </v-col>
+            <!-- 评分分布 -->
+            <v-col cols="12" md="6">
+              <v-card class="mb-6 chart-card" rounded="lg" elevation="1">
+                <v-card-title class="md-title-medium py-4 text-center"
+                  >评分分布</v-card-title
+                >
+                <v-card-text style="height: 300px">
+                  <v-chart
+                    :option="scoreDistributionOption"
+                    style="height: 100%; width: 100%"
+                    :autoresize="true"
+                  />
+                </v-card-text>
+              </v-card>
+            </v-col>
 
-          <!-- 热门景点 -->
-          <v-col cols="12">
-            <v-card class="mb-4" rounded="lg" elevation="1">
-              <v-card-title class="text-center text-md-h6"
-                >热门景点</v-card-title
-              >
-              <v-card-text style="height: 300px">
-                <v-chart
-                  :option="topAttractionsOption"
-                  style="height: 100%; width: 100%"
-                  :autoresize="true"
-                />
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
+            <!-- 热门景点 -->
+            <v-col cols="12">
+              <v-card class="mb-6 chart-card" rounded="lg" elevation="1">
+                <v-card-title class="md-title-medium py-4 text-center"
+                  >热门景点</v-card-title
+                >
+                <v-card-text style="height: 300px">
+                  <v-chart
+                    :option="topAttractionsOption"
+                    style="height: 100%; width: 100%"
+                    :autoresize="true"
+                  />
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
 
-        <!-- 反馈趋势图 -->
-        <v-card rounded="lg" elevation="1">
-          <v-card-title class="d-flex">
-            <span class="text-md-h6">反馈趋势</span>
-            <v-spacer></v-spacer>
-            <v-select
-              v-model="timeRange"
-              :items="timeRanges"
-              density="comfortable"
-              variant="outlined"
-              bg-color="surface-variant"
-              rounded="lg"
-              hide-details
-              class="select-md3"
-              style="max-width: 150px"
-            ></v-select>
-          </v-card-title>
+          <!-- 反馈趋势图 -->
+          <v-card class="mb-4 chart-card" rounded="lg" elevation="1">
+            <v-card-title class="d-flex py-4">
+              <span class="md-title-medium">反馈趋势</span>
+              <v-spacer></v-spacer>
+              <v-select
+                v-model="timeRange"
+                :items="timeRanges"
+                density="comfortable"
+                variant="outlined"
+                bg-color="surface-variant"
+                rounded="lg"
+                hide-details
+                class="select-md3"
+                style="max-width: 150px"
+              ></v-select>
+            </v-card-title>
 
-          <v-card-text>
-            <v-chart
-              :option="feedbackTrendOption"
-              style="height: 350px"
-              autoresize
-            />
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+            <v-card-text class="pb-6">
+              <v-chart
+                :option="feedbackTrendOption"
+                style="height: 350px"
+                autoresize
+              />
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
 
-  <!-- 消息提示条 -->
-  <AppSnackbar
-    v-model:show="showSnackbar"
-    :text="snackbarText"
-    :color="snackbarColor"
-  />
+    <!-- 消息提示条 -->
+    <AppSnackbar
+      v-model:show="showSnackbar"
+      :text="snackbarText"
+      :color="snackbarColor"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -941,42 +943,106 @@ const topAttractionsOption = computed(() => {
 </script>
 
 <style scoped>
-.v-card {
+.admin-page {
+  min-height: 100vh;
+  background-color: var(--md-surface);
+}
+
+.stat-card, .admin-menu-card, .chart-card {
   overflow: hidden;
   transition:
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
-  border: 1px solid var(--card-border);
+    box-shadow 0.3s var(--md-motion-standard),
+    transform 0.3s var(--md-motion-standard);
+  border: 1px solid var(--md-outline-variant);
   background: var(--md-surface);
 }
 
-.v-card:hover {
-  box-shadow: var(--card-shadow-hover);
+.stat-card:hover, .admin-menu-card:hover, .chart-card:hover {
+  box-shadow: var(--md-shadow-2);
   transform: translateY(-2px);
 }
 
-/* 嵌套卡片样式 */
-.v-card .v-card {
-  /* 内部卡片使用略微不同的背景色，增强对比度 */
-  background: var(--md-surface-variant);
-  border: 1px solid var(--card-border);
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--md-shape-corner-large);
 }
 
-.v-card[variant='outlined'] {
-  background: var(--md-background);
-  border: 1px dashed var(--card-border);
+.stat-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
 }
 
-.v-card[variant='outlined']:hover {
-  background: var(--md-surface-variant);
-  border: 1px solid var(--card-border);
+.menu-item {
+  cursor: pointer;
+  border: 1px solid var(--md-outline-variant);
+  background-color: var(--md-surface-1);
+  transition: all 0.3s var(--md-motion-standard);
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--md-primary);
+  opacity: 0;
+  transition: opacity 0.3s var(--md-motion-standard);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.menu-item:hover {
+  background-color: var(--md-surface-2);
+  border-color: var(--md-primary);
+  transform: translateY(-4px);
+  box-shadow: var(--md-shadow-2);
+}
+
+.menu-item:hover::before {
+  opacity: 0.05;
+}
+
+.select-md3 :deep(.v-field) {
+  border-radius: var(--md-shape-corner-medium);
+  background-color: var(--md-surface-variant);
+  transition: all 0.3s var(--md-motion-standard);
 }
 
 .select-md3 :deep(.v-field__outline) {
   opacity: 0.8;
+  color: var(--md-outline);
+}
+
+.select-md3 :deep(.v-field--focused) {
+  background-color: var(--md-surface-1);
 }
 
 .select-md3 :deep(.v-field--focused .v-field__outline) {
   opacity: 1;
+  color: var(--md-primary);
+}
+
+:deep(.v-card-title) {
+  color: var(--md-on-surface);
+  font-weight: 400;
+}
+
+.chart-card {
+  border-radius: var(--md-shape-corner-large);
+}
+
+:deep(.echarts) {
+  border-radius: var(--md-shape-corner-medium);
+  overflow: hidden;
 }
 </style>

@@ -47,14 +47,19 @@
             :loading="loading"
             :items-per-page="pageSize"
             class="elevation-0"
+            :page="page"
+            :items-per-page-options="[10, 20, 50]"
+            @update:page="page = $event; loadFacilities()"
+            @update:items-per-page="pageSize = $event; page = 1; loadFacilities()"
+            :server-items-length="totalFacilities || 0"
           >
             <template v-slot:item.status="{ item }">
               <v-chip
-                :color="item.status === 'normal' ? 'success' : 'warning'"
+                :color="getStatusColor(item.status)"
                 size="small"
                 rounded="pill"
               >
-                {{ statusMap[item.status] }}
+                {{ statusMap[item.status] || item.status }}
               </v-chip>
             </template>
             <template v-slot:item.attraction_id="{ item }">
@@ -99,15 +104,6 @@
               </v-tooltip>
             </template>
           </v-data-table>
-
-          <!-- 分页 -->
-          <AppPagination
-            v-model:page="page"
-            :pageSize="pageSize"
-            :totalItems="totalFacilities || 0"
-            emptyText="暂无设施数据"
-            emptyIcon="mdi-tools-wrench-outline"
-          />
         </v-card>
       </v-col>
     </v-row>
@@ -192,7 +188,6 @@ import { facilityApi, attractionApi } from '../utils/api';
 import SearchFilterBar from '../components/SearchFilterBar.vue';
 import AppDialog from '../components/AppDialog.vue';
 import AppSnackbar from '../components/AppSnackbar.vue';
-import AppPagination from '../components/AppPagination.vue';
 
 // 设施类型定义
 interface Facility {
@@ -332,9 +327,11 @@ const loadFacilities = async () => {
 };
 
 // 获取景点名称
-const getAttractionName = (attractionId: number) => {
-  const attraction = attractionOptions.value.find((a) => a.id === attractionId);
-  return attraction ? attraction.name : `景点 #${attractionId}`;
+const getAttractionName = (attractionId: number): string => {
+  const attraction = attractionOptions.value.find(
+    (a) => a.id === attractionId
+  );
+  return attraction ? attraction.name : `景点#${attractionId}`;
 };
 
 // 格式化日期
@@ -476,6 +473,18 @@ const showError = (message: string) => {
   snackbarText.value = message;
   snackbarColor.value = 'error';
   snackbar.value = true;
+};
+
+// 获取状态颜色
+const getStatusColor = (status: string): string => {
+  switch (status) {
+    case 'normal':
+      return 'success';
+    case 'maintenance':
+      return 'warning';
+    default:
+      return 'grey';
+  }
 };
 </script>
 

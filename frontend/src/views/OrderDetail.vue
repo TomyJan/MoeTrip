@@ -1,286 +1,259 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <h1 class="text-h4 mb-4">订单详情</h1>
+  <div class="order-detail-page">
+    <v-container>
+      <v-row>
+        <v-col cols="12">
+          <h1 class="md-headline-medium mb-6 font-weight-medium">订单详情</h1>
 
-        <!-- 订单信息卡片 -->
-        <v-card v-if="order" class="mb-6" rounded="lg" elevation="1">
-          <v-card-title class="text-md-h6 d-flex align-center">
-            <span>订单信息</span>
-            <v-spacer></v-spacer>
-            <v-chip
-              :color="order.status === 'success' ? 'success' : 'error'"
-              size="small"
-              class="ml-2"
-            >
-              {{ order.status === 'success' ? '已确认' : '已取消' }}
-            </v-chip>
-          </v-card-title>
-          <v-card-text>
-            <v-row>
-              <v-col cols="12" md="6">
-                <div class="text-h6 mb-4">基本信息</div>
-                <div class="d-flex justify-space-between mb-2">
-                  <span class="text-medium-emphasis">订单编号:</span>
-                  <span>{{ order.id }}</span>
-                </div>
-                <div class="d-flex justify-space-between mb-2">
-                  <span class="text-medium-emphasis">创建时间:</span>
-                  <span>{{ formatDateTime(order.created_at) }}</span>
-                </div>
-                <div class="d-flex justify-space-between mb-2">
-                  <span class="text-medium-emphasis">更新时间:</span>
-                  <span>{{ formatDateTime(order.updated_at) }}</span>
-                </div>
-                <div class="d-flex justify-space-between mb-2">
-                  <span class="text-medium-emphasis">订单状态:</span>
-                  <span>{{
-                    order.status === 'success' ? '已确认' : '已取消'
-                  }}</span>
-                </div>
-              </v-col>
-              <v-col cols="12" md="6">
-                <div class="text-h6 mb-4">门票信息</div>
-                <div class="d-flex justify-space-between mb-2">
-                  <span class="text-medium-emphasis">景点名称:</span>
-                  <span>{{ order.attraction_name }}</span>
-                </div>
-                <div class="d-flex justify-space-between mb-2">
-                  <span class="text-medium-emphasis">票种名称:</span>
-                  <span>{{ order.ticket_name }}</span>
-                </div>
-                <div class="d-flex justify-space-between mb-2">
-                  <span class="text-medium-emphasis">门票数量:</span>
-                  <span>{{ order.quantity }}张</span>
-                </div>
-                <div class="d-flex justify-space-between mb-2">
-                  <span class="text-medium-emphasis">游玩日期:</span>
-                  <span>{{ formatDateOnly(order.date) }}</span>
-                </div>
-                <div class="d-flex justify-space-between mb-2">
-                  <span class="text-medium-emphasis">总价:</span>
-                  <span class="text-primary"
-                    >¥{{ order.total_price || 0 }}</span
-                  >
-                </div>
-              </v-col>
-            </v-row>
-          </v-card-text>
-          <v-card-actions class="d-flex justify-end">
-            <v-btn
-              v-if="order.status === 'success'"
-              color="error"
-              variant="elevated"
-              class="mr-2"
-              :loading="cancelling"
-              @click="showCancelDialog = true"
-            >
-              取消订单
-            </v-btn>
-            <v-btn
-              v-if="order.status === 'success'"
-              color="primary"
-              variant="elevated"
-              :loading="editing"
-              @click="openEditDialog"
-            >
-              修改订单
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-
-        <!-- 加载中状态 -->
-        <v-card v-else-if="loading" class="mb-6" rounded="lg" elevation="1">
-          <v-card-text class="d-flex justify-center align-center py-8">
-            <v-progress-circular
-              indeterminate
-              color="primary"
-            ></v-progress-circular>
-          </v-card-text>
-        </v-card>
-
-        <!-- 错误状态 -->
-        <v-card v-else class="mb-6" rounded="lg" elevation="1">
-          <v-card-text class="text-center py-8">
-            <div class="text-h6 text-error mb-2">加载失败</div>
-            <div class="text-body-1 text-medium-emphasis mb-4">
-              {{ errorMessage }}
-            </div>
-            <v-btn color="primary" @click="loadOrderDetail">重试</v-btn>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <!-- 修改订单对话框 -->
-    <v-dialog
-      v-model="showEditDialog"
-      max-width="600px"
-      :persistent="false"
-      :retain-focus="false"
-      :scrim="true"
-      @click:outside="closeEditDialog"
-    >
-      <v-card rounded="lg">
-        <v-card-title class="text-md-h6">修改订单</v-card-title>
-        <v-card-text>
-          <v-form ref="editForm" @submit.prevent="updateOrder">
-            <v-row>
-              <!-- 票种选择 -->
-              <v-col cols="12">
-                <v-select
-                  v-model="currentOrder.ticket_id"
-                  :items="availableTickets"
-                  item-title="name"
-                  item-value="id"
-                  label="选择票种"
-                  variant="outlined"
-                  :loading="loadingTickets"
-                  return-object
-                  @update:model-value="handleTicketChange"
-                >
-                  <template v-slot:item="{ item, props }">
-                    <v-list-item v-bind="props">
-                      <v-list-item-subtitle>
-                        价格: ¥{{ item.raw.price }} | 余量:
-                        {{ item.raw.available }}
-                      </v-list-item-subtitle>
-                    </v-list-item>
-                  </template>
-                  <template v-slot:selection="{ item }">
-                    <span>{{
-                      item?.raw?.name || getSelectedTicketName()
+          <!-- 订单信息卡片 -->
+          <v-card v-if="order" class="mb-6 order-card" rounded="lg" elevation="1">
+            <v-card-title class="md-title-large d-flex align-center py-4">
+              <span>订单信息</span>
+              <v-spacer></v-spacer>
+              <v-chip
+                :color="order.status === 'success' ? 'success' : 'error'"
+                size="small"
+                variant="elevated"
+                class="ml-2"
+              >
+                {{ order.status === 'success' ? '已确认' : '已取消' }}
+              </v-chip>
+            </v-card-title>
+            <v-card-text>
+              <v-row>
+                <v-col cols="12" md="6">
+                  <div class="md-title-medium mb-4">基本信息</div>
+                  <div class="d-flex justify-space-between mb-3 info-row">
+                    <span class="text-medium-emphasis md-body-medium">订单编号:</span>
+                    <span class="md-body-medium">{{ order.id }}</span>
+                  </div>
+                  <div class="d-flex justify-space-between mb-3 info-row">
+                    <span class="text-medium-emphasis md-body-medium">创建时间:</span>
+                    <span class="md-body-medium">{{ formatDateTime(order.created_at) }}</span>
+                  </div>
+                  <div class="d-flex justify-space-between mb-3 info-row">
+                    <span class="text-medium-emphasis md-body-medium">更新时间:</span>
+                    <span class="md-body-medium">{{ formatDateTime(order.updated_at) }}</span>
+                  </div>
+                  <div class="d-flex justify-space-between mb-3 info-row">
+                    <span class="text-medium-emphasis md-body-medium">订单状态:</span>
+                    <span class="md-body-medium" :class="{'text-success': order.status === 'success', 'text-error': order.status !== 'success'}">{{
+                      order.status === 'success' ? '已确认' : '已取消'
                     }}</span>
-                  </template>
-                </v-select>
-              </v-col>
-
-              <!-- 数量选择 -->
-              <v-col cols="12">
-                <v-text-field
-                  v-model.number="currentOrder.quantity"
-                  type="number"
-                  label="门票数量"
-                  variant="outlined"
-                  min="1"
-                  :max="maxQuantity"
-                  :loading="checkingAvailability"
-                  :error-messages="quantityError"
-                  @input="checkAvailability"
-                ></v-text-field>
-              </v-col>
-
-              <!-- 日期选择 -->
-              <v-col cols="12">
-                <v-date-picker
-                  v-model="currentOrder.date"
-                  :min="minDate"
-                  :max="maxDate"
-                  :disabled-dates="disabledDates"
-                  color="primary"
-                  elevation="0"
-                  rounded="lg"
-                  @update:model-value="checkAvailability"
-                ></v-date-picker>
-              </v-col>
-
-              <!-- 订单价格预览 -->
-              <v-col cols="12">
-                <v-card variant="outlined" class="pa-3">
-                  <div class="d-flex justify-space-between mb-2">
-                    <span class="text-medium-emphasis">票种:</span>
-                    <span>{{ getSelectedTicketName() }}</span>
                   </div>
-                  <div class="d-flex justify-space-between mb-2">
-                    <span class="text-medium-emphasis">单价:</span>
-                    <span>¥{{ getSelectedTicketPrice() }}</span>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <div class="md-title-medium mb-4">门票信息</div>
+                  <div class="d-flex justify-space-between mb-3 info-row">
+                    <span class="text-medium-emphasis md-body-medium">景点名称:</span>
+                    <span class="md-body-medium">{{ order.attraction_name }}</span>
                   </div>
-                  <div class="d-flex justify-space-between mb-2">
-                    <span class="text-medium-emphasis">数量:</span>
-                    <span>{{ currentOrder.quantity }}张</span>
+                  <div class="d-flex justify-space-between mb-3 info-row">
+                    <span class="text-medium-emphasis md-body-medium">票种名称:</span>
+                    <span class="md-body-medium">{{ order.ticket_name }}</span>
                   </div>
-                  <div class="d-flex justify-space-between mb-2">
-                    <span class="text-medium-emphasis">日期:</span>
-                    <span>{{ formatDateOnly(currentOrder.date) }}</span>
+                  <div class="d-flex justify-space-between mb-3 info-row">
+                    <span class="text-medium-emphasis md-body-medium">门票数量:</span>
+                    <span class="md-body-medium">{{ order.quantity }}张</span>
                   </div>
-                  <v-divider class="my-2"></v-divider>
-                  <div class="d-flex justify-space-between mt-2">
-                    <span class="text-subtitle-1 font-weight-bold">总价:</span>
-                    <span class="text-subtitle-1 text-primary font-weight-bold">
-                      ¥{{ calculateTotalPrice() }}
-                    </span>
+                  <div class="d-flex justify-space-between mb-3 info-row">
+                    <span class="text-medium-emphasis md-body-medium">游玩日期:</span>
+                    <span class="md-body-medium">{{ formatDateOnly(order.date) }}</span>
                   </div>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-form>
-        </v-card-text>
-        <v-card-actions class="d-flex justify-end pa-4">
-          <v-btn
-            color="error"
-            variant="text"
-            :disabled="editing"
-            @click="closeEditDialog"
-            class="mr-2"
-          >
-            取消
-          </v-btn>
-          <v-btn
-            color="primary"
-            variant="elevated"
-            :loading="editing"
-            :disabled="!canUpdate"
-            @click="updateOrder"
-          >
-            确认修改
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+                  <div class="d-flex justify-space-between mb-3 info-row">
+                    <span class="text-medium-emphasis md-body-medium">总价:</span>
+                    <span class="md-body-medium text-primary font-weight-bold"
+                      >¥{{ order.total_price || 0 }}</span
+                    >
+                  </div>
+                </v-col>
+              </v-row>
+            </v-card-text>
+            <v-card-actions class="d-flex justify-end pa-4">
+              <v-btn
+                v-if="order.status === 'success'"
+                color="error"
+                variant="outlined"
+                class="mr-3 action-btn"
+                :loading="cancelling"
+                @click="showCancelDialog = true"
+                rounded="pill"
+                elevation="0"
+              >
+                取消订单
+              </v-btn>
+              <v-btn
+                v-if="order.status === 'success'"
+                color="primary"
+                variant="elevated"
+                class="action-btn"
+                :loading="editing"
+                @click="openEditDialog"
+                rounded="pill"
+              >
+                修改订单
+              </v-btn>
+            </v-card-actions>
+          </v-card>
 
-    <!-- 取消订单确认对话框 -->
-    <v-dialog
-      v-model="showCancelDialog"
-      max-width="400px"
-      :persistent="false"
-      :retain-focus="false"
-      :scrim="true"
-      @click:outside="closeCancelDialog"
-    >
-      <v-card rounded="lg">
-        <v-card-title class="text-md-h6">确认取消订单</v-card-title>
-        <v-card-text>
-          <p class="text-body-1">确定要取消该订单吗？此操作不可撤销。</p>
-        </v-card-text>
-        <v-card-actions class="d-flex justify-end">
-          <v-btn
-            color="error"
-            variant="elevated"
-            :loading="cancelling"
-            @click="cancelOrder"
-          >
-            确认取消
-          </v-btn>
-          <v-btn
-            color="primary"
-            variant="elevated"
-            :disabled="cancelling"
-            @click="closeCancelDialog"
-          >
-            返回
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          <!-- 加载中状态 -->
+          <v-card v-else-if="loading" class="mb-6 loading-card" rounded="lg" elevation="1">
+            <v-card-text class="d-flex justify-center align-center py-8">
+              <v-progress-circular
+                indeterminate
+                color="primary"
+                size="64"
+                width="4"
+              ></v-progress-circular>
+            </v-card-text>
+          </v-card>
 
-    <!-- 消息提示条 -->
-    <AppSnackbar
-      v-model:show="showSnackbar"
-      :text="snackbarText"
-      :color="snackbarColor"
-    />
-  </v-container>
+          <!-- 错误状态 -->
+          <v-card v-else class="mb-6 error-card" rounded="lg" elevation="1">
+            <v-card-text class="text-center py-8">
+              <div class="md-title-medium text-error mb-3">加载失败</div>
+              <div class="md-body-medium text-medium-emphasis mb-5">
+                {{ errorMessage }}
+              </div>
+              <v-btn color="primary" variant="elevated" rounded="pill" @click="loadOrderDetail">重试</v-btn>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <!-- 修改订单对话框 -->
+      <AppDialog
+        v-model:show="showEditDialog"
+        title="修改订单"
+        :loading="editing"
+        confirm-text="确认修改"
+        cancel-text="取消"
+        max-width="600"
+        @confirm="updateOrder"
+        @cancel="closeEditDialog"
+        :disabled="!canUpdate"
+      >
+        <v-form ref="editForm" @submit.prevent="updateOrder">
+          <v-row>
+            <!-- 票种选择 -->
+            <v-col cols="12">
+              <v-select
+                v-model="currentOrder.ticket_id"
+                :items="availableTickets"
+                item-title="name"
+                item-value="id"
+                label="选择票种"
+                variant="outlined"
+                :loading="loadingTickets"
+                return-object
+                @update:model-value="handleTicketChange"
+                rounded="lg"
+                class="ticket-select"
+              >
+                <template v-slot:item="{ item, props }">
+                  <v-list-item v-bind="props">
+                    <v-list-item-subtitle>
+                      价格: ¥{{ item.raw.price }} | 余量:
+                      {{ item.raw.available }}
+                    </v-list-item-subtitle>
+                  </v-list-item>
+                </template>
+                <template v-slot:selection="{ item }">
+                  <span>{{
+                    item?.raw?.name || getSelectedTicketName()
+                  }}</span>
+                </template>
+              </v-select>
+            </v-col>
+
+            <!-- 数量选择 -->
+            <v-col cols="12">
+              <v-text-field
+                v-model.number="currentOrder.quantity"
+                type="number"
+                label="门票数量"
+                variant="outlined"
+                min="1"
+                :max="maxQuantity"
+                :loading="checkingAvailability"
+                :error-messages="quantityError"
+                @input="checkAvailability"
+                rounded="lg"
+                class="quantity-field"
+              ></v-text-field>
+            </v-col>
+
+            <!-- 日期选择 -->
+            <v-col cols="12">
+              <v-date-picker
+                v-model="currentOrder.date"
+                :min="minDate"
+                :max="maxDate"
+                :disabled-dates="disabledDates"
+                color="primary"
+                elevation="1"
+                rounded="lg"
+                @update:model-value="checkAvailability"
+                class="date-picker"
+                locale="zh-cn"
+              ></v-date-picker>
+            </v-col>
+
+            <!-- 订单价格预览 -->
+            <v-col cols="12">
+              <v-card variant="outlined" class="pa-4 price-preview" rounded="lg">
+                <div class="d-flex justify-space-between mb-3">
+                  <span class="text-medium-emphasis md-body-medium">票种:</span>
+                  <span class="md-body-medium">{{ getSelectedTicketName() }}</span>
+                </div>
+                <div class="d-flex justify-space-between mb-3">
+                  <span class="text-medium-emphasis md-body-medium">单价:</span>
+                  <span class="md-body-medium">¥{{ getSelectedTicketPrice() }}</span>
+                </div>
+                <div class="d-flex justify-space-between mb-3">
+                  <span class="text-medium-emphasis md-body-medium">数量:</span>
+                  <span class="md-body-medium">{{ currentOrder.quantity }}张</span>
+                </div>
+                <div class="d-flex justify-space-between mb-3">
+                  <span class="text-medium-emphasis md-body-medium">日期:</span>
+                  <span class="md-body-medium">{{ formatDateOnly(currentOrder.date) }}</span>
+                </div>
+                <v-divider class="my-3"></v-divider>
+                <div class="d-flex justify-space-between mt-3">
+                  <span class="md-title-small font-weight-bold">总价:</span>
+                  <span class="md-title-small text-primary font-weight-bold">
+                    ¥{{ calculateTotalPrice() }}
+                  </span>
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-form>
+      </AppDialog>
+
+      <!-- 取消订单确认对话框 -->
+      <AppDialog
+        v-model:show="showCancelDialog"
+        title="确认取消订单"
+        :loading="cancelling"
+        confirm-text="确认取消"
+        cancel-text="返回"
+        max-width="400"
+        confirm-color="error"
+        @confirm="cancelOrder"
+        @cancel="closeCancelDialog"
+      >
+        <p class="md-body-medium">确定要取消该订单吗？此操作不可撤销。</p>
+      </AppDialog>
+
+      <!-- 消息提示条 -->
+      <AppSnackbar
+        v-model:show="showSnackbar"
+        :text="snackbarText"
+        :color="snackbarColor"
+      />
+    </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -289,6 +262,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '../stores';
 import { orderApi, ticketApi } from '../utils/api';
 import AppSnackbar from '../components/AppSnackbar.vue';
+import AppDialog from '../components/AppDialog.vue';
 import dayjs from 'dayjs';
 
 const router = useRouter();
@@ -679,29 +653,106 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.v-card {
+.order-detail-page {
+  min-height: 100vh;
+  background-color: var(--md-surface);
+}
+
+.order-card,
+.loading-card,
+.error-card {
   overflow: hidden;
   transition:
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
-  border: 1px solid var(--card-border);
+    box-shadow 0.3s var(--md-motion-standard),
+    transform 0.3s var(--md-motion-standard);
+  border: 1px solid var(--md-outline-variant);
   background: var(--md-surface);
 }
 
-.v-card:hover {
-  box-shadow: var(--card-shadow-hover);
+.action-btn {
+  text-transform: none;
+  letter-spacing: 0.0178571em;
+  font-weight: 500;
+  transition: all 0.2s var(--md-motion-standard);
+}
+
+.action-btn:hover {
   transform: translateY(-2px);
+  box-shadow: var(--md-shadow-2);
 }
 
-/* 对话框过渡动画 */
-:deep(.v-dialog-transition-enter-active),
-:deep(.v-dialog-transition-leave-active) {
-  transition: all 0.3s ease;
+.info-row {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--md-outline-variant);
 }
 
-:deep(.v-dialog-transition-enter-from),
-:deep(.v-dialog-transition-leave-to) {
+.ticket-select :deep(.v-field),
+.quantity-field :deep(.v-field) {
+  border-radius: var(--md-shape-corner-medium);
+  background-color: var(--md-surface-variant);
+  transition: all 0.3s var(--md-motion-standard);
+}
+
+.ticket-select :deep(.v-field__outline),
+.quantity-field :deep(.v-field__outline) {
+  opacity: 0.8;
+  color: var(--md-outline);
+}
+
+.ticket-select :deep(.v-field--focused),
+.quantity-field :deep(.v-field--focused) {
+  background-color: var(--md-surface-1);
+}
+
+.ticket-select :deep(.v-field--focused .v-field__outline),
+.quantity-field :deep(.v-field--focused .v-field__outline) {
+  opacity: 1;
+  color: var(--md-primary);
+}
+
+.date-picker {
+  border-radius: var(--md-shape-corner-large);
+  overflow: hidden;
+  box-shadow: var(--md-shadow-1);
+  border: 1px solid var(--md-outline-variant);
+}
+
+.price-preview {
+  background-color: var(--md-surface-1);
+  border: 1px solid var(--md-outline-variant);
+}
+
+:deep(.v-card-title) {
+  color: var(--md-on-surface);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* Dialog中的按钮样式 */
+:deep(.v-btn) {
+  position: relative;
+  overflow: hidden;
+}
+
+:deep(.v-btn::before) {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: currentColor;
+  border-radius: inherit;
   opacity: 0;
-  transform: scale(0.95);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+:deep(.v-btn:hover::before) {
+  opacity: 0.08;
+}
+
+:deep(.v-btn:active::before) {
+  opacity: 0.12;
 }
 </style>

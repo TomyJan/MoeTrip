@@ -1,39 +1,69 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
 :root {
-  /* 浅色模式变量 */
-  --surface-color: #fffbfe;
-  --background-color: #f6f2fa;
-  --text-color: rgba(0, 0, 0, 0.87);
-  --secondary-text-color: rgba(0, 0, 0, 0.6);
-  --disabled-text-color: rgba(0, 0, 0, 0.38);
-  --divider-color: rgba(0, 0, 0, 0.12);
-
-  /* MD3 浅色主题颜色 */
+  /* MD3 浅色主题变量 */
   --md-primary: #6750a4;
+  --md-on-primary: #ffffff;
+  --md-primary-container: #eaddff;
+  --md-on-primary-container: #21005e;
+  
   --md-secondary: #625b71;
+  --md-on-secondary: #ffffff;
+  --md-secondary-container: #e8def8;
+  --md-on-secondary-container: #1e192b;
+  
   --md-tertiary: #7d5260;
+  --md-on-tertiary: #ffffff;
+  --md-tertiary-container: #ffd8e4;
+  --md-on-tertiary-container: #370b1e;
+  
   --md-error: #b3261e;
-  --md-surface: #ffffff;
-  --md-background: #f6f2fa;
+  --md-on-error: #ffffff;
+  --md-error-container: #f9dedc;
+  --md-on-error-container: #410e0b;
+  
+  --md-surface: #fffbfe;
+  --md-on-surface: #1c1b1f;
   --md-surface-variant: #e7e0ec;
   --md-on-surface-variant: #49454f;
-  --md-on-primary: #ffffff;
-  --md-on-secondary: #ffffff;
-  --md-on-tertiary: #ffffff;
-  --md-on-error: #ffffff;
-  --card-border: rgba(103, 80, 164, 0.1);
-  --card-shadow-light:
-    0 2px 4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --card-shadow-hover:
-    0 6px 12px rgba(0, 0, 0, 0.08), 0 3px 6px rgba(0, 0, 0, 0.06);
+  
+  --md-outline: #79747e;
+  --md-outline-variant: #cac4d0;
+  
+  --md-background: #f6f2fa;
+  --md-on-background: #1c1b1f;
 
-  /* 为了向后兼容，保留旧变量名但使用 MD3 颜色 */
+  /* MD3 表面色调 */
+  --md-surface-1: #f4eff4;
+  --md-surface-2: #e9e3ea;
+  --md-surface-3: #ded7e0;
+  --md-surface-4: #d3ccd6;
+  --md-surface-5: #c8c1cb;
+
+  /* MD3 阴影 */
+  --md-shadow-1: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --md-shadow-2: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --md-shadow-3: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px rgba(0, 0, 0, 0.3);
+  --md-shadow-4: 0px 6px 10px 4px rgba(0, 0, 0, 0.15), 0px 2px 3px rgba(0, 0, 0, 0.3);
+  --md-shadow-5: 0px 8px 12px 6px rgba(0, 0, 0, 0.15), 0px 4px 4px rgba(0, 0, 0, 0.3);
+  
+  /* MD3 卡片和边框 */
+  --md-card-border: rgba(103, 80, 164, 0.1);
+  --md-card-shadow: var(--md-shadow-1);
+  --md-card-shadow-hover: var(--md-shadow-2);
+  
+  /* 为兼容保留的旧变量 */
+  --surface-color: var(--md-surface);
+  --background-color: var(--md-background);
+  --text-color: var(--md-on-surface);
+  --secondary-text-color: var(--md-on-surface-variant);
+  --disabled-text-color: rgba(0, 0, 0, 0.38);
+  --divider-color: var(--md-outline-variant);
   --primary-color: var(--md-primary);
   --secondary-color: var(--md-secondary);
   --accent-color: var(--md-tertiary);
-
-  /* MD3 字体设置 */
+  
+  /* MD3 字体 */
   font-family:
     Roboto,
     MiSans,
@@ -46,56 +76,126 @@
     'Open Sans',
     'Helvetica Neue',
     sans-serif;
+
+  /* MD3 状态层不透明度 */
+  --md-state-hover-opacity: 0.08;  
+  --md-state-focus-opacity: 0.12;
+  --md-state-pressed-opacity: 0.12;
+  --md-state-dragged-opacity: 0.16;
+  
+  /* MD3 形状尺寸 */
+  --md-shape-corner-small: 8px;
+  --md-shape-corner-medium: 12px;
+  --md-shape-corner-large: 16px;
+  --md-shape-corner-full: 9999px;
+  
+  /* MD3 贝塞尔曲线 */
+  --md-motion-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --md-motion-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --md-motion-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --md-motion-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  
+  /* MD3 动效时长 */
+  --md-duration-short1: 50ms;
+  --md-duration-short2: 100ms;
+  --md-duration-short3: 150ms;
+  --md-duration-short4: 200ms;
+  --md-duration-medium1: 250ms;
+  --md-duration-medium2: 300ms;
+  --md-duration-medium3: 350ms;
+  --md-duration-medium4: 400ms;
+  --md-duration-long1: 450ms;
+  --md-duration-long2: 500ms;
+  --md-duration-long3: 550ms;
+  --md-duration-long4: 600ms;
 }
 
 /* 深色模式变量 */
 [data-theme='dark'] {
-  --surface-color: #1c1b1f;
-  --background-color: #131216;
-  --text-color: rgba(255, 255, 255, 0.87);
-  --secondary-text-color: rgba(255, 255, 255, 0.6);
-  --disabled-text-color: rgba(255, 255, 255, 0.38);
-  --divider-color: rgba(255, 255, 255, 0.12);
-
-  /* MD3 深色主题颜色 */
+  /* MD3 深色主题变量 */
   --md-primary: #d0bcff;
+  --md-on-primary: #381e72;
+  --md-primary-container: #4f378b;
+  --md-on-primary-container: #eaddff;
+  
   --md-secondary: #ccc2dc;
+  --md-on-secondary: #332d41;
+  --md-secondary-container: #4a4458;
+  --md-on-secondary-container: #e8def8;
+  
   --md-tertiary: #efb8c8;
+  --md-on-tertiary: #492532;
+  --md-tertiary-container: #633b48;
+  --md-on-tertiary-container: #ffd8e4;
+  
   --md-error: #f2b8b5;
-  --md-surface: #2c2b30;
-  --md-background: #131216;
+  --md-on-error: #601410;
+  --md-error-container: #8c1d18;
+  --md-on-error-container: #f9dedc;
+  
+  --md-surface: #1c1b1f;
+  --md-on-surface: #e6e1e5;
   --md-surface-variant: #49454f;
   --md-on-surface-variant: #cac4d0;
-  --md-on-primary: #381e72;
-  --md-on-secondary: #332d41;
-  --md-on-tertiary: #492532;
-  --md-on-error: #601410;
+  
+  --md-outline: #938f99;
+  --md-outline-variant: #444746;
+  
+  --md-background: #141218;
+  --md-on-background: #e6e1e5;
 
+  /* MD3 深色表面色调 */
+  --md-surface-1: #252329;
+  --md-surface-2: #2f2b33;
+  --md-surface-3: #39343d;
+  --md-surface-4: #423d47;
+  --md-surface-5: #4c4651;
+
+  /* 深色模式下的阴影 */
+  --md-shadow-1: 0px 1px 3px 1px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.5);
+  --md-shadow-2: 0px 2px 6px 2px rgba(0, 0, 0, 0.2), 0px 1px 2px rgba(0, 0, 0, 0.5);
+  --md-shadow-3: 0px 4px 8px 3px rgba(0, 0, 0, 0.2), 0px 1px 3px rgba(0, 0, 0, 0.5);
+  --md-shadow-4: 0px 6px 10px 4px rgba(0, 0, 0, 0.2), 0px 2px 3px rgba(0, 0, 0, 0.5);
+  --md-shadow-5: 0px 8px 12px 6px rgba(0, 0, 0, 0.2), 0px 4px 4px rgba(0, 0, 0, 0.5);
+  
   /* 深色模式下卡片边框和阴影 */
-  --card-border: rgba(208, 188, 255, 0.15);
-  --card-shadow-light:
-    0 2px 4px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.4);
-  --card-shadow-hover:
-    0 6px 12px rgba(0, 0, 0, 0.45), 0 3px 6px rgba(0, 0, 0, 0.35);
+  --md-card-border: rgba(208, 188, 255, 0.15);
+  --md-card-shadow: var(--md-shadow-1);
+  --md-card-shadow-hover: var(--md-shadow-2);
+  
+  /* 为兼容保留的旧变量 */
+  --surface-color: var(--md-surface);
+  --background-color: var(--md-background);
+  --text-color: var(--md-on-surface);
+  --secondary-text-color: var(--md-on-surface-variant);
+  --disabled-text-color: rgba(255, 255, 255, 0.38);
+  --divider-color: var(--md-outline-variant);
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--background-color);
-  color: var(--text-color);
+  background-color: var(--md-background);
+  color: var(--md-on-background);
   min-height: 100vh;
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
+  font-family: Roboto, 'MiSans', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* MD3 边距设置 */
 .page-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 24px;
 }
 
+/* MD3 文本对齐 */
 .text-center {
   text-align: center;
 }
@@ -104,6 +204,7 @@ body {
   width: 100%;
 }
 
+/* MD3 标准间距 */
 .mt-4 {
   margin-top: 16px;
 }
@@ -115,24 +216,24 @@ body {
 /* MD3 卡片样式 */
 .card {
   background: var(--md-surface);
-  border-radius: 12px;
-  border: 1px solid var(--card-border);
-  box-shadow: var(--card-shadow-light);
+  border-radius: var(--md-shape-corner-large); /* MD3 使用更大的圆角 */
+  border: 1px solid var(--md-card-border);
+  box-shadow: var(--md-card-shadow);
   padding: 16px;
   margin-bottom: 16px;
   transition:
-    box-shadow 0.2s ease-in-out,
-    transform 0.2s ease-in-out;
+    box-shadow var(--md-duration-short4) var(--md-motion-standard),
+    transform var(--md-duration-short4) var(--md-motion-standard);
 }
 
 .card:hover {
-  box-shadow: var(--card-shadow-hover);
+  box-shadow: var(--md-card-shadow-hover);
   transform: translateY(-2px);
 }
 
 .card-title {
   font-size: 1.5rem;
-  font-weight: 500; /* MD3 使用较轻的字重 */
+  font-weight: 500; /* MD3 字重 */
   margin-bottom: 16px;
   color: var(--md-primary);
 }
@@ -142,13 +243,60 @@ body {
   font-weight: 500;
 }
 
+/* MD3 状态层基础类 */
+.md-state-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  transition: background-color var(--md-duration-short4) var(--md-motion-standard);
+}
+
+.md-state-layer--hover {
+  background-color: currentColor;
+  opacity: var(--md-state-hover-opacity);
+}
+
+.md-state-layer--pressed {
+  background-color: currentColor;
+  opacity: var(--md-state-pressed-opacity);
+}
+
 /* MD3 按钮样式扩展 */
 .md-button {
-  border-radius: 20px;
+  border-radius: var(--md-shape-corner-full); /* MD3 按钮使用更大的圆角 */
   font-weight: 500;
-  text-transform: none;
-  padding: 8px 16px;
+  text-transform: none; /* MD3 不使用全大写 */
+  padding: 10px 24px; /* MD3 使用更大的内边距 */
   letter-spacing: 0.01em;
+  transition: all var(--md-duration-short4) var(--md-motion-standard);
+  position: relative;
+  overflow: hidden;
+}
+
+.md-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: currentColor;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity var(--md-duration-short4) var(--md-motion-standard);
+  pointer-events: none;
+}
+
+.md-button:hover::before {
+  opacity: var(--md-state-hover-opacity);
+}
+
+.md-button:active::before {
+  opacity: var(--md-state-pressed-opacity);
 }
 
 /* MD3 文本样式 */
@@ -156,6 +304,7 @@ body {
   font-size: 57px;
   line-height: 64px;
   font-weight: 400;
+  letter-spacing: -0.25px;
 }
 
 .md-display-medium {
@@ -188,47 +337,96 @@ body {
   font-weight: 400;
 }
 
+.md-title-large {
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 400;
+}
+
+.md-title-medium {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  letter-spacing: 0.15px;
+}
+
+.md-title-small {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+}
+
 .md-body-large {
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
+  letter-spacing: 0.5px;
 }
 
 .md-body-medium {
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
+  letter-spacing: 0.25px;
 }
 
 .md-body-small {
   font-size: 12px;
   line-height: 16px;
   font-weight: 400;
+  letter-spacing: 0.4px;
 }
 
 .md-label-large {
   font-size: 14px;
   line-height: 20px;
   font-weight: 500;
+  letter-spacing: 0.1px;
 }
 
 .md-label-medium {
   font-size: 12px;
   line-height: 16px;
   font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
 .md-label-small {
   font-size: 11px;
   line-height: 16px;
   font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
-/* 平滑过渡效果 */
+/* MD3 平滑过渡效果 */
 *,
 *::before,
 *::after {
   transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease;
+    background-color var(--md-duration-medium1) var(--md-motion-standard),
+    border-color var(--md-duration-medium1) var(--md-motion-standard),
+    color var(--md-duration-medium1) var(--md-motion-standard),
+    box-shadow var(--md-duration-medium1) var(--md-motion-standard),
+    opacity var(--md-duration-medium1) var(--md-motion-standard),
+    transform var(--md-duration-medium1) var(--md-motion-standard);
+}
+
+/* 焦点环样式 */
+.md-focus-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  outline: 2px solid var(--md-primary);
+  outline-offset: 2px;
+  opacity: 0;
+  transition: opacity var(--md-duration-short4) var(--md-motion-standard);
+}
+
+.md-focus-ring--visible {
+  opacity: 1;
 }

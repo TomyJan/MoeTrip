@@ -48,6 +48,11 @@
             :loading="loading"
             :items-per-page="pageSize"
             class="elevation-0"
+            :page="page"
+            :items-per-page-options="[10, 20, 50]"
+            @update:page="page = $event; loadTickets()"
+            @update:items-per-page="pageSize = $event; page = 1; loadTickets()"
+            :server-items-length="totalTickets || 0"
           >
             <template v-slot:item.price="{ item }">
               <span
@@ -66,6 +71,9 @@
               >
                 {{ getStatusText(item.status) }}
               </v-chip>
+            </template>
+            <template v-slot:item.attraction_id="{ item }">
+              {{ getAttractionName(item.attraction_id) }}
             </template>
             <template v-slot:item.created_at="{ item }">
               {{ formatDate(item.created_at) }}
@@ -106,15 +114,6 @@
               </v-tooltip>
             </template>
           </v-data-table>
-
-          <!-- 分页 -->
-          <AppPagination
-            v-model:page="page"
-            :pageSize="pageSize"
-            :totalItems="totalTickets || 0"
-            emptyText="暂无票种数据"
-            emptyIcon="mdi-ticket-outline"
-          />
         </v-card>
       </v-col>
     </v-row>
@@ -219,7 +218,6 @@ import { ticketApi, attractionApi } from '../utils/api';
 import SearchFilterBar from '../components/SearchFilterBar.vue';
 import AppDialog from '../components/AppDialog.vue';
 import AppSnackbar from '../components/AppSnackbar.vue';
-import AppPagination from '../components/AppPagination.vue';
 
 // 票种类型定义
 interface Ticket {
@@ -537,6 +535,14 @@ function showError(message: string) {
   snackbarText.value = message;
   snackbarColor.value = 'error';
   snackbar.value = true;
+}
+
+// 获取景点名称
+function getAttractionName(attractionId: number): string {
+  const attraction = attractionOptions.value.find(
+    (a) => a.id === attractionId
+  );
+  return attraction ? attraction.name : `景点#${attractionId}`;
 }
 </script>
 

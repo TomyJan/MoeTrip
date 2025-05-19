@@ -173,13 +173,27 @@
         </v-row>
 
         <!-- 分页控件 -->
-        <AppPagination
-          v-model:page="page"
-          :pageSize="pageSize"
-          :totalItems="totalItems || 0"
-          emptyText="暂无反馈数据"
-          emptyIcon="mdi-emoticon-sad-outline"
-        />
+        <div class="d-flex justify-center mt-4" v-if="totalItems > 0">
+          <v-pagination
+            v-model="page"
+            :length="Math.ceil(totalItems / pageSize)"
+            @update:model-value="loadFeedback"
+            rounded="lg"
+            active-color="primary"
+            variant="text"
+            class="md3-pagination"
+          ></v-pagination>
+        </div>
+        
+        <!-- 空状态 -->
+        <v-row v-else-if="!feedbackList || feedbackList.length === 0">
+          <v-col cols="12" class="text-center py-8">
+            <div class="empty-state">
+              <v-icon icon="mdi-emoticon-sad-outline" size="large" color="outline" class="mb-3"></v-icon>
+              <p class="md-body-large text-medium-emphasis">暂无反馈数据</p>
+            </div>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
 
@@ -240,7 +254,6 @@ import { useUserStore } from '../stores';
 import { attractionApi, feedbackApi } from '../utils/api';
 import { formatDateTime } from '../utils/format';
 import SearchFilterBar from '../components/SearchFilterBar.vue';
-import AppPagination from '../components/AppPagination.vue';
 import AppDialog from '../components/AppDialog.vue';
 import FeedbackForm from '../components/FeedbackForm.vue';
 import AppSnackbar from '../components/AppSnackbar.vue';

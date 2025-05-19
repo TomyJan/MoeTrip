@@ -1,176 +1,199 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <h1 class="text-h4 mb-4">在线购票</h1>
+  <div class="ticket-buy-page">
+    <v-container>
+      <v-row>
+        <v-col cols="12">
+          <h1 class="md-headline-medium mb-6 font-weight-medium">在线购票</h1>
 
-        <!-- 景点信息 -->
-        <v-card
-          v-if="selectedAttraction"
-          class="mb-6"
-          rounded="lg"
-          elevation="1"
-        >
-          <v-card-title class="text-md-h6">景点信息</v-card-title>
-          <v-card-text>
-            <v-row>
-              <v-col cols="12" md="6">
-                <v-img
-                  :src="selectedAttraction.image_url"
-                  height="300"
-                  cover
-                  class="bg-grey-lighten-2 rounded-lg"
-                >
-                  <template v-slot:placeholder>
-                    <v-row
-                      class="fill-height ma-0"
-                      align="center"
-                      justify="center"
-                    >
-                      <v-progress-circular
-                        indeterminate
-                        color="grey-lighten-4"
-                      ></v-progress-circular>
-                    </v-row>
-                  </template>
-                </v-img>
-              </v-col>
-              <v-col cols="12" md="6">
-                <div class="text-h5 mb-2">{{ selectedAttraction.name }}</div>
-                <div class="text-body-1 text-medium-emphasis mb-4">
-                  {{ selectedAttraction.description }}
-                </div>
-                <div class="d-flex align-center mb-2">
-                  <v-icon size="small" class="mr-1">mdi-clock-outline</v-icon>
-                  <span>开放时间: {{ selectedAttraction.open_time }}</span>
-                </div>
-                <div class="d-flex align-center">
-                  <v-icon size="small" class="mr-1">mdi-star</v-icon>
-                  <span
-                    >评分:
-                    {{ selectedAttraction.feedback_avg || '暂无评分' }}</span
+          <!-- 景点信息 -->
+          <v-card
+            v-if="selectedAttraction"
+            class="mb-6 attraction-card"
+            rounded="lg"
+            elevation="1"
+          >
+            <v-card-title class="md-title-large py-4">景点信息</v-card-title>
+            <v-card-text>
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-img
+                    :src="selectedAttraction.image_url"
+                    height="300"
+                    cover
+                    class="bg-grey-lighten-2 rounded-lg"
                   >
-                </div>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
+                    <template v-slot:placeholder>
+                      <v-row
+                        class="fill-height ma-0"
+                        align="center"
+                        justify="center"
+                      >
+                        <v-progress-circular
+                          indeterminate
+                          color="grey-lighten-4"
+                          size="64"
+                          width="4"
+                        ></v-progress-circular>
+                      </v-row>
+                    </template>
+                  </v-img>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <div class="md-headline-small mb-3">{{ selectedAttraction.name }}</div>
+                  <div class="md-body-medium text-medium-emphasis mb-5">
+                    {{ selectedAttraction.description }}
+                  </div>
+                  <div class="d-flex align-center mb-3 info-row">
+                    <v-icon size="small" color="primary" class="mr-2">mdi-clock-outline</v-icon>
+                    <span class="md-body-medium">开放时间: {{ selectedAttraction.open_time }}</span>
+                  </div>
+                  <div class="d-flex align-center info-row">
+                    <v-icon size="small" color="warning" class="mr-2">mdi-star</v-icon>
+                    <span class="md-body-medium"
+                      >评分:
+                      {{ selectedAttraction.feedback_avg || '暂无评分' }}</span
+                    >
+                  </div>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
 
-        <!-- 票种选择 -->
-        <v-card
-          v-if="selectedAttraction"
-          class="mb-6"
-          rounded="lg"
-          elevation="1"
-        >
-          <v-card-title class="text-md-h6">选择票种</v-card-title>
-          <v-card-text>
-            <v-row>
-              <v-col cols="12" md="6">
-                <v-select
-                  v-model="selectedTicket"
-                  :items="tickets"
-                  item-title="name"
-                  item-value="id"
-                  label="选择票种"
-                  variant="outlined"
-                  :loading="loadingTickets"
-                  return-object
-                ></v-select>
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="ticketQuantity"
-                  type="number"
-                  label="购买数量"
-                  variant="outlined"
-                  min="1"
-                  :max="selectedTicket?.available || 1"
-                  :disabled="!selectedTicket"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
+          <!-- 票种选择 -->
+          <v-card
+            v-if="selectedAttraction"
+            class="mb-6 ticket-selection-card"
+            rounded="lg"
+            elevation="1"
+          >
+            <v-card-title class="md-title-large py-4">选择票种</v-card-title>
+            <v-card-text class="pb-5">
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-select
+                    v-model="selectedTicket"
+                    :items="tickets"
+                    item-title="name"
+                    item-value="id"
+                    label="选择票种"
+                    variant="outlined"
+                    :loading="loadingTickets"
+                    return-object
+                    class="ticket-select"
+                    rounded="lg"
+                  >
+                    <template v-slot:item="{ item, props }">
+                      <v-list-item v-bind="props">
+                        <v-list-item-subtitle class="md-body-medium">
+                          价格: ¥{{ item.raw.price }} | 余量: {{ item.raw.available }}
+                        </v-list-item-subtitle>
+                      </v-list-item>
+                    </template>
+                  </v-select>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="ticketQuantity"
+                    type="number"
+                    label="购买数量"
+                    variant="outlined"
+                    min="1"
+                    :max="selectedTicket?.available || 1"
+                    :disabled="!selectedTicket"
+                    class="quantity-field"
+                    rounded="lg"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
 
-        <!-- 日期选择 -->
-        <v-card v-if="selectedTicket" class="mb-6" rounded="lg" elevation="1">
-          <v-card-title class="text-md-h6">选择日期</v-card-title>
-          <v-card-text>
-            <v-row>
-              <v-col cols="12" md="6">
-                <v-date-picker
-                  v-model="selectedDate"
-                  :min="minDate"
-                  :max="maxDate"
-                  :disabled-dates="disabledDates"
-                  color="primary"
-                  elevation="0"
-                  rounded="lg"
-                ></v-date-picker>
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-card variant="outlined" class="h-100">
-                  <v-card-text>
-                    <div class="text-h6 mb-4">订单信息</div>
-                    <div class="d-flex justify-space-between mb-2">
-                      <span class="text-medium-emphasis">景点:</span>
-                      <span>{{ selectedAttraction?.name }}</span>
-                    </div>
-                    <div class="d-flex justify-space-between mb-2">
-                      <span class="text-medium-emphasis">票种:</span>
-                      <span>{{ selectedTicket?.name }}</span>
-                    </div>
-                    <div class="d-flex justify-space-between mb-2">
-                      <span class="text-medium-emphasis">数量:</span>
-                      <span>{{ ticketQuantity }}张</span>
-                    </div>
-                    <div class="d-flex justify-space-between mb-2">
-                      <span class="text-medium-emphasis">日期:</span>
-                      <span>{{ selectedDate }}</span>
-                    </div>
-                    <div class="d-flex justify-space-between mb-2">
-                      <span class="text-medium-emphasis">单价:</span>
-                      <span>¥{{ selectedTicket?.price || 0 }}</span>
-                    </div>
-                    <v-divider class="my-4"></v-divider>
-                    <div class="d-flex justify-space-between">
-                      <span class="text-h6">总计:</span>
-                      <span class="text-h6 text-primary">
-                        ¥{{ (selectedTicket?.price || 0) * ticketQuantity }}
-                      </span>
-                    </div>
-                  </v-card-text>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
+          <!-- 日期选择 -->
+          <v-card v-if="selectedTicket" class="mb-6 date-card" rounded="lg" elevation="1">
+            <v-card-title class="md-title-large py-4">选择日期</v-card-title>
+            <v-card-text class="pb-5">
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-date-picker
+                    v-model="selectedDate"
+                    :min="minDate"
+                    :max="maxDate"
+                    :disabled-dates="disabledDates"
+                    color="primary"
+                    elevation="1"
+                    rounded="lg"
+                    class="date-picker"
+                    locale="zh-cn"
+                  ></v-date-picker>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-card variant="outlined" class="h-100 order-summary" rounded="lg">
+                    <v-card-text class="pa-5">
+                      <div class="md-title-medium mb-4">订单信息</div>
+                      <div class="d-flex justify-space-between mb-3 info-row">
+                        <span class="text-medium-emphasis md-body-medium">景点:</span>
+                        <span class="md-body-medium">{{ selectedAttraction?.name }}</span>
+                      </div>
+                      <div class="d-flex justify-space-between mb-3 info-row">
+                        <span class="text-medium-emphasis md-body-medium">票种:</span>
+                        <span class="md-body-medium">{{ selectedTicket?.name }}</span>
+                      </div>
+                      <div class="d-flex justify-space-between mb-3 info-row">
+                        <span class="text-medium-emphasis md-body-medium">数量:</span>
+                        <span class="md-body-medium">{{ ticketQuantity }}张</span>
+                      </div>
+                      <div class="d-flex justify-space-between mb-3 info-row">
+                        <span class="text-medium-emphasis md-body-medium">日期:</span>
+                        <span class="md-body-medium">{{ selectedDate }}</span>
+                      </div>
+                      <div class="d-flex justify-space-between mb-3 info-row">
+                        <span class="text-medium-emphasis md-body-medium">单价:</span>
+                        <span class="md-body-medium">¥{{ selectedTicket?.price || 0 }}</span>
+                      </div>
+                      <v-divider class="my-4"></v-divider>
+                      <div class="d-flex justify-space-between mt-4">
+                        <span class="md-title-medium">总计:</span>
+                        <span class="md-title-medium text-primary font-weight-bold">
+                          ¥{{ (selectedTicket?.price || 0) * ticketQuantity }}
+                        </span>
+                      </div>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
 
-        <!-- 提交按钮 -->
-        <v-card v-if="selectedTicket" rounded="lg" elevation="1">
-          <v-card-text class="d-flex justify-end">
-            <v-btn
-              color="primary"
-              size="large"
-              :loading="submitting"
-              :disabled="!canSubmit"
-              @click="submitOrder"
-            >
-              提交订单
-            </v-btn>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+          <!-- 提交按钮 -->
+          <v-card v-if="selectedTicket" class="submit-card" rounded="lg" elevation="1">
+            <v-card-text class="d-flex justify-end pa-4">
+              <v-btn
+                color="primary"
+                variant="elevated"
+                size="large"
+                rounded="pill"
+                min-width="150"
+                height="48"
+                class="submit-btn"
+                :loading="submitting"
+                :disabled="!canSubmit"
+                @click="submitOrder"
+              >
+                提交订单
+              </v-btn>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
 
-    <!-- 消息提示条 -->
-    <AppSnackbar
-      v-model:show="showSnackbar"
-      :text="snackbarText"
-      :color="snackbarColor"
-    />
-  </v-container>
+      <!-- 消息提示条 -->
+      <AppSnackbar
+        v-model:show="showSnackbar"
+        :text="snackbarText"
+        :color="snackbarColor"
+      />
+    </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -353,17 +376,89 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.v-card {
+.ticket-buy-page {
+  min-height: 100vh;
+  background-color: var(--md-surface);
+}
+
+.attraction-card,
+.ticket-selection-card,
+.date-card,
+.submit-card {
   overflow: hidden;
   transition:
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
-  border: 1px solid var(--card-border);
+    box-shadow 0.3s var(--md-motion-standard),
+    transform 0.3s var(--md-motion-standard);
+  border: 1px solid var(--md-outline-variant);
   background: var(--md-surface);
 }
 
-.v-card:hover {
-  box-shadow: var(--card-shadow-hover);
+.attraction-card:hover,
+.ticket-selection-card:hover,
+.date-card:hover,
+.submit-card:hover {
+  box-shadow: var(--md-shadow-2);
   transform: translateY(-2px);
+}
+
+.order-summary {
+  background-color: var(--md-surface-1);
+  border: 1px solid var(--md-outline-variant);
+}
+
+.info-row {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--md-outline-variant);
+}
+
+.ticket-select :deep(.v-field),
+.quantity-field :deep(.v-field) {
+  border-radius: var(--md-shape-corner-medium);
+  background-color: var(--md-surface-variant);
+  transition: all 0.3s var(--md-motion-standard);
+}
+
+.ticket-select :deep(.v-field__outline),
+.quantity-field :deep(.v-field__outline) {
+  opacity: 0.8;
+  color: var(--md-outline);
+}
+
+.ticket-select :deep(.v-field--focused),
+.quantity-field :deep(.v-field--focused) {
+  background-color: var(--md-surface-1);
+}
+
+.ticket-select :deep(.v-field--focused .v-field__outline),
+.quantity-field :deep(.v-field--focused .v-field__outline) {
+  opacity: 1;
+  color: var(--md-primary);
+}
+
+.date-picker {
+  border-radius: var(--md-shape-corner-large);
+  overflow: hidden;
+  box-shadow: var(--md-shadow-1);
+  border: 1px solid var(--md-outline-variant);
+}
+
+.submit-btn {
+  position: relative;
+  font-weight: 500;
+  letter-spacing: 0.0178571em;
+  text-transform: none;
+  transition: all 0.2s var(--md-motion-emphasize);
+  overflow: hidden;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--md-shadow-2);
+}
+
+:deep(.v-card-title) {
+  color: var(--md-on-surface);
+  font-weight: 400;
+  letter-spacing: 0;
 }
 </style>

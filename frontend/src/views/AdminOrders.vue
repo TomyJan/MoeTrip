@@ -128,6 +128,11 @@
             :loading="loading"
             :items-per-page="pageSize"
             class="elevation-0"
+            :page="page"
+            :items-per-page-options="[10, 20, 50]"
+            @update:page="page = $event; loadOrders()"
+            @update:items-per-page="pageSize = $event; page = 1; loadOrders()"
+            :server-items-length="totalOrders || 0"
           >
             <template v-slot:item.order_id="{ item }">
               <span class="font-weight-medium">{{ item.order_id }}</span>
@@ -201,15 +206,14 @@
               </div>
             </template>
           </v-data-table>
-
-          <!-- 分页 -->
-          <AppPagination
-            v-model:page="page"
-            :pageSize="pageSize"
-            :totalItems="totalOrders || 0"
-            emptyText="暂无订单数据"
-            emptyIcon="mdi-cart-outline"
-          />
+          
+          <!-- 空状态 -->
+          <div v-if="!loading && (!orders.length || orders.length === 0)" class="text-center py-8">
+            <div class="empty-state">
+              <v-icon icon="mdi-cart-outline" size="large" color="outline" class="mb-3"></v-icon>
+              <p class="md-body-large text-medium-emphasis">暂无订单数据</p>
+            </div>
+          </div>
         </v-card>
       </v-col>
     </v-row>
@@ -383,7 +387,6 @@ import { orderApi, attractionApi } from '../utils/api';
 import SearchFilterBar from '../components/SearchFilterBar.vue';
 import AppDialog from '../components/AppDialog.vue';
 import AppSnackbar from '../components/AppSnackbar.vue';
-import AppPagination from '../components/AppPagination.vue';
 
 // 订单类型定义
 interface Order {
@@ -806,5 +809,17 @@ function showError(message: string) {
 .status-dialog-text {
   font-size: 0.95rem;
   color: var(--v-theme-on-surface);
+}
+
+/* 空状态样式 */
+.empty-state {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--md-surface-1);
+  border-radius: 16px;
+  border: 1px solid var(--md-outline-variant);
 }
 </style>

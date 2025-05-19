@@ -1,35 +1,44 @@
 <template>
-  <v-container class="fill-height" fluid>
-    <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="6" lg="4">
-        <AuthForm
-          title="用户登录"
-          submitText="登录"
-          :loading="loading"
-          :usernameError="usernameError"
-          :passwordError="passwordError"
-          :errorMessage="errorMessage"
-          @submit="handleLogin"
-          @clearError="clearError"
-        >
-          <template #bottom-actions>
-            <p>
-              还没有账号？
-              <router-link to="/register" class="text-primary"
-                >立即注册</router-link
-              >
-            </p>
-          </template>
-        </AuthForm>
-      </v-col>
-    </v-row>
+  <div class="login-page">
+    <v-container class="fill-height" fluid>
+      <v-row align="center" justify="center" no-gutters>
+        <v-col cols="12" sm="8" md="6" lg="4">
+          <v-card class="login-brand-card mb-4" rounded="lg" flat>
+            <div class="text-center py-4">
+              <h1 class="md-headline-medium text-primary mb-2">萌游旅行</h1>
+              <p class="md-body-medium text-medium-emphasis">探索世界，记录美好</p>
+            </div>
+          </v-card>
+          
+          <AuthForm
+            title="用户登录"
+            submitText="登录"
+            :loading="loading"
+            :usernameError="usernameError"
+            :passwordError="passwordError"
+            :errorMessage="errorMessage"
+            @submit="handleLogin"
+            @clearError="clearError"
+          >
+            <template #bottom-actions>
+              <p class="md-body-medium">
+                还没有账号？
+                <router-link to="/register" class="text-primary login-link">
+                  立即注册
+                </router-link>
+              </p>
+            </template>
+          </AuthForm>
+        </v-col>
+      </v-row>
+    </v-container>
 
     <AppSnackbar
       v-model:show="showSnackbar"
       :text="snackbarText"
       :color="snackbarColor"
     />
-  </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -138,3 +147,44 @@ const showSuccess = (text: string) => {
   showSnackbar.value = true;
 };
 </script>
+
+<style scoped>
+.login-page {
+  min-height: 100vh;
+  background-color: var(--md-surface-1);
+  position: relative;
+}
+
+.login-brand-card {
+  background-color: transparent;
+}
+
+.login-link {
+  color: var(--md-primary);
+  font-weight: 500;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.login-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--md-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.login-link:hover {
+  color: var(--md-primary-container);
+}
+
+.login-link:hover::after {
+  transform: scaleX(1);
+}
+</style>

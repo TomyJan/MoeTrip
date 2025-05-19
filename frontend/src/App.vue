@@ -64,15 +64,21 @@ onMounted(() => {
 <template>
   <v-app :theme="isDarkMode ? 'dark' : 'light'">
     <!-- 在登录或注册页面不显示导航栏 -->
-    <v-app-bar app v-if="!isAuthPage" elevation="2">
-      <v-app-bar-title class="text-md-h6">萌游旅行</v-app-bar-title>
+    <v-app-bar
+      v-if="!isAuthPage"
+      elevation="0"
+      color="surface"
+      class="app-bar"
+      flat
+    >
+      <v-app-bar-title class="md-title-large">萌游旅行</v-app-bar-title>
       <v-spacer></v-spacer>
 
       <v-btn
         to="/attractions"
         variant="text"
         rounded="pill"
-        class="ml-2 d-none d-sm-flex"
+        class="ml-2 d-none d-sm-flex nav-btn"
         >景点</v-btn
       >
 
@@ -82,7 +88,7 @@ onMounted(() => {
         variant="text"
         icon
         rounded="pill"
-        class="ml-2 d-flex d-sm-none"
+        class="ml-2 d-flex d-sm-none nav-btn"
       >
         <v-icon>mdi-map-marker</v-icon>
         <v-tooltip activator="parent" location="bottom">景点</v-tooltip>
@@ -90,12 +96,18 @@ onMounted(() => {
 
       <!-- 未登录状态 -->
       <template v-if="!userStore.isLoggedIn">
-        <v-btn to="/login" variant="text" rounded="pill" class="ml-2"
+        <v-btn to="/login" variant="text" rounded="pill" class="ml-2 nav-btn"
           >登录</v-btn
         >
-        <v-btn to="/register" variant="text" rounded="pill" class="ml-2"
-          >注册</v-btn
+        <v-btn 
+          to="/register" 
+          variant="elevated" 
+          rounded="pill" 
+          color="primary"
+          class="ml-2 nav-btn"
         >
+          注册
+        </v-btn>
       </template>
 
       <!-- 已登录状态 -->
@@ -104,10 +116,10 @@ onMounted(() => {
         <v-btn
           v-if="userStore.isAdmin"
           to="/admin"
-          variant="text"
+          variant="tonal"
           rounded="pill"
           color="error"
-          class="ml-2"
+          class="ml-2 nav-btn"
         >
           管理中心
         </v-btn>
@@ -116,13 +128,13 @@ onMounted(() => {
         <v-menu
           location="bottom end"
           transition="scale-transition"
-          min-width="180"
+          min-width="200"
         >
           <template v-slot:activator="{ props }">
             <v-btn
               variant="text"
               v-bind="props"
-              class="ml-2 text-none"
+              class="ml-2 text-none nav-btn"
               rounded="pill"
               prepend-icon="mdi-account-circle"
             >
@@ -130,7 +142,7 @@ onMounted(() => {
               <v-icon end icon="mdi-chevron-down" size="small"></v-icon>
             </v-btn>
           </template>
-          <v-card rounded="lg" elevation="3" class="mt-1">
+          <v-card rounded="lg" elevation="2" class="mt-1 user-menu">
             <v-list bg-color="surface">
               <v-list-item
                 prepend-icon="mdi-account"
@@ -140,7 +152,7 @@ onMounted(() => {
               >
                 <v-list-item-title>个人中心</v-list-item-title>
               </v-list-item>
-              <v-divider></v-divider>
+              <v-divider class="mx-3 my-2"></v-divider>
               <v-list-item
                 prepend-icon="mdi-logout"
                 @click="handleLogout"
@@ -168,7 +180,7 @@ onMounted(() => {
           <v-btn
             variant="text"
             v-bind="props"
-            class="ml-2"
+            class="ml-2 nav-btn"
             icon
             rounded="pill"
             min-width="36"
@@ -185,7 +197,7 @@ onMounted(() => {
             </v-tooltip>
           </v-btn>
         </template>
-        <v-card rounded="lg" elevation="3" class="mt-1">
+        <v-card rounded="lg" elevation="2" class="mt-1 theme-menu">
           <v-list bg-color="surface">
             <v-list-item
               @click="setThemeMode('system')"
@@ -217,18 +229,18 @@ onMounted(() => {
     </v-app-bar>
 
     <v-main :class="{ 'auth-main': isAuthPage }">
-      <v-container fluid>
-        <router-view />
-      </v-container>
+      <router-view />
     </v-main>
 
     <!-- 页脚：在登录和注册页面固定在底部，其他页面随页面滚动 -->
     <v-footer
       class="d-flex flex-column bg-surface"
       :class="{ 'auth-footer': isAuthPage }"
+      elevation="0"
+      color="surface"
     >
-      <div class="text-center w-100">© 2025 MoeTrip</div>
-      <div class="text-caption text-center w-100">
+      <div class="text-center w-100 md-body-medium">© 2025 MoeTrip</div>
+      <div class="text-caption text-center w-100 md-body-small">
         Design & Develop by
         <a href="https://vov.moe/" target="_blank" class="footer-link"
           >TomyJan</a
@@ -240,6 +252,40 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.app-bar {
+  border-bottom: 1px solid var(--md-outline-variant);
+}
+
+.nav-btn {
+  position: relative;
+  font-weight: 500;
+  letter-spacing: 0.0178571em;
+  text-transform: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.nav-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: currentColor;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-btn:hover::before {
+  opacity: 0.08;
+}
+
+.nav-btn:active::before {
+  opacity: 0.12;
+}
+
 .heart-icon {
   color: var(--md-error);
   font-size: 1.2rem;
@@ -250,13 +296,31 @@ onMounted(() => {
 }
 
 .footer-link {
-  color: inherit;
+  color: var(--md-primary);
   text-decoration: none;
-  transition: color 0.2s;
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
 .footer-link:hover {
-  color: var(--md-primary);
+  color: var(--md-primary-container);
+}
+
+.footer-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--md-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer-link:hover::after {
+  transform: scaleX(1);
 }
 
 .auth-main {
@@ -273,5 +337,47 @@ onMounted(() => {
   left: 0;
   right: 0;
   z-index: 1;
+}
+
+.user-menu, .theme-menu {
+  overflow: hidden;
+  box-shadow: var(--md-shadow-2);
+  border: 1px solid var(--md-outline-variant);
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:deep(.v-list-item) {
+  min-height: 48px;
+  border-radius: 28px;
+  margin: 4px 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+:deep(.v-list-item::before) {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: currentColor;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+:deep(.v-list-item:hover::before) {
+  opacity: 0.08;
+}
+
+:deep(.v-list-item--active) {
+  background-color: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+}
+
+:deep(.v-list-item--active .v-icon) {
+  color: var(--md-on-primary-container);
 }
 </style>

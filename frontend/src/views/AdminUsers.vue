@@ -44,12 +44,16 @@
             :loading="loading"
             :items-per-page="pageSize"
             class="elevation-0"
+            :page="page"
+            :items-per-page-options="[10, 20, 50]"
+            @update:page="page = $event; loadUsers()"
+            @update:items-per-page="pageSize = $event; page = 1; loadUsers()"
+            :server-items-length="totalUsers || 0"
           >
             <template v-slot:item.role="{ item }">
               <v-chip
-                :color="item.role === 'admin' ? 'error' : 'success'"
+                :color="item.role === 'admin' ? 'error' : 'primary'"
                 size="small"
-                class="text-uppercase"
                 rounded="pill"
               >
                 {{ item.role === 'admin' ? '管理员' : '普通用户' }}
@@ -97,15 +101,6 @@
               </v-tooltip>
             </template>
           </v-data-table>
-
-          <!-- 分页 -->
-          <AppPagination
-            v-model:page="page"
-            :pageSize="pageSize"
-            :totalItems="totalUsers || 0"
-            emptyText="暂无用户数据"
-            emptyIcon="mdi-account-off-outline"
-          />
         </v-card>
       </v-col>
     </v-row>
@@ -191,7 +186,6 @@ import { adminApi } from '../utils/api';
 import SearchFilterBar from '../components/SearchFilterBar.vue';
 import AppDialog from '../components/AppDialog.vue';
 import AppSnackbar from '../components/AppSnackbar.vue';
-import AppPagination from '../components/AppPagination.vue';
 import CryptoJS from 'crypto-js';
 
 // 用户类型定义

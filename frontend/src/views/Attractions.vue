@@ -1,84 +1,103 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <h1 class="text-md-h4 mb-4 font-weight-medium">景点信息</h1>
+  <div class="attractions-page">
+    <v-container>
+      <v-row>
+        <v-col cols="12">
+          <h1 class="md-headline-medium mb-6 font-weight-medium">景点信息</h1>
 
-        <!-- 搜索栏 -->
-        <v-row class="mb-4 align-center">
-          <v-col cols="12" sm="6" md="4">
-            <v-text-field
-              v-model="searchKeyword"
-              label="搜索景点"
-              prepend-inner-icon="mdi-magnify"
-              hide-details
-              density="comfortable"
-              variant="outlined"
-              bg-color="surface-variant"
-              rounded="lg"
-              class="search-field"
-              @keyup.enter="loadAttractions"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="6" md="2">
-            <v-btn
-              color="primary"
-              variant="tonal"
-              block
-              rounded="pill"
-              class="text-none"
-              @click="loadAttractions"
-            >
-              <v-icon icon="mdi-magnify" size="small" class="mr-1"></v-icon>
-              搜索
-            </v-btn>
-          </v-col>
-        </v-row>
-
-        <!-- 景点列表 -->
-        <v-row v-if="attractions.length > 0">
-          <v-col
-            v-for="attraction in attractions"
-            :key="attraction.id"
-            cols="12"
-            md="6"
-            lg="4"
+          <!-- 搜索栏 -->
+          <v-card
+            class="search-card mb-6"
+            rounded="lg"
+            variant="outlined"
+            color="surface-variant"
+            flat
           >
-            <AttractionCard
-              :attraction="attraction"
-              @view="viewAttractionDetail(attraction)"
-            />
-          </v-col>
-        </v-row>
+            <v-card-text>
+              <v-row class="align-center">
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field
+                    v-model="searchKeyword"
+                    label="搜索景点"
+                    prepend-inner-icon="mdi-magnify"
+                    hide-details
+                    density="comfortable"
+                    variant="outlined"
+                    bg-color="surface"
+                    rounded="lg"
+                    class="search-field"
+                    @keyup.enter="loadAttractions"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="2">
+                  <v-btn
+                    color="primary"
+                    variant="elevated"
+                    block
+                    rounded="pill"
+                    class="search-btn"
+                    :loading="loading"
+                    :disabled="loading"
+                    @click="loadAttractions"
+                  >
+                    <v-icon icon="mdi-magnify" size="small" class="mr-2"></v-icon>
+                    搜索
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
 
-        <!-- 暂无数据 -->
-        <v-row v-else>
-          <v-col cols="12" class="text-center py-8">
-            <v-icon
-              icon="mdi-alert-circle-outline"
-              size="large"
-              color="secondary"
-            ></v-icon>
-            <p class="mt-2 text-md-body-1 text-medium-emphasis">暂无景点数据</p>
-          </v-col>
-        </v-row>
+          <!-- 景点列表 -->
+          <v-fade-transition>
+            <v-row v-if="attractions.length > 0">
+              <v-col
+                v-for="attraction in attractions"
+                :key="attraction.id"
+                cols="12"
+                md="6"
+                lg="4"
+              >
+                <AttractionCard
+                  :attraction="attraction"
+                  @view="viewAttractionDetail(attraction)"
+                />
+              </v-col>
+            </v-row>
+            
+            <!-- 暂无数据 -->
+            <v-row v-else>
+              <v-col cols="12">
+                <div class="empty-state">
+                  <v-icon
+                    icon="mdi-alert-circle"
+                    size="large"
+                    color="outline"
+                    class="mb-3"
+                  ></v-icon>
+                  <p class="md-body-large text-medium-emphasis">{{ 
+                    loading ? '正在加载景点数据...' : '暂无景点数据' 
+                  }}</p>
+                </div>
+              </v-col>
+            </v-row>
+          </v-fade-transition>
 
-        <!-- 分页控件 -->
-        <v-row v-if="totalItems > 0">
-          <v-col cols="12" class="d-flex justify-center">
+          <!-- 分页控件 -->
+          <div class="d-flex justify-center mt-4" v-if="totalItems > 0">
             <v-pagination
               v-model="page"
               :length="Math.ceil(totalItems / pageSize)"
               @update:model-value="loadAttractions"
               rounded="lg"
               active-color="primary"
-              variant="elevated"
+              variant="text"
               class="md3-pagination"
             ></v-pagination>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
 
     <!-- 消息提示条 -->
     <AppSnackbar
@@ -86,11 +105,11 @@
       :text="snackbarText"
       :color="snackbarColor"
     />
-  </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useUserStore } from '../stores';
 import { attractionApi } from '../utils/api';
 import { useRouter } from 'vue-router';
@@ -113,7 +132,7 @@ const userStore = useUserStore();
 
 // 分页和搜索
 const page = ref(1);
-const pageSize = ref(10);
+const pageSize = ref(9);
 const totalItems = ref(0);
 const searchKeyword = ref('');
 
@@ -191,27 +210,59 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.attractions-page {
+  min-height: 100vh;
+  background-color: var(--md-surface);
+}
+
+.search-card {
+  border: 1px solid var(--md-outline-variant);
+  background-color: var(--md-surface-1) !important;
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-field :deep(.v-field) {
+  border-radius: 12px;
+  background-color: var(--md-surface);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .search-field :deep(.v-field__outline) {
   opacity: 0.8;
+  color: var(--md-outline);
+}
+
+.search-field :deep(.v-field--focused) {
+  background-color: var(--md-surface);
 }
 
 .search-field :deep(.v-field--focused .v-field__outline) {
   opacity: 1;
+  color: var(--md-primary);
 }
 
-.md3-pagination :deep(.v-pagination__item) {
-  font-weight: 500;
-  min-width: 36px;
-  height: 36px;
-}
-
-.md3-pagination :deep(.v-pagination__item--is-active) {
-  font-weight: 700;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* 调整按钮高度 */
-.v-row.align-center :deep(.v-btn) {
+.search-btn {
   height: 48px;
+  font-weight: 500;
+  letter-spacing: 0.0178571em;
+  text-transform: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--md-shadow-2);
+}
+
+.empty-state {
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--md-surface-1);
+  border-radius: 16px;
+  border: 1px solid var(--md-outline-variant);
+  margin: 24px 0;
 }
 </style>

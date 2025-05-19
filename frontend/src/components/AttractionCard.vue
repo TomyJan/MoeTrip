@@ -4,22 +4,24 @@
     @click="$emit('view')"
     variant="elevated"
     rounded="lg"
+    elevation="1"
   >
     <v-img
       :src="attraction.image_url || '/images/new.jpg'"
       height="200px"
       cover
       class="rounded-t-lg"
+      :gradient="isDarkMode ? 'to bottom, rgba(0,0,0,0.0), rgba(28,27,31,0.6)' : 'to bottom, rgba(255,255,255,0.0), rgba(255,251,254,0.6)'"
     ></v-img>
 
-    <v-card-title class="text-md-h6">{{ attraction.name }}</v-card-title>
+    <v-card-title class="md-title-large">{{ attraction.name }}</v-card-title>
 
     <v-card-text>
-      <p>{{ attraction.description }}</p>
-      <p class="mt-2 d-flex align-center text-md-body-1">
-        <v-icon icon="mdi-clock-outline" size="small" class="mr-1"></v-icon>
-        <span>开放时间: {{ attraction.open_time }}</span>
-      </p>
+      <p class="md-body-medium">{{ attraction.description }}</p>
+      <div class="mt-3 d-flex align-center time-info">
+        <v-icon icon="mdi-clock-outline" size="small" class="mr-2" color="primary"></v-icon>
+        <span class="md-body-medium">开放时间: {{ attraction.open_time }}</span>
+      </div>
     </v-card-text>
 
     <v-card-actions>
@@ -27,8 +29,8 @@
       <v-btn
         variant="text"
         icon
-        rounded="pill"
-        size="small"
+        density="comfortable"
+        class="expand-btn"
         :ripple="false"
         @click.stop="expanded = !expanded"
       >
@@ -39,10 +41,10 @@
     </v-card-actions>
 
     <v-expand-transition>
-      <div v-if="expanded">
+      <div v-if="expanded" class="expanded-content">
         <v-divider></v-divider>
         <v-card-text>
-          <p class="text-subtitle-1 mb-2">设施信息:</p>
+          <p class="md-title-small mb-3">设施信息</p>
           <div v-if="loadingFacilities" class="text-center pa-2">
             <v-progress-circular
               indeterminate
@@ -55,43 +57,48 @@
               <v-chip
                 v-for="facility in facilities"
                 :key="facility.id"
-                variant="elevated"
+                variant="tonal"
                 color="secondary"
                 size="small"
                 rounded="pill"
+                class="facility-chip"
                 @click.stop="toggleFacility(facility)"
                 :class="{
-                  'v-chip--selected': selectedFacility?.id === facility.id,
+                  'selected-chip': selectedFacility?.id === facility.id,
                 }"
               >
                 {{ facility.name }}
               </v-chip>
             </v-chip-group>
 
-            <div v-if="selectedFacility" class="mt-2 facility-location">
+            <div v-if="selectedFacility" class="mt-3 facility-location">
               <v-alert
-                density="compact"
+                density="comfortable"
                 type="info"
                 variant="tonal"
                 rounded="lg"
-                class="text-body-2 pa-2"
+                class="md-body-small pa-3"
+                border="start"
+                color="primary"
               >
                 <div class="d-flex justify-space-between align-center">
-                  <strong>{{ selectedFacility.name }}</strong>
+                  <strong class="md-title-small">{{ selectedFacility.name }}</strong>
                   <v-btn
                     icon
                     size="x-small"
                     variant="text"
+                    density="comfortable"
                     @click.stop="selectedFacility = null"
+                    class="close-btn"
                   >
                     <v-icon size="small">mdi-close</v-icon>
                   </v-btn>
                 </div>
-                <div>位置: {{ selectedFacility.location }}</div>
+                <div class="mt-1">位置: {{ selectedFacility.location }}</div>
               </v-alert>
             </div>
           </div>
-          <p v-else class="text-medium-emphasis">暂无设施信息</p>
+          <p v-else class="text-medium-emphasis md-body-small">暂无设施信息</p>
         </v-card-text>
       </div>
     </v-expand-transition>
@@ -99,8 +106,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { facilityApi } from '../utils/api';
+import { useThemeStore } from '../stores';
 
 interface Attraction {
   id: number;
@@ -126,6 +134,9 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const themeStore = useThemeStore();
+const isDarkMode = computed(() => themeStore.isDarkMode);
 
 defineEmits<{
   (e: 'view'): void;
@@ -182,41 +193,63 @@ function toggleFacility(facility: Facility) {
 <style scoped>
 .attraction-card {
   transition:
-    transform 0.2s,
-    box-shadow 0.2s;
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  /* 使用全局定义的阴影和边框变量 */
-  border: 1px solid var(--card-border);
-  box-shadow: var(--card-shadow-light);
+  border: 1px solid var(--md-outline-variant);
+  box-shadow: var(--md-shadow-1);
   background: var(--md-surface);
+  position: relative;
+  overflow: hidden;
 }
 
 .attraction-card:hover {
   transform: translateY(-4px);
-  /* 使用全局定义的悬停阴影 */
-  box-shadow: var(--card-shadow-hover);
+  box-shadow: var(--md-shadow-2);
 }
 
-:deep(.v-card-title) {
-  color: var(--md-primary);
+.time-info {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background-color: var(--md-surface-variant);
+  color: var(--md-on-surface-variant);
+  border-radius: 8px;
+  display: inline-flex;
 }
 
-:deep(.v-card-text) {
-  color: var(--text-color);
-}
-
-:deep(.v-chip) {
+.facility-chip {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  transition: all 0.2s ease;
+  margin: 4px;
 }
 
-:deep(.v-chip--selected) {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.selected-chip {
+  background-color: var(--md-secondary-container) !important;
+  color: var(--md-on-secondary-container) !important;
+  box-shadow: var(--md-shadow-1);
   transform: translateY(-2px);
 }
 
 .facility-location {
-  animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.expanded-content {
+  background-color: var(--md-surface-1);
+  border-top: 1px solid var(--md-outline-variant);
+}
+
+.expand-btn {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.expand-btn:hover {
+  background-color: var(--md-surface-variant);
+}
+
+.close-btn:hover {
+  background-color: var(--md-error-container);
+  color: var(--md-on-error-container);
 }
 
 @keyframes fadeIn {

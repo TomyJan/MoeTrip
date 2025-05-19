@@ -33,6 +33,11 @@
             :loading="loading"
             :items-per-page="pageSize"
             class="elevation-0"
+            :page="page"
+            :items-per-page-options="[10, 20, 50]"
+            @update:page="page = $event; loadAttractions()"
+            @update:items-per-page="pageSize = $event; page = 1; loadAttractions()"
+            :server-items-length="totalAttractions || 0"
           >
             <template v-slot:item.image_url="{ item }">
               <v-img
@@ -102,15 +107,6 @@
               </v-tooltip>
             </template>
           </v-data-table>
-
-          <!-- 分页 -->
-          <AppPagination
-            v-model:page="page"
-            :pageSize="pageSize"
-            :totalItems="totalAttractions || 0"
-            emptyText="暂无景点数据"
-            emptyIcon="mdi-map-marker-off-outline"
-          />
         </v-card>
       </v-col>
     </v-row>
@@ -194,7 +190,6 @@ import { attractionApi } from '../utils/api';
 import SearchFilterBar from '../components/SearchFilterBar.vue';
 import AppDialog from '../components/AppDialog.vue';
 import AppSnackbar from '../components/AppSnackbar.vue';
-import AppPagination from '../components/AppPagination.vue';
 
 // 景点类型定义
 interface Attraction {

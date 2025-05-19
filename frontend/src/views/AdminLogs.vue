@@ -128,6 +128,11 @@
             :loading="loading"
             :items-per-page="pageSize"
             class="elevation-0"
+            :page="page"
+            :items-per-page-options="[10, 20, 50]"
+            @update:page="page = $event; loadLogs()"
+            @update:items-per-page="pageSize = $event; page = 1; loadLogs()"
+            :server-items-length="totalLogs || 0"
           >
             <template v-slot:item.user="{ item }">
               <div class="d-flex flex-column">
@@ -139,19 +144,18 @@
               <v-chip
                 :color="getActionColor(item.action)"
                 size="small"
-                rounded="pill"
+                variant="tonal"
               >
-                {{ getActionText(item.action) }}
+                {{ item.action }}
               </v-chip>
             </template>
-            <template v-slot:item.target_info="{ item }">
-              <div class="d-flex flex-column">
-                <span>{{ getTargetText(item.target) }}</span>
-                <span v-if="item.target_id" class="text-caption text-medium-emphasis">ID: {{ item.target_id }}</span>
+            <template v-slot:item.target="{ item }">
+              <div class="text-truncate" style="max-width: 80px">
+                {{ getTargetText(item.target) }}
               </div>
             </template>
             <template v-slot:item.content="{ item }">
-              <div class="content-cell">
+              <div class="text-truncate" style="max-width: 200px">
                 {{ formatContent(item.content) }}
               </div>
             </template>
@@ -179,15 +183,6 @@
               </div>
             </template>
           </v-data-table>
-
-          <!-- 分页 -->
-          <AppPagination
-            v-model:page="page"
-            :pageSize="pageSize"
-            :totalItems="totalLogs || 0"
-            emptyText="暂无日志数据"
-            emptyIcon="mdi-clipboard-text-outline"
-          />
         </v-card>
       </v-col>
     </v-row>
@@ -279,7 +274,6 @@ import { logApi } from '../utils/api';
 import SearchFilterBar from '../components/SearchFilterBar.vue';
 import AppDialog from '../components/AppDialog.vue';
 import AppSnackbar from '../components/AppSnackbar.vue';
-import AppPagination from '../components/AppPagination.vue';
 
 // 日志类型定义
 interface Log {

@@ -1,7 +1,7 @@
 <template>
-  <v-card class="elevation-3" rounded="lg">
+  <v-card class="auth-card" rounded="lg" elevation="1">
     <v-card-title class="text-center py-5">
-      <h2 class="text-md-h5 font-weight-medium">{{ title }}</h2>
+      <h2 class="md-headline-small font-weight-medium">{{ title }}</h2>
     </v-card-title>
 
     <v-card-text>
@@ -12,8 +12,8 @@
           prepend-icon="mdi-account"
           variant="outlined"
           density="comfortable"
-          class="mb-3"
-          bg-color="surface-variant"
+          class="mb-4"
+          bg-color="surface"
           rounded="lg"
           :error-messages="usernameError"
           @input="clearError('username')"
@@ -27,8 +27,8 @@
           type="password"
           variant="outlined"
           density="comfortable"
-          class="mb-3"
-          bg-color="surface-variant"
+          class="mb-4"
+          bg-color="surface"
           rounded="lg"
           :error-messages="passwordError"
           @input="clearError('password')"
@@ -40,10 +40,11 @@
         <v-alert
           v-if="errorMessage"
           type="error"
-          class="mt-4 mb-3"
+          class="mt-5 mb-4"
           variant="tonal"
           rounded="lg"
-          border
+          border="start"
+          density="comfortable"
         >
           {{ errorMessage }}
         </v-alert>
@@ -58,7 +59,7 @@
             rounded="pill"
             min-width="120"
             min-height="48"
-            elevation="2"
+            variant="elevated"
           >
             {{ submitText }}
           </v-btn>
@@ -66,7 +67,7 @@
       </v-form>
     </v-card-text>
 
-    <v-card-actions class="justify-center pb-5">
+    <v-card-actions class="justify-center pb-5 pt-2">
       <slot name="bottom-actions"></slot>
     </v-card-actions>
   </v-card>
@@ -113,11 +114,27 @@ function clearError(field: string) {
 </script>
 
 <style scoped>
+.auth-card {
+  border: 1px solid var(--md-outline-variant);
+  background-color: var(--md-surface);
+  box-shadow: var(--md-shadow-1);
+  overflow: hidden;
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 450px;
+  margin: 0 auto;
+}
+
 /* MD3 样式增强 */
 :deep(.v-btn) {
   text-transform: none;
   letter-spacing: 0.0178571em;
   font-weight: 500;
+  height: 40px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:deep(.v-btn:hover) {
+  box-shadow: var(--md-shadow-2);
 }
 
 :deep(.v-btn--disabled) {
@@ -125,14 +142,49 @@ function clearError(field: string) {
 }
 
 :deep(.v-field) {
-  border-radius: 8px;
+  border-radius: 12px;
+  background-color: var(--md-surface-variant);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 :deep(.v-field__outline) {
   opacity: 0.8;
+  color: var(--md-outline);
+}
+
+:deep(.v-field--focused) {
+  background-color: var(--md-surface-1);
 }
 
 :deep(.v-field--focused .v-field__outline) {
   opacity: 1;
+  color: var(--md-primary);
+}
+
+:deep(.v-field--error .v-field__outline) {
+  color: var(--md-error) !important;
+}
+
+:deep(.v-field .v-icon) {
+  color: var(--md-on-surface-variant);
+}
+
+:deep(.v-field--focused .v-icon) {
+  color: var(--md-primary);
+}
+
+:deep(.v-label) {
+  font-size: 14px;
+  color: var(--md-on-surface-variant);
+}
+
+:deep(.v-field--focused .v-label) {
+  color: var(--md-primary);
+}
+
+:deep(.v-field__input) {
+  font-size: 16px;
+  color: var(--md-on-surface);
+  padding: 8px 12px;
 }
 </style>
