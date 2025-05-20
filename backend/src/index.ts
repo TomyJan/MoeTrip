@@ -52,16 +52,16 @@ async function startServer() {
       // 读取SSL证书和私钥
       const certPath = process.env.SSL_CERT_PATH as string;
       const keyPath = process.env.SSL_KEY_PATH as string;
-      
+
       if (!certPath || !keyPath) {
         logger.error('环境变量SSL_CERT_PATH和SSL_KEY_PATH必须设置');
         process.exit(1);
       }
-      
+
       try {
         const cert = fs.readFileSync(certPath);
         const key = fs.readFileSync(keyPath);
-        
+
         // 创建HTTPS服务器
         const httpsServer = https.createServer({ cert, key }, app);
         httpsServer.listen(PORT, () => {
