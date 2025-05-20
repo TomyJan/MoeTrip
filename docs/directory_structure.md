@@ -7,7 +7,7 @@ MoeTrip/
 ├── backend/
 │   ├── src/
 │   │   ├── app.ts                # Express应用配置
-│   │   ├── index.ts              # 应用入口点
+│   │   ├── index.ts              # 应用入口点，根据环境变量配置选择HTTP或HTTPS协议提供服务
 │   │   ├── controllers/          # 业务逻辑控制器
 │   │   │   ├── admin.controller.ts
 │   │   │   ├── attraction.controller.ts
@@ -124,6 +124,7 @@ MoeTrip/
 
 - **backend/**: 后端服务，包含 Express 路由和 Sequelize 模型
   - **src/**: 源代码目录
+    - **index.ts**: 应用入口点，根据环境变量配置选择HTTP或HTTPS协议提供服务
     - **controllers/**: API 控制器，处理业务逻辑
     - **middlewares/**: 中间件，包括认证、日志记录等
     - **models/**: 数据模型定义，使用 Sequelize ORM
