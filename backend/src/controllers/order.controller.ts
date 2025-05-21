@@ -264,7 +264,7 @@ export const queryOrders = async (req: Request, res: Response) => {
 
       // 添加状态过滤条件
       if (status) {
-        whereConditions["status"] = status;
+        whereConditions['status'] = status;
       }
 
       // 添加景点票种过滤条件

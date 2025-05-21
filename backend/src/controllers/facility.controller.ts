@@ -207,7 +207,7 @@ export const updateFacility = async (req: Request, res: Response) => {
     const updateFields: any = {};
     if (name) updateFields.name = name;
     if (location) updateFields.location = location;
-    if (status) updateFields["status"] = status;
+    if (status) updateFields['status'] = status;
     if (attraction_id) updateFields.attraction_id = attraction_id;
 
     // 如果没有任何要更新的字段
