@@ -402,7 +402,7 @@ export const queryFeedback = async (req: Request, res: Response) => {
     if (userRole === 'admin' && include_deleted === true) {
       // 不添加状态过滤，查询所有反馈
     } else {
-      where.status = 'public';
+      where["status"] = 'public';
     }
 
     // 权限检查：普通用户只能查询自己的反馈，除非指定了景点ID
@@ -521,7 +521,7 @@ export const getStats = async (req: Request, res: Response) => {
 
     // 默认只统计公开状态的反馈，除非明确要求包含已删除的
     if (!include_deleted) {
-      whereCondition.status = 'public';
+      whereCondition["status"] = 'public';
     }
 
     // 查询反馈总数
