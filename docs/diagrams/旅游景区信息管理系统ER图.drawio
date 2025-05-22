@@ -1,0 +1,118 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" version="27.0.6">
+  <diagram id="er_diagram" name="旅游景区信息管理系统ER图">
+    <mxGraphModel dx="1554" dy="935" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="9" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;endArrow=diamond;endFill=1;" parent="1" source="2" target="3" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="270" y="130" as="sourcePoint" />
+            <mxPoint x="330" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="10" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;endArrow=diamond;endFill=1;" parent="1" source="2" target="5" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="160" y="210" as="sourcePoint" />
+            <mxPoint x="160" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="11" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;endArrow=diamond;endFill=1;" parent="1" source="4" target="6" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="210" as="sourcePoint" />
+            <mxPoint x="440" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="12" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;endArrow=diamond;endFill=1;" parent="1" source="5" target="6" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="270" y="340" as="sourcePoint" />
+            <mxPoint x="330" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="13" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;endArrow=diamond;endFill=1;" parent="1" source="4" target="7" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="210" as="sourcePoint" />
+            <mxPoint x="720" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="14" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;endArrow=diamond;endFill=1;" parent="1" source="2" target="7" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="160" y="210" as="sourcePoint" />
+            <mxPoint x="720" y="340" as="targetPoint" />
+            <Array as="waypoints">
+              <mxPoint x="160" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="15" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;endArrow=diamond;endFill=1;" parent="1" source="4" target="8" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="830" y="210" as="sourcePoint" />
+            <mxPoint x="950" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LYH5F99DVlFDBM0IMPib-20" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="40" y="80" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="&lt;b&gt;facilities&lt;/b&gt;" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fontSize=10;whiteSpace=wrap;html=1;" parent="LYH5F99DVlFDBM0IMPib-20" vertex="1">
+          <mxGeometry width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="LYH5F99DVlFDBM0IMPib-19" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;id: int (PK)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;name: varchar(100)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;location: varchar(255)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;status: varchar(20)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;attraction_id: int (FK)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;created_at: datetime&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;updated_at: datetime&lt;/span&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="LYH5F99DVlFDBM0IMPib-20">
+          <mxGeometry x="4.545454545454545" y="50" width="190.9090909090909" height="137.5" as="geometry" />
+        </mxCell>
+        <mxCell id="LYH5F99DVlFDBM0IMPib-27" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="360" y="80" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="&lt;b&gt;orders&lt;/b&gt;" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fontSize=10;whiteSpace=wrap;html=1;" parent="LYH5F99DVlFDBM0IMPib-27" vertex="1">
+          <mxGeometry width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="LYH5F99DVlFDBM0IMPib-21" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;id: int (PK)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;user_id: int (FK)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;ticket_id: int (FK)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;quantity: int&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;total_price: decimal(10,2)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;date: date&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;status: varchar(20)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;created_at: datetime&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;updated_at: datetime&lt;/span&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="LYH5F99DVlFDBM0IMPib-27">
+          <mxGeometry x="4.545454545454545" y="45" width="190.9090909090909" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="LYH5F99DVlFDBM0IMPib-28" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="680" y="80" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="&lt;b&gt;users&lt;/b&gt;" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fontSize=10;whiteSpace=wrap;html=1;" parent="LYH5F99DVlFDBM0IMPib-28" vertex="1">
+          <mxGeometry width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="LYH5F99DVlFDBM0IMPib-22" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;id: int (PK)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;username: varchar(50) (UNIQUE)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;password_hash: varchar(255)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;role: varchar(20)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;created_at: datetime&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;updated_at: datetime&lt;/span&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="LYH5F99DVlFDBM0IMPib-28">
+          <mxGeometry x="4.545454545454545" y="42.85714285714286" width="190.9090909090909" height="157.14285714285714" as="geometry" />
+        </mxCell>
+        <mxCell id="LYH5F99DVlFDBM0IMPib-29" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="1000" y="80" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="&lt;b&gt;logs&lt;/b&gt;" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fontSize=10;whiteSpace=wrap;html=1;" parent="LYH5F99DVlFDBM0IMPib-29" vertex="1">
+          <mxGeometry width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="LYH5F99DVlFDBM0IMPib-23" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;id: int (PK)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;user_id: int (FK)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;action: varchar(50)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;resource_type: varchar(50)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;resource_id: int&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;details: json&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;ip_address: varchar(45)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;user_agent: varchar(255)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;created_at: datetime&lt;/span&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="LYH5F99DVlFDBM0IMPib-29">
+          <mxGeometry x="4.545454545454545" y="40" width="190.9090909090909" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="LYH5F99DVlFDBM0IMPib-30" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="360" y="340" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="&lt;b&gt;tickets&lt;/b&gt;" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fontSize=10;whiteSpace=wrap;html=1;" parent="LYH5F99DVlFDBM0IMPib-30" vertex="1">
+          <mxGeometry width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="LYH5F99DVlFDBM0IMPib-25" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;id: int (PK)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;attraction_id: int (FK)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;name: varchar(100)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;price: decimal(10,2)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;available: int&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;status: varchar(20)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;created_at: datetime&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;updated_at: datetime&lt;/span&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="LYH5F99DVlFDBM0IMPib-30">
+          <mxGeometry x="4.545454545454545" y="41.66666666666667" width="190.9090909090909" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="LYH5F99DVlFDBM0IMPib-31" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="40" y="600" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="2" value="&lt;b&gt;attractions&lt;/b&gt;" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fontSize=10;whiteSpace=wrap;html=1;" parent="LYH5F99DVlFDBM0IMPib-31" vertex="1">
+          <mxGeometry width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="LYH5F99DVlFDBM0IMPib-26" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;id: int (PK)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;name: varchar(100) (UNIQUE)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;description: text&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;open_time: varchar(50)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;image_url: varchar(255)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;created_at: datetime&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;updated_at: datetime&lt;/span&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="LYH5F99DVlFDBM0IMPib-31">
+          <mxGeometry x="4.545454545454545" y="44.44444444444444" width="190.9090909090909" height="144.44444444444446" as="geometry" />
+        </mxCell>
+        <mxCell id="LYH5F99DVlFDBM0IMPib-32" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="680" y="600" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="&lt;b&gt;feedback&lt;/b&gt;" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fontSize=10;whiteSpace=wrap;html=1;" parent="LYH5F99DVlFDBM0IMPib-32" vertex="1">
+          <mxGeometry width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="LYH5F99DVlFDBM0IMPib-24" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;id: int (PK)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;user_id: int (FK)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;attraction_id: int (FK)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;score: int (1-5)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;comment: text&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;status: varchar(20)&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;created_at: datetime&lt;/span&gt;&lt;br style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;font-size: 10px;&quot;&gt;updated_at: datetime&lt;/span&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="LYH5F99DVlFDBM0IMPib-32">
+          <mxGeometry x="4.545454545454545" y="40" width="190.9090909090909" height="130" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
