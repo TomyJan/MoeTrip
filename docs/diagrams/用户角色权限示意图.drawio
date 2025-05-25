@@ -1,0 +1,37 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" version="27.0.9">
+  <diagram id="moetrip-role-permissions" name="MoeTrip Role Permissions">
+    <mxGraphModel dx="1554" dy="935" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="unregistered" value="未注册游客" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#000000;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="80" y="140" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="unreg-permissions" value="浏览景点信息 (POST /attraction/query)&lt;br&gt;查看设施详情&lt;br&gt;切换主题" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#000000;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="40" y="240" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="unreg-link" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;" parent="1" source="unregistered" target="unreg-permissions" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="registered" value="已注册游客" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#000000;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="340" y="140" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="reg-permissions" value="未注册游客权限&lt;br&gt;购买门票 (POST /order/create)&lt;br&gt;查看订单 (POST /order/query)&lt;br&gt;提交反馈 (POST /feedback/add)&lt;br&gt;修改个人信息 (POST /user/update)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#000000;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="300" y="240" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="reg-link" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;" parent="1" source="registered" target="reg-permissions" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="admin" value="管理员" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#000000;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="600" y="140" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="admin-permissions" value="管理景点 (POST /attraction/add 等)&lt;br&gt;管理设施&lt;br&gt;管理门票&lt;br&gt;管理订单 (POST /order/update)&lt;br&gt;管理用户 (POST /user/update)&lt;br&gt;日志审计 (POST /log/query)&lt;br&gt;数据统计 (POST /stats/query)&lt;br&gt;系统设置" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#000000;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="560" y="240" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="admin-link" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;" parent="1" source="admin" target="admin-permissions" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
