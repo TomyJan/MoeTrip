@@ -45,6 +45,7 @@ CREATE TABLE tickets (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     attraction_id BIGINT UNSIGNED NOT NULL,
     name VARCHAR(100) NOT NULL,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
     available INT NOT NULL DEFAULT 0 CHECK (available >= 0),
     price DECIMAL(10, 2) NOT NULL DEFAULT 0 CHECK (price >= 0),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -132,10 +133,10 @@ INSERT INTO facilities (name, location, status, attraction_id) VALUES
 ('观景台', '湖边', 'normal', 2);
 
 -- 门票
-INSERT INTO tickets (attraction_id, name, available, price) VALUES
-(1, '成人票', 100, 80.00),
-(1, '儿童票', 50, 40.00),
-(2, '夜游票', 30, 120.00);
+INSERT INTO tickets (attraction_id, name, status, available, price) VALUES
+(1, '成人票', 'active', 100, 80.00),
+(1, '儿童票', 'active', 50, 40.00),
+(2, '夜游票', 'active', 30, 120.00);
 
 -- 订单
 INSERT INTO orders (user_id, ticket_id, quantity, date, status, total_price) VALUES

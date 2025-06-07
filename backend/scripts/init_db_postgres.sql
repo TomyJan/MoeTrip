@@ -47,6 +47,8 @@ CREATE TABLE tickets (
     name VARCHAR(100) NOT NULL,
     available INTEGER NOT NULL DEFAULT 0 CHECK (available >= 0),
     price DECIMAL(10, 2) NOT NULL DEFAULT 0 CHECK (price >= 0),
+    status VARCHAR(20) NOT NULL DEFAULT 'active',
+    CONSTRAINT valid_ticket_status CHECK (status IN ('active', 'inactive')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
