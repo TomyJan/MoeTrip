@@ -26,7 +26,7 @@
                   block
                   :loading="loading"
                   size="large"
-                  style="height: 48px;"
+                  style="height: 48px"
                   rounded="pill"
                   variant="elevated"
                   class="mb-2"
@@ -39,7 +39,7 @@
                   block
                   :loading="loading"
                   size="large"
-                  style="height: 48px;"
+                  style="height: 48px"
                   rounded="pill"
                   variant="elevated"
                   class="mb-2"
@@ -177,7 +177,7 @@ const showSuccess = (text: string) => {
 const handleDemoUserLogin = async () => {
   await handleLogin({
     username: 'user',
-    password: 'user'
+    password: 'user',
   });
 };
 
@@ -185,7 +185,7 @@ const handleDemoUserLogin = async () => {
 const handleDemoAdminLogin = async () => {
   await handleLogin({
     username: 'TomyJan',
-    password: 'TomyJan233'
+    password: 'TomyJan233',
   });
 };
 </script>
