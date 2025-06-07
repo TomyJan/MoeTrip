@@ -80,3 +80,4 @@ frontend/
 项目使用`.env`文件进行环境变量配置：
 
 - `VITE_API_BASE_URL`: API基础URL，默认为`http://localhost:5200/api/v1`
+- `VITE_IS_DEMO`: 是否为演示模式，演示模式目前会在登录页面显示示例用户提示

@@ -13,12 +13,42 @@
           @clearError="clearError"
         >
           <template #bottom-actions>
-            <p>
-              还没有账号？
-              <router-link to="/register" class="text-primary">
-                立即注册
-              </router-link>
-            </p>
+            <div class="d-flex flex-column align-center" style="width: 100%">
+              <p class="text-center mb-4">
+                还没有账号？
+                <router-link to="/register" class="text-primary">
+                  立即注册
+                </router-link>
+              </p>
+              <v-col v-if="isDemoMode" cols="12">
+                <v-btn
+                  color="primary"
+                  block
+                  :loading="loading"
+                  size="large"
+                  style="height: 48px;"
+                  rounded="pill"
+                  variant="elevated"
+                  class="mb-2"
+                  @click="handleDemoUserLogin"
+                >
+                  演示用户登录
+                </v-btn>
+                <v-btn
+                  color="primary"
+                  block
+                  :loading="loading"
+                  size="large"
+                  style="height: 48px;"
+                  rounded="pill"
+                  variant="elevated"
+                  class="mb-2"
+                  @click="handleDemoAdminLogin"
+                >
+                  演示管理员登录
+                </v-btn>
+              </v-col>
+            </div>
           </template>
         </AuthForm>
       </v-col>
@@ -33,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores';
 import { authApi } from '../utils/api';
@@ -61,6 +91,11 @@ const loading = ref(false);
 const showSnackbar = ref(false);
 const snackbarText = ref('');
 const snackbarColor = ref('success');
+
+// 检查是否为演示模式
+const isDemoMode = computed(() => {
+  return import.meta.env.VITE_IS_DEMO === 'true';
+});
 
 // 清除错误消息
 const clearError = (field: string) => {
@@ -136,6 +171,22 @@ const showSuccess = (text: string) => {
   snackbarColor.value = 'success';
   snackbarText.value = text;
   showSnackbar.value = true;
+};
+
+// 处理演示用户登录
+const handleDemoUserLogin = async () => {
+  await handleLogin({
+    username: 'user',
+    password: 'user'
+  });
+};
+
+// 处理演示管理员登录
+const handleDemoAdminLogin = async () => {
+  await handleLogin({
+    username: 'TomyJan',
+    password: 'TomyJan233'
+  });
 };
 </script>
 
